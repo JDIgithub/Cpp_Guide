@@ -5,7 +5,7 @@
 ## Install GCC & Clang
 
     - Download zip archive from winlibs.com
-    - Setup environment variable path to the C:/mingw64/bin folder
+    - Setup environment variable path to the C:/MinGW/bin folder
     - We can try from powershell if its ready to go with 'g++ --version' and 'clang --version' commands
 
 ## Configure VS code for GCC
@@ -24,7 +24,15 @@
 ### C++20 features unlock
     - 'View->Command Palette->C/C++:Edi Configuration (UI)-> Pick C++20
 
+## Configure VS code for Clang 
 
+    - ToDo:
+
+
+## Windows template project for All compilers
+
+    - open VSode from MVS powershell with 'code .' command so the VScode knows all the compilers
+    - Just put all three compiler setups (MVSC,GCC,CLANG) into one configure file 'tasks.json'
 
 
 

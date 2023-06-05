@@ -10,10 +10,11 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe",
-            "intelliSenseMode": "windows-msvc-x64",
+            "windowsSdkVersion": "8.1",
+            "compilerPath": "C:/mingw64/bin/g++.exe",
             "cStandard": "c17",
-            "cppStandard": "c++20"
+            "cppStandard": "c++20",
+            "intelliSenseMode": "windows-gcc-x64"
         }
     ],
     "version": 4

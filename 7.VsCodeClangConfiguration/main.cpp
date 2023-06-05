@@ -1,9 +1,7 @@
 #include <iostream>
 
 consteval int get_value(){
-    
-    int x(2.9);
-    return x;
+    return 3;
 }
 
 int main(){
