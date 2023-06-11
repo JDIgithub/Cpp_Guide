@@ -89,9 +89,6 @@
 
 
 
-
-
-ŽižkovHostiva5
 ## Data Types ToDo
 
 
@@ -108,19 +105,46 @@
 
     - Store decimals
     - Typically occupies 4 bytes of memory
-    - 
+    - Signed 4 bytes int has range:     -2^31 - + 2^31
+    - Unsigned 4 bytes int has range :  0 - 2^32
+    - Short int has 2 bytes
+    - Long int has 4 or 8 bytes depending on the system
+    - Long Long int has 9 bytes
 
 ### Double ToDo
 
+    - 8 bytes with 15 precision
+    - Double precision ToDo
+    - Long double has 12 bytes and we need to initialize it with L
+        - long double {1.154684849L}
+
 ### Float ToDo
+
+    - 4 bytes with 7 precision
+    - We should put suffix f when initializing float numbers otherwise it will be double by default
+      and compiler will turn it into float but we can lose some data that wont fit
+    - Example:  float number {1.123456465487f};
+
+![text](./Images/fractionalNumbers.png)
 
 ### Char ToDo
 
+    - 1 Byte -> 256 values each linked to some character
+    - It is possible to assign ASCII code to a char variable
+    - We can choose to interpret either as a character or regular integral value
+![text](./Images/char.png)
+
 ### Bool ToDo
+
+    - 1 Byte so it could store 256 values but stores just 2 (true/false)
+    - 0 -> false    1-255 -> true
 
 ### Void ToDo
 
 ### Auto ToDo
+
+    - The compiler deduces the type
+
 
 ### Others ToDo
 
@@ -140,16 +164,31 @@
     - int x{doesnt_exist1 + doesnt_exist2}  -> Wont compile
     
 
-### Functional Variable Initialization
+### Functional Variable Initialization ToDo
 
     - int x();          -> ERROR 
     - int x(5);         -> Initialized to 5
     - int x(a + b);     -> We can use expression as initializer
-    - int x(2.9);       -> It will compile but we will lose information about the fractional part and will init to 2    
-                        -> Implicit conversion
+    - int x(2.9);       -> It will compile but we will lose information about the fractional part
+                        -> Implicit conversion from double 2.9 to int 2
 
+### Assignment Initialization ToDo  
 
+    - int x = 5;        -> Initialized to 5
+    - int x = a + b;    -> We can use expression as initializer
+    - int x = 2.9;      -> It will compile but we will lose information about the fractional part
+                        -> Implicit conversion from double 2.9 to int 2
   
+
+
+
+## Encodings ToDo
+
+### Character encodings ToDo
+
+    - ASCII was among the first encodings to represent text but it is not enough
+      for languages with lots of characters
+    - One of the most common universal encodings is Unicode
 
 ## Curiosities
 
@@ -157,7 +196,13 @@
 
 ## Non-attached yet
 
-    - To input data with spaces via terminal we can use 'std::getline(std::cin,variable);' to get the whole line
+    - We can use 'std::getline(std::cin,variable);' to get the whole line even with spaces
 
+### std::rand() and std::srand(seed)
 
+    - std::rand(); generates a number [0-RAND_MAX]
+    - std::rand() % 11; generates a number between [0-10]
+    - same sequence each time the program runs -> use seed
+      - std::srand(std::time(0)); 
 
+![](Images/srand.png)
