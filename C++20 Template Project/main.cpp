@@ -5,40 +5,87 @@
 
 int main(){
    
-	bool go {true};
+  std::cout << "jojoooo";
 
-	if(int speed {10};go){
-        std::cout << "speed : " << speed << std::endl;
-		
-		if(speed > 5){
-			std::cout << "Slow down!" << std::endl;
-		}else{
-			std::cout << "All good!" << std::endl;
-		}
-	}else{
-        std::cout << "speed : " << speed << std::endl;
-	}
+  int * min_address;
 
+  // Dynamically allocate memory at run time and make pointer point to it
+  int *p_number{nullptr}; 
+  p_number = new int;     // Dynamically allocates space for a single int on the heap
+  *p_number = 77;         // Writing into dynamically allocated memory   
+    
+  {
+    int *p_num1 { new int {55} }; 
+  } // memory with int {55} leaked
 
-const int Marker{ 20 };
-
+  int size1{5};
+  int size2{7};
 
 
+ int new_array[size1+size2];
+  //p_num1 = new int{44}; // memory with int{55} leaked
+
+
+  size_t size{10};
+
+  double *p_salaries{ new double[size] };          // Will contain garbage values
+  int *p_students   { new(std::nothrow) int[size]{} }; // All values initialized to 0
+  double *p_scores  { new(std::nothrow) double[size]{1,2,3,4} }; // First 4 init to these numbers
+                                                                // Rest will be 0  
+
+  delete[] p_scores;
+  p_scores = nullptr;
+
+  
 
 
 
-        int class_sizes[5] {10,12,15};   // Init to 10,12,15,0,0
-
-
-
-        std::srand(std::time(0));
-        int random = std::rand() % 10 + 1; // [1-10]         
-
-
-
-    for(double multiplier{4}; auto i : {1,2,3,4,5,6,7,8,9,10}){
-        std::cout << "result : " << ( i * multiplier) << std::endl;
-    }
 
 }
     
+void swapPtr(int *a, int *b)
+{
+   int tmp = *a;  
+   *a = *b;         // Dereferencing pointers to get value
+   *b = tmp;
+}
+
+void swapRef(int &a, int &b)
+{
+  int tmp = a;      
+  a = b;            // We have values and when we change them, the original is changing too
+  b = tmp;
+}
+
+int PointersReferences()
+{
+    int i = 10;
+    int &r = i;         // Reference
+    int *p = &i;        // Pointer
+    
+    //          Name      Address
+    //           i          0x20
+    //           r          0x20
+    //           p          0x24
+    
+    int var = 90;
+    
+  //  r = var;         // r = 90 -> i = 90    
+  //  p = &var;        // *p = 90 
+  //  *p = 60;         // *p = 60  and var = 60  (shares address)    
+  
+    std::cout << "i: " << &i << " r: " <<  &r <<  " p: " << &p << std::endl;  
+	// Reference and Original value have the same address but pointer has its own even if he stores address of the value
+        
+    // Swap with pointers:
+    int a = 5;
+    int b = 10;
+    std::cout << "a: " << a << " b: " <<  b << std::endl;     
+    swapPtr(&a,&b);                                    // We have to give address for pointer init                 
+  	std::cout << "a: " << a << " b: " <<  b << std::endl;         
+    swapRef(a,b);                                      // We have to give values for reference to make alias of
+    std::cout << "a: " << a << " b: " <<  b << std::endl;      
+  
+        
+	return 0;
+}
