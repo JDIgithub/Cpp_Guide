@@ -18,11 +18,33 @@ int main(){
     int *p_num1 { new int {55} }; 
   } // memory with int {55} leaked
 
-  int size1{5};
-  int size2{7};
+  
+
+  int scores [] {1,2,3,4,5,6,7,8,9,10};
+
+  for( auto score: scores){
+     score = score*10; // Modifies only copy of value not the original
+  }
+
+  for( auto &score: scores){
+     score = score*10; // Modifies original as well
+  }
 
 
- int new_array[size1+size2];
+
+  for( auto score: scores){
+
+    score = score*10; // Modifies copy of value in scores
+     
+  }
+
+
+
+
+
+
+
+
   //p_num1 = new int{44}; // memory with int{55} leaked
 
 

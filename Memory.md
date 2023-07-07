@@ -10,24 +10,89 @@
 
 ![](Images/memoryMap.png)    
 
-### Stack ToDo
+### Stack
 
     - Is going to store local variables, function calls, etc.
     - Memory is finite
     - The developer is not in full control of the memory lifetime
     - Lifetime is controlled by the scope mechanism
+    - Adjoins the heap area and grew in opposite direction to the heap growth -> when stack pointer meets
+      the heap pointer free memory was exhausted
+    - Contains the program stack (LIFO structure) typically located in the higher parts of memory
+    - Automatic variables are stored here along with information about function calls
+    - Each time function is called, the address of where to return to and certain information about
+      the callers environment are saved on stack
+    - The newly called function then allocates room on the stack for its automatic and temporary variables
+    - Also known as temporary memory
 
+#### Stack Allocation
 
-### Heap ToDo
+    - The allocation happens on contiguous blocks of memory
+    - The size of memory to be allocated is known to the compiler (compiler-time) and whenever a function
+      is called, its variables get memory allocated on the stack
+    - Whenever the function call is over the memory for the variables is de-allocated
+    - Programmer does not have worry about memory allocation and de-allocation of stack variables
+    - Any value stored in the stack memory scheme is accessible as long as function has not completed its
+      execution and currently is in running state
+    - Safer than Heap allocation because the data stored can only be access by owner thread
+    - Memory allocation and de-allocation is faster compared to the Heap memory allocation
+    - Less storage space compared to Heap
+
+#### Stack Overflow
+
+    a) If we declare large number of local variables or declare an array or matrix of large size
+    b) If function recursively call itself infinite times then the stack is unable to store large number
+       of local variables used by every function call 
+
+### Heap
 
     - Additional memory that can be queried for at run time
     - Memory is finite
     - The developer is in full control of when memory is allocated and when it is released
     - Lifetime is controlled explicitly trough operators 'new' and 'delete'
+    - Dynamic memory allocation usually takes place on the heap
+    - The Heap area begins at the end of the bss segment and grows to larger addresses from there
+    - Is managed by 'malloc','realloc' and 'free'
+    - The Heap are is shared by all shared libraries and dynamically loaded modules in process
 
-### Text 
+#### Heap Allocation
+
+    - The memory is allocated during the execution of instructions (run-time)
+    - It is called heap because it is pile of memory space available to the programmer to allocate/de-allocate
+    - Every time when we made an object it is always created in Heap-space and the referencing information to
+      these objects are always stored in stack
+    - Data stored in Heap are accessible or visible to all threads
+
+#### Heap Overflow
+
+    a) If we continuously allocate memory and we do not free that memory space after use it may result in 
+       memory leak
+    b) If we dynamically allocate large number of variables
+
+### Initialized Data Segment
+
+    - Portion of virtual address space of program, which contains the global variables and static variables 
+      that are initialized by the programmer
+    - Not read-only because values can be altered at run time
+    - Can be further classified into read-only and read-write (const global -> read-only)
+
+
+### Uninitialized Data Segment (BSS)
+
+    - Often called BSS segment, named after an assembler operator that stood for Block Started by Symbol
+    - Data in this segment is initialized by the kernel to arithmetic 0 before the program start executing
+    - Uninitialized data starts at the end of the data segment and contains all global variables and static 
+      variables that are initialized to zero or do not have explicit initialization in the source code
+
+### Text Segment
 
     - Section that will load the actual binary of a program
+    - Also known as code segment
+    - Section of program in object file or in memory, which contains executable instructions
+    - As memory region a text segment may be placed below heap or stack in order to prevent heaps and stack 
+      overflows from overwriting it
+    - It is sharable so that only single copy needs to be in memory for frequently executed programs
+    - Often read-only
 
 
 ### Virtual memory
