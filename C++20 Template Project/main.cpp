@@ -39,6 +39,75 @@ int main(){
   }
 
 
+  std::string name;                       // Empty string
+  std::string planet {"Planet Earth"};    // Init with string literal
+  std::string pref_planet {planet};       // Init with existing string 
+  std::string message {"Hello there",5};  // Init with only part of string literal (Hello)
+  std::string weird (4,'e');              // Init with multiple copies of 'e'
+  std::string earthIs{planet,7,5};        // Init with part of existing string from index 7 (Earth)       
+
+  std::string str1 {"Hello"};
+  std::string str2 {"World"};
+
+  std::string message = str1 + " my " + str2; // Concatenating with the '+' operator
+  // However we can not use '+' operator on the string literals
+  std::string message2 = "Hello" + "World";   // Compile error
+
+  std::string message3 = str1.append(str2); // We can also use append function  
+  
+
+
+
+  // Accessing characters via '[]' operator
+  for(size_t i {0}; i < str1.size();++i){
+    std::cout << " " << str1[i];
+  }
+  // Or ranged base for loop
+  for(char chr: str1){
+    std::cout << " " << chr;
+  }
+  // Or using at() function
+  for(size_t i {0}; i < str1.size();++i){
+    std::cout << " " << str1.at(i);
+  }
+
+
+  // front() and back() : copies
+  char chrFront = str1.front();
+  char chrBack = str1.back();
+
+  // front() and back() : references
+  char &chrRefFront = str1.front();
+  char &chrRefBack = str1.back();
+  chrRefFront = 'X';  // => Will change the original string to "Xello"
+
+
+  const char * c_string = str1.c_str();
+
+  char * data = str1.data();
+  data[0] = 'B';  // => Will change the original string to "Bello"
+
+
+
+
+  // trYYYYYYYYYY
+  for(char &chr: str1){
+    chr='X';
+  }
+  // ? Will it change str1?
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
