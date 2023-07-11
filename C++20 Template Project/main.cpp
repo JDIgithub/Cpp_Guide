@@ -1,7 +1,7 @@
 #include <iostream>
 #include <bitset>
 #include <stdint.h>
-
+#include <string>
 
 int main(){
    
@@ -20,75 +20,38 @@ int main(){
 
   
 
-  int scores [] {1,2,3,4,5,6,7,8,9,10};
+  /*
+  std::string str1 {"I amaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa string"};
+  std::cout << " String: " << str1 << std::endl;
+  std::cout << " String size: " << str1.size() << std::endl;
+  std::cout << " String capacity: " << str1.capacity() << std::endl;
 
-  for( auto score: scores){
-     score = score*10; // Modifies only copy of value not the original
-  }
-
-  for( auto &score: scores){
-     score = score*10; // Modifies original as well
-  }
+  str1.clear(); // Deletes stored string
 
 
-
-  for( auto score: scores){
-
-    score = score*10; // Modifies copy of value in scores
-     
-  }
+  std::cout << " String: " << str1 << std::endl;
+  std::cout << " String size: " << str1.size() << std::endl;
+  std::cout << " String capacity: " << str1.capacity() << std::endl;
 
 
-  std::string name;                       // Empty string
-  std::string planet {"Planet Earth"};    // Init with string literal
-  std::string pref_planet {planet};       // Init with existing string 
-  std::string message {"Hello there",5};  // Init with only part of string literal (Hello)
-  std::string weird (4,'e');              // Init with multiple copies of 'e'
-  std::string earthIs{planet,7,5};        // Init with part of existing string from index 7 (Earth)       
 
-  std::string str1 {"Hello"};
-  std::string str2 {"World"};
 
-  std::string message = str1 + " my " + str2; // Concatenating with the '+' operator
-  // However we can not use '+' operator on the string literals
-  std::string message2 = "Hello" + "World";   // Compile error
+  std::string str1 {"012"};
+  str1.insert(1,2, 'A');  // Inserts 2 characters at index 1. => "0AA12"
 
-  std::string message3 = str1.append(str2); // We can also use append function  
+
+  std::cout << " String: " << str1 << std::endl;                       
+*/
+
+  std::string str1 {"Hello World"};
+  str1.push_back('!');  // Appends '!' at the end of the string
+  str1.pop_back();      // Removes the last character from the string
   
+  
+  
+  std::cout << " String: " << str1 << std::endl;
 
-
-
-  // Accessing characters via '[]' operator
-  for(size_t i {0}; i < str1.size();++i){
-    std::cout << " " << str1[i];
-  }
-  // Or ranged base for loop
-  for(char chr: str1){
-    std::cout << " " << chr;
-  }
-  // Or using at() function
-  for(size_t i {0}; i < str1.size();++i){
-    std::cout << " " << str1.at(i);
-  }
-
-
-  // front() and back() : copies
-  char chrFront = str1.front();
-  char chrBack = str1.back();
-
-  // front() and back() : references
-  char &chrRefFront = str1.front();
-  char &chrRefBack = str1.back();
-  chrRefFront = 'X';  // => Will change the original string to "Xello"
-
-
-  const char * c_string = str1.c_str();
-
-  char * data = str1.data();
-  data[0] = 'B';  // => Will change the original string to "Bello"
-
-
-
+/*
 
   // trYYYYYYYYYY
   for(char &chr: str1){
@@ -96,39 +59,7 @@ int main(){
   }
   // ? Will it change str1?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //p_num1 = new int{44}; // memory with int{55} leaked
-
-
-  size_t size{10};
-
-  double *p_salaries{ new double[size] };          // Will contain garbage values
-  int *p_students   { new(std::nothrow) int[size]{} }; // All values initialized to 0
-  double *p_scores  { new(std::nothrow) double[size]{1,2,3,4} }; // First 4 init to these numbers
-                                                                // Rest will be 0  
-
-  delete[] p_scores;
-  p_scores = nullptr;
-
-  
-
+*/
 
 
 

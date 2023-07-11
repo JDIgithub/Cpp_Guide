@@ -53,3 +53,57 @@
 ![](Images/dataString.png)
 
 
+### std::string size and capacity
+
+![](Images/stringSize.png)
+
+
+#### Capacity
+
+- Current amount of memory allocated for the string
+- Capacity is allocated automatically
+- When we try to store in more characters than the current capacity, It will allocate larger memory space for the string
+
+![](Images/stringCapacity.png)
+
+- We can also allocate higher capacity manually with 'reserve()' function
+
+![](Images/stringReserve.png)
+
+- Or we can reduce the capacity to the lowest possible number so the string will still fit
+
+![](Images/stringShrink.png)
+
+### Modifying std::string
+
+#### Insert
+
+- Inserts characters or strings inside the string
+- There are many versions of this function (overloads)
+
+![](Images/stringInsert.png)
+
+
+#### Clear
+
+- Clear function will delete stored string
+- The size will be set to 0, but capacity remains the same
+
+![](Images/stringClear.png)
+
+#### Erase
+
+- Erase function will delete specified characters from the string
+
+![](Images/stringErase.png)
+
+#### push_back and pop_back
+
+- push_back() appends the specified characters to the end of the string
+- pop_back() removes the last character from the string
+
+![](Images/stringBack.png)
+
+### Comparing std::string
+
+- Two strings are equal if they have the same size and the same characters in all positions
