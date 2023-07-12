@@ -107,3 +107,31 @@
 ### Comparing std::string
 
 - Two strings are equal if they have the same size and the same characters in all positions
+- Comparison is carried out lexicographically by default
+- We should be careful to use only 'NULL terminated' strings otherwise it will go overbound trying to find it
+- We can use '==','!=','<'',>','<','=','>=' operators or 'std::string::compare' function
+- std::string::compare()
+  - Returns zero if both string are equivalent
+  - Returns negative value if the first string is lexicographically less than the second string
+  - Returns positive value if the first string is lexicographically greater than the second string
+
+![](Images/stringCompare.png)
+
+### Searching std::string
+
+
+
+
+### Other std::string functions
+
+#### Replacing 
+
+![](Images/stringReplace.png)
+
+- More versions [here](https://en.cppreference.com/w/cpp/string/basic_string/replace)
+
+#### Copying
+
+#### Resizing
+
+#### Swapping

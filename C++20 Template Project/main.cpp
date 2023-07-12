@@ -43,13 +43,22 @@ int main(){
   std::cout << " String: " << str1 << std::endl;                       
 */
 
-  std::string str1 {"Hello World"};
+  std::string str1 {"Finding Nemo"};
+  std::string str2 {"Searching for"};
+  str1.replace(0,7,str2); // Replace 7 characters, starting at 0 index, with str2
+  str1.replace(0,7,str2,0,9); // The same but only 9 characters starting at 0 index from str2
+
+
+
+  std::cout << " Result: " << str1;
+
+
+
+
+
   str1.push_back('!');  // Appends '!' at the end of the string
   str1.pop_back();      // Removes the last character from the string
   
-  
-  
-  std::cout << " String: " << str1 << std::endl;
 
 /*
 
