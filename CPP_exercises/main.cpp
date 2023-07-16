@@ -4,52 +4,49 @@
 #include <string>
 
 
-int function_name (int & x, const int & y){ 
-  // This function uses reference to the original variable 
-  // So if we change thus reference the original variable will be changed as well
-
-  ++x; // Original is modified
-  ++y; // Original can not be modified so with const * it is pure input parameter
-  
-  return 0;
+// Function that will returns sums of all digits of the input variable 
+unsigned int digit_sum (unsigned int num){
+    
+    int dig_sum{0};
+    
+    if (num < 0){
+        num = -num;
+    }
+    while(num > 0){
+        int digit = num % 10;
+        dig_sum += digit;
+        num /=10;    // Equivalent: num = num/10; 
+    }
+    return dig_sum;
 }
 
 
 
-enum class Month {
-    Jan = 1, Feb, Mar, Apr, May, Jun,
-    Jul, Aug, Sep, Oct, Nov, Dec
-};
+
+
+
+
+int function_name (int x, int y){ 
+  // This function uses copies of the original that was passed as input
+  // So if we change the copy the original stays the same
+  // We can use references if we dont want to work with copies
+  x++;
+  y++;
+  
+  return x;
+}
+
+
 
 
 int main(){
-
-Month month {Month::Jul};
-std::cout << "Month: " << static_cast<int>(month) << std::endl; // Will print 6
+   
 
 
-
-
-
-
-
-
-
-
-
-  int arg1{5};
-  int arg2{10};
-  int result_var{0};
-
-
-  std::cout<< "arg1 " << arg1 << std::endl;
-std::cout<< "arg2 " << arg2 << std::endl;
-
-  result_var = function_name(arg1,arg2);
+ std::cout << "a: " << std::endl;      
+  
   
 
-  std::cout<< "arg1 " << arg1 << std::endl;
-std::cout<< "arg2 " << arg2 << std::endl;
 
 }
 

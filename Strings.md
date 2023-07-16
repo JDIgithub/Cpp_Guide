@@ -119,8 +119,18 @@
 
 ### Searching std::string
 
+![](Images/stringSearch.png)
 
 
+### std::string From/To Number
+
+- To create string from numeric value, we can use function std::to_string()
+
+![](Images/toString.png)
+
+- To get numeric value from numeric string we can use according function from the official documentation [list](https://en.cppreference.com/w/cpp/string/basic_string)
+
+![](Images/fromString.png)
 
 ### Other std::string functions
 
@@ -135,3 +145,26 @@
 #### Resizing
 
 #### Swapping
+
+### std::string_view
+
+![](Images/stringView.png)
+
+- String views cannot outlive its original
+- We can use some functions as suffix(), preffix(), etc., which will change the view but not the original
+
+## Difference between '\n' and 'std::endl'
+
+- '\n' will move us on the next line but it does not directly flush std::cout
+- 'std::endl' will move us on the next line but also it will flush std::cout
+
+## Raw string literals
+
+- We can use them to format text
+
+![](Images/rawStringLiterals.png)
+
+- There is a problem if our raw string contains (" or ")
+- But we can work around it with '---' 
+
+![](Images/rawStringLiteralWorkAround.png)
