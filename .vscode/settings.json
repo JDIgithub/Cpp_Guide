@@ -1,4 +1,7 @@
 {
     "pasteImage.path": "${currentFileDir}/Images",
-    "pasteImage.showFilePathConfirmInputBox":true
+    "pasteImage.showFilePathConfirmInputBox": true,
+    "files.associations": {
+        "ostream": "cpp"
+    }
 }

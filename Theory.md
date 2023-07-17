@@ -37,3 +37,18 @@
 
 ![](Images/compilationModel.png)
 
+
+
+
+## auto deduction
+
+- If auto will try to deduce type from reference that it wont be reference to the type but just the type that is being referenced
+
+![](Images/autoDeduction.png)
+
+- But it is possible to deduce reference with 'auto&':
+
+![](Images/autoReference.png)
+
+- 'auto&' will also preserve the constness of reference (const reference will stay const reference)
+- for naked 'auto' constness does not matter because it will create copy and the copy will not modify original anyway 

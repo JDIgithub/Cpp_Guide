@@ -4,52 +4,43 @@
 #include <string>
 
 
-int function_name (int & x, const int & y){ 
-  // This function uses reference to the original variable 
-  // So if we change thus reference the original variable will be changed as well
 
-  ++x; // Original is modified
-  ++y; // Original can not be modified so with const * it is pure input parameter
-  
-  return 0;
-}
-
-
-
-enum class Month {
-    Jan = 1, Feb, Mar, Apr, May, Jun,
-    Jul, Aug, Sep, Oct, Nov, Dec
-};
-
+#include <optional>
 
 int main(){
-
-Month month {Month::Jul};
-std::cout << "Month: " << static_cast<int>(month) << std::endl; // Will print 6
-
-
-
-
-
-
-
-
-
-
-
-  int arg1{5};
-  int arg2{10};
-  int result_var{0};
-
-
-  std::cout<< "arg1 " << arg1 << std::endl;
-std::cout<< "arg2 " << arg2 << std::endl;
-
-  result_var = function_name(arg1,arg2);
   
+  // Declaration and initialization
+  std::optional<int> items{3};
+  std::optional<std::string> name {"Jan Novak"};
+  std::optional<std::string> dog_name{};  // Initializes to std::nullopt
+  std::optional<int> age {std::nullopt};  // null equivalent for std::optional
 
-  std::cout<< "arg1 " << arg1 << std::endl;
-std::cout<< "arg2 " << arg2 << std::endl;
+  // Setting values
+  age = 25;
+
+  // Reading
+  std::cout << "items: " << items.value() << std::endl;
+  std::cout << "items: " << *items << std::endl;  // Kinda confusing because its not a pointer.
+  // Trying to use std::nullopt variable will throw an exception
+  std::cout << "nullopt: " << dog_name.value() << std::endl; // Throws exception and crashes program
+  // We can do a check
+  if(dog_name.has_value()){
+    std::cout << "Dog does have a name: " << dog_name.value() << std::endl;
+  } else {
+    std::cout << "Dog does not have a name." << std::endl;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

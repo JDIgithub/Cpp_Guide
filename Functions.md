@@ -135,3 +135,63 @@ to the type the compiler takes
 - **Not all constants can be evaluated at compile time** (For example when they are initialized by runtime variables)
 
 ![](Images/constevalFunction.png)
+
+# Functions Output
+
+## Output Parameter
+
+- Output parameters should be passed in such a way that we can modify the arguments from inside the function
+- We can use function parameter as output as well with non-const reference or pointer
+
+![](Images/outputParameter.png)
+
+## Return from functions
+
+### Return by value (default):
+  
+![](Images/returnOutput.png)
+
+- In modern compilers, return by value is commonly optimized when possible and the function is modified
+  behind our back to return by reference, avoiding unnecessary copies 
+- For example in the code below, the address of result inside the function will be the same as the address
+of str_result outside of that function, that means that compiler changes the return to the reference to avoid copies
+
+![](Images/returnChangedToRef.png)
+
+### Return by Reference
+
+![](Images/returnByReference.png)
+
+- **Do not** return reference to local variables !!
+
+![](Images/referencesToLocal.png)
+
+### Return by pointer
+
+![](Images/returnByPointer.png)
+
+- **Do not** return pointers to local variables !! (Same as with references)
+- We can return whole array thourgh using return by pointer
+
+![](Images/returningArray.png)
+
+## Function return type deduction
+
+- Lets the compiler deduce the return type of a function judging from return statements in the function
+- We have to declare function together with its body/definition so the compiler can see the return type
+- But there could be problems when compiler is consufed by more returns of different types
+
+![](Images/returnDeductionWrong.png)
+
+- We can fix that with casting to the same type
+
+![](Images/returnDeductionFix.png)
+
+
+## std::optional (c++17)
+
+- Helps to handle the optional output from the fnctions (for example if they failed) and some other things
+
+![](Images/stdOptional.png)
+
+![](Images/stdOptionalUsage.png)
