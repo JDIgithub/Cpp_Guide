@@ -6,29 +6,49 @@
 
 
 #include <optional>
+#include <cstring>
+
+
+
+
+// We can of course create template that takes arguments of multiple data types
+template <typename T, typename P> problematic_maximum (T a, P b); // But how to define the return type here?
+
+// BAD design for the return type:
+template <typename T, typename P> P problematic_maximum(T a, P b);  // Return type depends on order of parameters
+// Better approach:
+template <typename returnType, typename T, typename P> returnType maximum(T a, P b){  // Separate parameter for return type
+  return (a > b) ? a : b;
+}
+
+template <typename T, typename P> auto maximum(T a, P b){
+  return (a > b) ? a : b;
+}
+
+// To avoid repetition of the return expression we can use decltype(auto) are return type
+template <typename T, typename P> decltype(auto) maximum(T a, P b) {
+  return (a > b) ? a : b;
+}
+
+
 
 int main(){
-  
-  // Declaration and initialization
-  std::optional<int> items{3};
-  std::optional<std::string> name {"Jan Novak"};
-  std::optional<std::string> dog_name{};  // Initializes to std::nullopt
-  std::optional<int> age {std::nullopt};  // null equivalent for std::optional
 
-  // Setting values
-  age = 25;
+  auto max1 = maximum(12.5,33); // double return type deduced
+  auto max2 = maximum('b',90 ); // int return type deduced
 
-  // Reading
-  std::cout << "items: " << items.value() << std::endl;
-  std::cout << "items: " << *items << std::endl;  // Kinda confusing because its not a pointer.
-  // Trying to use std::nullopt variable will throw an exception
-  std::cout << "nullopt: " << dog_name.value() << std::endl; // Throws exception and crashes program
-  // We can do a check
-  if(dog_name.has_value()){
-    std::cout << "Dog does have a name: " << dog_name.value() << std::endl;
-  } else {
-    std::cout << "Dog does not have a name." << std::endl;
-  }
+  // Explicit arguments: Forces return type on compiler
+  auto max3 = maximum<char,char>('b',90);  // It will deduce type from the explicit arguments -> char
+
+
+
+
+  int a {9};
+  double b {5.5};
+
+  std::cout << "size: " << sizeof(decltype((a > b)? a : b)) << std::endl;
+
+  decltype(((a > b)? a : b)) c {67};  // Declaring c as a type of that expression
 
 
 
@@ -37,12 +57,40 @@ int main(){
 
 
 
+	int a{10};
+	int b{23};
+	double c{34.7};
+	double d{23.4};
+	std::string e{"hello"};
+	std::string f{"world"};
+	
+	auto max_int = maximum(a,b); // int type deduced
+	auto max_double = maximum(c,d);// double type deduced
+	auto max_str = maximum(e,f) ;// string type deduced
 
+	const char* g{"wild"};
+	const char* h{"animal"};
 
-
-
-
+  const char* result = maximum(g,h);  // This will call the template specialization function
+	std::cout << "max(const char*) : " << result << std::endl;
+   
+  return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

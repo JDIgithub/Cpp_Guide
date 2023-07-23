@@ -171,7 +171,7 @@ of str_result outside of that function, that means that compiler changes the ret
 ![](Images/returnByPointer.png)
 
 - **Do not** return pointers to local variables !! (Same as with references)
-- We can return whole array thourgh using return by pointer
+- We can return whole array through using return by pointer
 
 ![](Images/returningArray.png)
 
@@ -179,7 +179,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 - Lets the compiler deduce the return type of a function judging from return statements in the function
 - We have to declare function together with its body/definition so the compiler can see the return type
-- But there could be problems when compiler is consufed by more returns of different types
+- But there could be problems when compiler is confused by more returns of different types
 
 ![](Images/returnDeductionWrong.png)
 
@@ -190,8 +190,58 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ## std::optional (c++17)
 
-- Helps to handle the optional output from the fnctions (for example if they failed) and some other things
+- Helps to handle the optional output from the functions (for example if they failed) and some other things
 
 ![](Images/stdOptional.png)
 
 ![](Images/stdOptionalUsage.png)
+
+- **Never read from std::optional without checking if it is not empty otherwise the program can crash!**
+
+### std::optional as return type
+
+![](Images/optionalReturnType.png)
+
+- If function fails we can return 'std::nullopt'
+- So we can do check like this
+
+![](Images/optionalReturnCheck.png)
+
+# Function overloading
+
+- Two or more functions can have the same name but different parameters
+- Can be considered as example of polymorphism feature 
+- When an overloaded function is called, the compiler selects the proper function by examining the numbers, types and order
+of the arguments in the call
+
+![](Images/functionOverload.png)
+
+- We must be careful when using overloading with references because ambiguous calls may occur which will lead to compile errors
+because compiler will not know if he should use for example string parameter or const string reference parameter
+- When using const parameters by value we should be aware that compiler is making copies so it does not matter if it is const or not 
+  and will not overload the non-const version
+- But when using pointers, We can overload pointer with its pointer to const type parallel because there are no copies and they are two different types
+- When we are using const pointer to overload pointer that there will be compiler error because the pointer itself is passed by value -> also copies
+- Const reference can overload non-const reference of the same type no problem
+
+# Inline Functions
+
+- To avoid function call overhead. 
+- Especially for the small functions
+- When compiler sees call of the inline function he will replace it with the function body instead of jumping to the function location in memory
+- This can make the program faster by avoiding the overhead of function calling protocol such as pushing and popping the stack, branching to and from the call etc.
+
+![](Images/inlineFunction.png)
+
+- They can increase the size of our application binary (Copying code)
+- It is recommended to use them for short, frequently used functions
+- Marking function 'inline' is just suggestion for the compiler. The compiler might agree and inline function or ignore it
+
+- It is also useful for header-only libraries to allow inclusion in multiple source files without violating the One Definition rule
+- All function templates and class templates are implicitly inline
+
+# Recursion
+
+- Mechanism under which a function repeatedly calls itself to achieve some goal
+- Function that does recursion is called a recursive function
+
