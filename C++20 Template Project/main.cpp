@@ -11,69 +11,47 @@
 
 
 
-// We can of course create template that takes arguments of multiple data types
-template <typename T, typename P> problematic_maximum (T a, P b); // But how to define the return type here?
 
-// BAD design for the return type:
-template <typename T, typename P> P problematic_maximum(T a, P b);  // Return type depends on order of parameters
-// Better approach:
-template <typename returnType, typename T, typename P> returnType maximum(T a, P b){  // Separate parameter for return type
-  return (a > b) ? a : b;
-}
 
-template <typename T, typename P> auto maximum(T a, P b){
-  return (a > b) ? a : b;
-}
+template <typename T> concept MyIntegral = std::is_integral_v<T>;
+template <typename T> concept Multipliable = requires (T a, T b) {
+  a * b;
+};
+template <typename T> concept Incrementable = requires (T a) {
+  a+=1;
+  ++a;
+  a++;
+};
 
-// To avoid repetition of the return expression we can use decltype(auto) are return type
-template <typename T, typename P> decltype(auto) maximum(T a, P b) {
-  return (a > b) ? a : b;
-}
+
+// Syntax 1
+template <typename T> requires MyIntegral<T> T sum(T a, T b){
+  return a + b;
+};
+
+// Syntax 2
+template <MyIntegral T> T sum(T a, T b){
+  return a + b;
+};
+
+// Syntax 3
+auto sum(MyIntegral auto a, MyIntegral auto b){
+  return a + b;
+};
+
 
 
 
 int main(){
 
-  auto max1 = maximum(12.5,33); // double return type deduced
-  auto max2 = maximum('b',90 ); // int return type deduced
+  int a {5};
+  int b {10};
+  auto result1 = sum(a,b);
 
-  // Explicit arguments: Forces return type on compiler
-  auto max3 = maximum<char,char>('b',90);  // It will deduce type from the explicit arguments -> char
-
-
-
-
-  int a {9};
-  double b {5.5};
-
-  std::cout << "size: " << sizeof(decltype((a > b)? a : b)) << std::endl;
-
-  decltype(((a > b)? a : b)) c {67};  // Declaring c as a type of that expression
-
-
-
-
-
-
-
-
-	int a{10};
-	int b{23};
-	double c{34.7};
-	double d{23.4};
-	std::string e{"hello"};
-	std::string f{"world"};
-	
-	auto max_int = maximum(a,b); // int type deduced
-	auto max_double = maximum(c,d);// double type deduced
-	auto max_str = maximum(e,f) ;// string type deduced
-
-	const char* g{"wild"};
-	const char* h{"animal"};
-
-  const char* result = maximum(g,h);  // This will call the template specialization function
-	std::cout << "max(const char*) : " << result << std::endl;
-   
+  double c {11.1};
+  double d {15.4};
+  auto result2= sum(c,d); // Error
+    
   return 0;
 }
 

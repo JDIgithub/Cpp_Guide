@@ -107,13 +107,112 @@
 - Deduces references, keeps constness
 - Definition has to be in front of call
 
-### Default arguments
+### Default Arguments
 
 - We can use default arguments with the template functions
 
 ![](Images/templateDefaultArguments.png)
 
 ![](Images/templateDefaultCalls.png)
+
+
+### Non Type Template Parameters
+
+
+![](Images/templateNonType.png)
+
+- As of C++20, non-type template parameters can be of any basic type, enumeration type, pointer type or reference type
+- Any class type that has only public members can also be used (c++20)
+- C++17 and below, only int like types coud be used
+- Benefits:
+  - Efficiency when we want to pass in value that determines the behavior of a function at compile time
+  - They enable optimizations at compile time, as their value are known during the compilation
+- It could be useful when creating a compile-time sequence of numbers or when we need to perform some action a specific number of times at compile time
+- These situations are not possible with regular function parameters, which are runtime entities
+- However they should be used with caution because they can make code more complex and they can lead to longer compilation times if overused
+  
+#### Comparison with function parameter
+
+![](Images/nonTypeTemplateVsFunction.png)
+
+### Auto Function Templates
+
+![](Images/autoFunctionTemplates.png)
+
+### Named Template Parameters for Lambda
+
+![](Images/templateLambda.png)
+
+### Type Traits
+
+- A mechanism to query information about a (templated) type at compile time
+
+![](Images/typeTraits.png)
+
+- More versions [here](https://en.cppreference.com/w/cpp/header/type_traits)
+
+- We can use this mechanism to check type inside of the template function -> conditional compile time programming:
+
+![](Images/templateTypeTraitCheck.png)
+
+- We can also use _v syntax (C++17):
+
+![](Images/vSyntax.png)
+
+### constexpr if
+
+- Makes conditional compilation easier and more flexible
+
+![](Images/constExprIfTemplate.png)
+
+- We know which function will be used during compilation time -> Parts discarded by constexpr if are not included in the template instances ! 
+
+
+
+
+## Concepts (C++20)
+
+
+- Mechanism to place constraints on our template type parameters
+- Could be alternative to static asserts an type traits
+- Two types:
+  - Standard built in concepts
+  - Custom concepts
+
+- Some of the standard concepts:
+
+![](Images/concepts.png)
+
+- There are more syntaxes for the concepts that we can use:
+
+![](Images/conceptsSyntaxes.png)
+
+- All of these do the same. In the example above, compiler will allow to pass only integral types into the template function
+
+
+### Custom Concepts
+
+- We can create our own concepts like this:
+  
+![](Images/customConcepts.png)
+
+- Using custom concepts:
+
+![](Images/customConceptsUse.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
