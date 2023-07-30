@@ -201,10 +201,30 @@
 ![](Images/customConceptsUse.png)
 
 
+### Requires Clause
+
+- The requires clause can take in four kinds of requirements:
+- 
+  - Simple requirements - Only checks for valid syntax
+  
+   ![](Images/simpleRequirement.png)
+
+  - Nested requirements - 
+
+  ![](Images/nestedRequirement.png)
+
+  - Compound requirements
+
+  ![](Images/compoundRequirement.png)
+
+  - Type requirements
 
 
+### Combining concepts
 
+- We can combine more requirements at once using '&&' or '||'
 
+![](Images/combiningConcepts.png)
 
 
 

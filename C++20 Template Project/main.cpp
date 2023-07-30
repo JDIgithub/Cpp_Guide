@@ -2,56 +2,84 @@
 #include <bitset>
 #include <stdint.h>
 #include <string>
-
+#include <vector>
 
 
 #include <optional>
 #include <cstring>
 
+#define PI 3.14
+
+
+
+class Cylinder {
+
+private:
+  double baseRadius {1.0};
+  double height {1.0};
+  int * random {nullptr};
+public:
+
+  Cylinder(){
+    random = new int;
+    *random = 42;
+  }
+  // Destructor
+  ~Cylinder(){
+    delete random;
+  }
+
+  // Getters
+  double getBaseRadius(){
+    return baseRadius;
+  }
+  double getHeight(){
+    return height;
+  }
+
+  // Setters
+  void setBaseRadius(double radiusParam){
+    baseRadius = radiusParam;
+  }
+
+  void setHeight(double heightParam){
+    height = heightParam;
+  }
 
 
 
 
 
-template <typename T> concept MyIntegral = std::is_integral_v<T>;
-template <typename T> concept Multipliable = requires (T a, T b) {
-  a * b;
+  double volume(){
+    return PI * baseRadius * height;
+  }
+
 };
-template <typename T> concept Incrementable = requires (T a) {
-  a+=1;
-  ++a;
-  a++;
-};
-
-
-// Syntax 1
-template <typename T> requires MyIntegral<T> T sum(T a, T b){
-  return a + b;
-};
-
-// Syntax 2
-template <MyIntegral T> T sum(T a, T b){
-  return a + b;
-};
-
-// Syntax 3
-auto sum(MyIntegral auto a, MyIntegral auto b){
-  return a + b;
-};
 
 
 
 
-int main(){
 
-  int a {5};
-  int b {10};
-  auto result1 = sum(a,b);
 
-  double c {11.1};
-  double d {15.4};
-  auto result2= sum(c,d); // Error
-    
+
+
+
+// Driver Code
+int main()
+{
+
+  // Stack object:
+  Cylinder c1(10,2);
+  auto volume1 = c1.volume();
+
+  // Heap object
+  Cylinder * c2  = new Cylinder(11,20); // Create object on the heap
+  auto volume2 = (*c2).volume();
+  auto volume3 = c2->volume();
+
+  delete c2;
+
+
   return 0;
 }
 
