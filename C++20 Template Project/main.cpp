@@ -56,28 +56,37 @@ public:
 
 };
 
+class Square{
 
+public:
+  explicit Square(double side_param):side(side_param){}
+  ~Square();
+  double surface() const {
+    return side*side;
+  }
+private:
+  double side;
+};
 
+bool compare(const Square& square1, const Square& square2){
+  return (square1.surface() > square2.surface()) ? true : false;
+}
 
-
-
-
-
-
-// Driver Code
 int main()
 {
 
-  // Stack object:
-  Cylinder c1(10,2);
-  auto volume1 = c1.volume();
+  Square s1 = 30.0; // not possible with explicit constructor 
+  // because this assignment uses implicit conversion which is now forbidden 
+  Square s1(30.0);
+  Square s2(20.0);
 
-  // Heap object
-  Cylinder * c2  = new Cylinder(11,20); // Create object on the heap
-  auto volume2 = (*c2).volume();
-  auto volume3 = c2->volume();
+  compare(s1,s2);
+  compare(s1,45.4);   // Without explicit constructor this would be valid 
+  // It would implicitly convert 45.4 into square object
 
-  delete c2;
+
+
+
 
 
   return 0;

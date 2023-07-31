@@ -12,6 +12,12 @@
 - Class methods (member function of a class) have access to the member variables even if they are  private
 - Private members of classes are not accessible from the outside of the class definition
 
+- Size of the class is sum of the size of its member variables but there could also be some padding that the compiler may add for memory alignment
+- Memory alignment is used to ensure that data is efficiently accessed by the CPU and it typically involves adding padding bytes between data members to align them
+  on memory addresses that are multiples of their size
+- The functions are not counted into that because they are not stored as part if each individual object. Instead member functions are stored in a 
+  separate code section of memory shared among all instances of the class
+
 ## Good practice
 
 - For bigger classes it is better to create their own source and header file for them
@@ -32,6 +38,17 @@
   - Move constructor - Allows a r-value object to be moved into a new object
  
 ![](Images/basicConstructors.png)
+
+### Parametrized Constructor
+
+- Constructor that uses its parameters to initilize object variables
+- It can also use default parameters
+
+![](Images/parametrizedConstructor.png)
+
+- But if we call parametrized constructor without some of his parameters that are defaulted to some value and there is also another constructor that has less parameters and it will be match for him as well, then the compiler will be confused because he does not know if he should call constructor with less parameters or the one that has some of the parameters defaulted.
+- So we must be careful about that and use default parameters only when it will not colide with another constructor to avoid compiler error
+- We should also be careful that we can declare default parameters only in class definition. When the function body is separated elsewhere we can not repeat the default parameters there again.
 
 ### Defaulted Constructor
 
@@ -78,7 +95,30 @@
 
 ![](Images/moveConstructor.png)
 ![](Images/moveConstructor2.png)
-          
+
+### Explicit Constructors
+
+- If we are using normal parametrized constructor with one parameter then the compiler can implictily convert for example some number into the object
+- If we want to forbid this implicit conversion we need to specify our constructor as 'explicit'
+
+![](Images/explicitConstructor.png)
+
+
+
+## Initializer List
+
+- Instead of Member wise copy initialization:
+
+![](Images/constructorNormalInit.png)
+
+- We can use Initializer list:
+
+![](Images/initializerList.png)
+
+- Initializer list avoids unnecessary copies
+- In some cases, they are the only way to initialize an object
+
+![](Images/InitListvsCopyInit.png)
 
 
 ## Destructors
@@ -110,6 +150,14 @@
 
 ![](Images/settersGetters.png)
 
+### Getters and Setters Combined
+
+- We can combine getter and setter into one function using references
+
+![](Images/settersGettersCombined.png)
+
+
+
 
 ## Managing Objects With Pointers
 
@@ -126,7 +174,67 @@
 
 - We can also chain the class method calls if they are returning 'this' pointer. Could be useful for setters
 
+- Chaining using references
 ![](Images/thisPointerChain.png)
+
+- Chaining using pointers
+![](Images/thisPointerChain2.png)
  
+## Objects
+
+- It is an instance of a class or struct
+- It is concrete realization of the blueprint provided by the class or struct
+- An object represents a specific piece of data and encapsulates both its attributes(member variables) and behaviors(member functions)
+
+### Const Objects
+
+![](Images/constObject.png)
+
+- Problem is that the compiler does not know that the getter functions or the print function will not modify the class
+- We need to tell the compiler that the getters will not modify the class
+
+![](Images/constGetter.png)
+
+- We can also overload the function so for const object it will use const function but for normal object it will use normal function
+
+![](Images/constOverload.png)
+
+- Summary
+  - For const objects we can only call const member functions
+  - Const objects are completely non-modifiable
+  - Any attempt to modify an objects member will result into compile error
+  - We can not call any non-const function within a const function
+
+### Dangling Pointers and References in Objects
+
+- A pointer or reference is said to be dangling if it is pointing to or referencing invalid data
+- A simple example for pointers is a pointer pointing to a deleted piece of memory
+- Good practice is that after we delete our objects from memory we will set pointers to 'nullptr'
+
+
+## Mutable Member Variables
+
+- Variable which value can be changed even if the object or method it is within is declared as 'const'
+- It can only be applied to non-static and non-const class member variables
+
+![](Images/mutableMember.png)
+
+
+
+## Struct
+
+- User defined data type that groups together multiple related variables under one name
+- It is very similar to a class but with some differences in default access control and inheritance
+- Useful when we want to organize related data together
+- Default access control here is public while in 'Class' they are private by default
+![](Images/structClass.png)
+- Another difference is in default inheritance type which is public by default here as well
+- But of course we can override these defaults same like with Classes
+
+### Structured Bindings
+
+![](Images/structuredBindings.png)
+
+
 
 - **Rules of 3: If we have explicit destructor then we should have copy and move constructor as well!!   why?**
