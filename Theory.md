@@ -73,3 +73,22 @@
 - Initialization with {} is safer because it will prevent data loss from implicit conversions or at least warn us
   according to used compiler. int x {20.7}; -> warn or error    vs.  int x = 20.7; -> Will convert to x = 20 without warning
 
+## Copying
+
+- Creating an array of some variables will create copy of them
+- Same with the range based for loop 
+
+![](Images/copyingArrayRange.png)
+
+- If we want to avoid copy we can use reference
+
+### Shallow Copy
+
+- Member wise copy of member variables even for pointers.
+
+
+### Deep Copy
+
+- When pointer member variables are involved, it allocates new memory and copies in data from the source pointer
+
+

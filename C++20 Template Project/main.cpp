@@ -11,86 +11,46 @@
 #define PI 3.14
 
 
+class IntHolder {
+  int* data;
 
-class Cylinder {
-
-private:
-  double baseRadius {1.0};
-  double height {1.0};
-  int * random {nullptr};
 public:
-
-  Cylinder(){
-    random = new int;
-    *random = 42;
+  IntHolder(int value) : data(new int(value)) {
   }
-  // Destructor
-  ~Cylinder(){
-    delete random;
+  ~IntHolder() {
+    delete data;
   }
 
-  // Getters
-  double getBaseRadius(){
-    return baseRadius;
-  }
-  double getHeight(){
-    return height;
+  //Copy constructor
+  IntHolder(const IntHolder& other) : IntHolder(*other.data) {
+    // Allocate new memory and copy the integer value
   }
 
-  // Setters
-  void setBaseRadius(double radiusParam){
-    baseRadius = radiusParam;
+  void setData(int value){
+    *data = value;
   }
-
-  void setHeight(double heightParam){
-    height = heightParam;
-  }
-
-
-
-
-
-  double volume(){
-    return PI * baseRadius * height;
+  void print() const {
+    std::cout << *data << std::endl;
   }
 
 };
 
-class Square{
+int main() {
 
-public:
-  explicit Square(double side_param):side(side_param){}
-  ~Square();
-  double surface() const {
-    return side*side;
-  }
-private:
-  double side;
-};
-
-bool compare(const Square& square1, const Square& square2){
-  return (square1.surface() > square2.surface()) ? true : false;
-}
-
-int main()
-{
-
-  Square s1 = 30.0; // not possible with explicit constructor 
-  // because this assignment uses implicit conversion which is now forbidden 
-  Square s1(30.0);
-  Square s2(20.0);
-
-  compare(s1,s2);
-  compare(s1,45.4);   // Without explicit constructor this would be valid 
-  // It would implicitly convert 45.4 into square object
-
-
-
-
+  IntHolder a(5);
+ 
+  // Copy constructor is invoked for b
+  IntHolder b = a;
+  b.setData(8);
+  b.print();  // Output: 8
+  a.print();  // Output: 5 
+  // But with the default copy constructor it would be 8 as well
 
 
   return 0;
 }
+
+
 
 
 

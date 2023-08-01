@@ -74,13 +74,18 @@
   class which does a member-wise copy between objects.
 - We need to define our own copy constructor only if an object has pointers or run-time allocation for the resource like
   file handle, network connection, etc...
-- Default copy constructor does only shallow copy
+- The problem with pointers is that the default member wise copy will copy the address so both the original and the copied objects pointers 
+  are now pointing to the same address and if we change the variable through copied object pointer, the original will change as well  
+- Default copy constructor does only shallow copy (Shallow copy copies pointers itself not the content it points to)
 - In user defined deep copy we make sure that pointers of copied object point to new memory locations    
-  (Shallow copy is something like reference?? If new object changes the origin one changes as well)
 - Copy constructor can be made private
 - When we make him private in a class, objects of that class become non-copyable. (or rectangle(const rectangle &r) = delete;)
  
 ![](Images/copyConstructor.png)
+
+- We can also use delegating with the copy constructor:
+
+![](Images/copyConstructorDelegate.png)
 
 
 ### Move Constructor
@@ -90,11 +95,19 @@
   object is used to assign the values to the object. Due to this the copy constructor is called several times and increases the overhead 
   and decreases the computational power of the code. To avoid this overhead and make the code more efficient we use move constructors.
 - They moves resources in the heap unlike copy constructor which copy the data of the existing object and assigning it to the new object, move constructor
-  just makes the pointer of the declared object to point to the temporary object and nulls out the pointer of the temporary objects -> prevents unnecessarily copying data in the memory
+  just makes the pointers of the declared object to point to the same place as pointers of temporary object and nulls out the pointers of the temporary objects -> prevents unnecessarily copying data in the memory
 - Prevents more than one object to point to same memory location
 
 ![](Images/moveConstructor.png)
 ![](Images/moveConstructor2.png)
+
+#### std::move
+
+- Making sure we have a temporary objects
+- It is needed because sometimes the compilers are trying to do some optimalizations which could ruin our temporaries
+
+![](Images/stdMove.png)
+
 
 ### Explicit Constructors
 
@@ -102,6 +115,24 @@
 - If we want to forbid this implicit conversion we need to specify our constructor as 'explicit'
 
 ![](Images/explicitConstructor.png)
+
+### Constructor delegation (C++11)
+
+- Constructor calls another constructor of the same class to perform common initiaization tasks.
+- Way to avoid code duplication
+
+![](Images/delegatingConstructors.png)
+
+- Only way to delegate constructor is through the initializer list
+- If we will use initializer list for constructor delegation, We can not use the same list for anything else
+- But we can still use the body of that constructor but be careful about the sequence
+
+- Event sequence:
+  - Selected constructor will be called
+  - Before we get into the body of this constructor, the compiler will delegate and calls delegated constructor
+  - Delegated constructor will construct object
+  - Control reaches body of the delegated constructor
+  - Control reaches body of the originally selected constructor 
 
 
 
