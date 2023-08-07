@@ -134,22 +134,13 @@
   - Control reaches body of the delegated constructor
   - Control reaches body of the originally selected constructor 
 
+### Deleted Constructors
 
+- A way to explicitly disable constructor 
+- Mostly used to forbid the default constructor but it can forbid any type of constructor to be used when creating an object.
+- We can even disable move or copy constructors
 
-## Initializer List
-
-- Instead of Member wise copy initialization:
-
-![](Images/constructorNormalInit.png)
-
-- We can use Initializer list:
-
-![](Images/initializerList.png)
-
-- Initializer list avoids unnecessary copies
-- In some cases, they are the only way to initialize an object
-
-![](Images/InitListvsCopyInit.png)
+![](Images/deletedConstructor.png)
 
 
 ## Destructors
@@ -188,8 +179,6 @@
 ![](Images/settersGettersCombined.png)
 
 
-
-
 ## Managing Objects With Pointers
 
 ![](Images/pointerObject.png)
@@ -210,7 +199,21 @@
 
 - Chaining using pointers
 ![](Images/thisPointerChain2.png)
- 
+
+## Struct
+
+- User defined data type that groups together multiple related variables under one name
+- It is very similar to a class but with some differences in default access control and inheritance
+- Useful when we want to organize related data together
+- Default access control here is public while in 'Class' they are private by default
+![](Images/structClass.png)
+- Another difference is in default inheritance type which is public by default here as well
+- But of course we can override these defaults same like with Classes
+
+### Structured Bindings
+
+![](Images/structuredBindings.png)
+
 ## Objects
 
 - It is an instance of a class or struct
@@ -243,6 +246,54 @@
 - Good practice is that after we delete our objects from memory we will set pointers to 'nullptr'
 
 
+## Initialization
+
+### Initializer List
+
+- Instead of Member wise copy initialization:
+
+![](Images/constructorNormalInit.png)
+
+- We can use Initializer list:
+
+![](Images/initializerList.png)
+
+- Initializer list avoids unnecessary copies
+- In some cases, they are the only way to initialize an object
+
+![](Images/InitListvsCopyInit.png)
+
+### Initializer List Constructors
+
+- It can be used on aggregate types like a struct or an array
+- Aggregate type is a type that represents a collection of individual elements that can be different type (struct) or same type (array)
+
+- By default:
+
+![](Images/structByDefault.png)
+
+- The same but via initializer list:
+
+![](Images/initializerListStruct.png)
+
+- This way we can change the order
+- Or we can do stuff like this:
+
+![](Images/initListStructSum.png)
+
+- Another benefit of using initializer_list is that we can use '{}' to create objects
+
+
+### Designated Initializers (C++20)
+
+- Borrowed from C, allows the initialization of data members
+- It is useful when we want to init only some of the members
+
+![](Images/designatedInitializers.png)
+
+- Members that are not initialized explicitly are implicitly initialized to 0
+
+
 ## Mutable Member Variables
 
 - Variable which value can be changed even if the object or method it is within is declared as 'const'
@@ -252,19 +303,6 @@
 
 
 
-## Struct
-
-- User defined data type that groups together multiple related variables under one name
-- It is very similar to a class but with some differences in default access control and inheritance
-- Useful when we want to organize related data together
-- Default access control here is public while in 'Class' they are private by default
-![](Images/structClass.png)
-- Another difference is in default inheritance type which is public by default here as well
-- But of course we can override these defaults same like with Classes
-
-### Structured Bindings
-
-![](Images/structuredBindings.png)
 
 
 

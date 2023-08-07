@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
-
+#include "class.h"
 
 #include <optional>
 #include <cstring>
@@ -11,41 +11,20 @@
 #define PI 3.14
 
 
-class IntHolder {
-  int* data;
-
-public:
-  IntHolder(int value) : data(new int(value)) {
-  }
-  ~IntHolder() {
-    delete data;
-  }
-
-  //Copy constructor
-  IntHolder(const IntHolder& other) : IntHolder(*other.data) {
-    // Allocate new memory and copy the integer value
-  }
-
-  void setData(int value){
-    *data = value;
-  }
-  void print() const {
-    std::cout << *data << std::endl;
-  }
-
+struct Person{
+  std::string name;
+  int age;
 };
 
 int main() {
 
-  IntHolder a(5);
- 
-  // Copy constructor is invoked for b
-  IntHolder b = a;
-  b.setData(8);
-  b.print();  // Output: 8
-  a.print();  // Output: 5 
-  // But with the default copy constructor it would be 8 as well
+  // Can Initialize with {}: Does NOT allow narrowing conversions
+  Person person1{"Steven",32};  // Aggregate Initialization
+  int numbers1[5]{1,2,3,4,5} ;  // 5.55 would throw a compiler error
 
+  // Can Initialize with (): Allows narrowing conversions
+  Person person2("Steven",32);  // Aggregate Initialization
+  int numbers2[5](6,7,8.5,9,10.1);
 
   return 0;
 }
