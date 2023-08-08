@@ -263,6 +263,8 @@
 
 ![](Images/InitListvsCopyInit.png)
 
+- Non-static constants could be initialized only through the initializer list. It is not possible inside of the constructor body.
+
 ### Initializer List Constructors
 
 - It can be used on aggregate types like a struct or an array
@@ -302,8 +304,24 @@
 ![](Images/mutableMember.png)
 
 
+## Member variables of the same class type
 
+![](Images/memberSelfType.png)
 
+- We can make it work through pointers
 
+![](Images/memberSelfTypePointer.png)
+
+- But we need to initialize it as nullptr:
+
+![](Images/memberSelfTypePointerNull.png)
+
+- Also be careful
+
+![](Images/memberSelfTypeRecursive.png)
+
+- We can also set up static variables of the self type
+
+![](Images/staticSelfType.png)
 
 - **Rules of 3: If we have explicit destructor then we should have copy and move constructor as well!!   why?**

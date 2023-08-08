@@ -13,8 +13,8 @@ private:
 
 public:
 
-  static size_t m_point_count;  // We can not initialize static member "in class"
-  // because it is not tied to the class
+  inline static size_t m_point_count {};  // We can initialize inline static member "in class"
+
 
 };
 

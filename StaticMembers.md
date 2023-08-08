@@ -11,11 +11,16 @@
 
 ![](Images/staticMember.png)
 
+- Static Initialization order is not guaranteed. If we have static variables that depend on other static variables, we may crash our application
+  if the initialization order does not work in our favor
+
 ### Declaration
 
 
 ![](Images/staticMemberDeclaration.png)
 
+- We can not initialize them in header files at all unless they are guarded against multiple inclusions
+- Otherwise we would end up with multiple definitions of the same data member which would violate One Definition Rule (ODR)
 - But we can initialize it like this:
 
 ![](Images/staticMemberInit.png)
@@ -24,3 +29,20 @@
 - But we can initialize const integral static variables "in-class"
 - We can also initialize constexpr static variables "in-class"
 - **It must also be in the public section of the class**
+
+### Inline Static Members (C++17)
+
+- We can initialize them "in-class"
+  
+![](Images/inlineStaticMembers.png)
+
+- We suggest to compiler that the member can be defined in multiple translation units but it should treah all of the definitions as a single definition
+
+
+### Static Constants (C++17)
+
+- We do not need to keep constant outside of the class
+- With static constants we can just keep them inside of the class
+  
+![](Images/staticConstants.png)
+
