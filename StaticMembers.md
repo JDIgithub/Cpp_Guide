@@ -46,3 +46,13 @@
   
 ![](Images/staticConstants.png)
 
+
+## Static member functions
+
+- Functions that are attached to the class blueprint itself
+- But because of that, static functions does not have access to member variables of the object
+- Member variables belongs to object but static function to blueprint so it is logical that it does not have access to them
+
+![](Images/staticMemberFunction.png)
+
+- Also we can notice that we can access private variables of that passed object, that is because we are inside of the class of that object

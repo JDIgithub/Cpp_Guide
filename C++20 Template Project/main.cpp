@@ -16,20 +16,71 @@ struct Person{
   int age;
 };
 
+double adjustment{0.0};
+
+
+
+
+namespace NoAdjustment{
+  double add(double x, double y){
+    return x + y;
+  }
+  double sub(double x, double y){
+    return x - y;
+  }
+}
+
+
+double add(double x, double y){
+  return x + y;
+}
+
+
+namespace WithAdjustment{
+  double add(double x, double y){
+    return x + y - adjustment;
+  }
+  
+  void do_something(){
+    double result = ::add(5,6); // 5 + 6 function from The Default Global Namespace is called
+  }
+
+
+  double sub(double x, double y){
+    return x - y - adjustment;
+  }
+}
+
+namespace WithAdjustment{
+  double mult(double x, double y);
+  double div(double x, double y);
+}
+
+
+#include <iostream>
+using namespace std;  // Brings in the entire namespace
 int main() {
 
-  // Can Initialize with {}: Does NOT allow narrowing conversions
-  Person person1{"Steven",32};  // Aggregate Initialization
-  int numbers1[5]{1,2,3,4,5} ;  // 5.55 would throw a compiler error
+  cout << "Namespace std" << endl;
 
-  // Can Initialize with (): Allows narrowing conversions
-  Person person2("Steven",32);  // Aggregate Initialization
-  int numbers2[5](6,7,8.5,9,10.1);
+
+
+  double result1 = NoAdjustment::add(4,2);    // 4 + 2
+  double result2 = WithAdjustment::add(4,2);  // 4 + 2 - adjustment
+
+
 
   return 0;
 }
 
-
+namespace WithAdjustment{
+  double mult(double x, double y){
+    return x*y - adjustment;
+  }
+  double div(double x, double y){
+    return x/y - adjustment;
+  }
+}
 
 
 

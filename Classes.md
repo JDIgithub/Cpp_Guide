@@ -295,6 +295,14 @@
 
 - Members that are not initialized explicitly are implicitly initialized to 0
 
+### In-class Member Initialization (C++11)
+
+![](Images/inClassInit.png)
+
+- Before C++11 in-class member initialization was only possible for
+  - Static constants of integral type
+  - Static constants of enum type
+
 
 ## Mutable Member Variables
 
@@ -324,4 +332,29 @@
 
 ![](Images/staticSelfType.png)
 
-- **Rules of 3: If we have explicit destructor then we should have copy and move constructor as well!!   why?**
+## Nested Classes
+
+- We can declare class inside of another class
+- Header:
+![](Images/nestedClasses.png)
+- CPP:
+![](Images/nestedClassesCPP.png)
+- Main:
+![](Images/nestedClassesMain.png)
+
+- It can be useful if we want to limit how to create the object of that inner class
+- If Inner is private, its object can be created only from the outer class
+
+- Outer does not have access to private section of inner
+- Inner has access to private section of Outer
+- Inner can directly access static members of Outer but can not access member variables without going through an object
+
+- If Inner is public we can create inner object like this:
+
+![](Images/nestedClasses2.png)
+
+- **We can create object of the nested class like this only if it is public class**
+
+
+- **ToDo Rules of 3: If we have explicit destructor then we should have copy and move constructor as well!!   why?**
+  
