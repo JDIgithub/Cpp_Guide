@@ -1,5 +1,5 @@
 #include "class.h"
-
+/*
 size_t Point::m_point_count {}; // Initialize static member of Point class to 0
 
 
@@ -20,6 +20,5 @@ void Outer::createInnerClassObject(){
 
 // Inner constructor
 Outer::Inner::Inner(double double_param) : inner_var(double_param){
-}
-
+}*/
 

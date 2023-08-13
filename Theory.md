@@ -92,3 +92,173 @@
 - When pointer member variables are involved, it allocates new memory and copies in data from the source pointer
 
 
+
+## Linkages
+
+- Property associated with a name that controls how wide or narrow is the visibility of the name across translation units
+
+
+### Internal Linkage
+
+- Only visible in the single translation unit
+- If we try to declare it in another TU, We will be creating completely new definition
+
+![](Images/internalLinkage.png)
+
+
+### External Linkage
+
+- Can be accessed and used in different translation units
+
+![](Images/externalLinkage.png)
+
+- Global external variables used from other cpp:
+
+![](Images/externalLinkageUse.png)
+
+- Use of external linkage for functions:
+
+![](Images/externalLinkageFunctions.png)
+
+### No Linkage
+
+- Local variable accessible only in the single scope
+
+![](Images/noLinkage.png)
+
+### Module Linkage
+
+
+### Linkage Defaults
+
+- Function local variables have no linkage
+- Const global variables have internal linkage
+- Non const global variables have external linkage
+- Functions have external linkage
+- Static global variable or static function has internal linkage
+
+### Changing linkage
+
+- We can also change the linkage type
+- We can use 'extern' to change linkage from internal to external
+
+![](Images/changingLinkage.png)
+
+- Also if we want to have function with internal linkage we can mark it as 'static' because static functions have internal linkage
+
+### Linkage vs visibility ToDo
+
+- External Linkage: 
+  - The function or variable can be referred to from other TU
+- Visibility in TU: 
+  - Whether particular TU can see and use given function or variable
+  - Governed by includes and physical organization of the code
+
+## Declarations and Definitions
+
+- Declaration - Introduces the name in a file
+- Definition - Says what something is or what it does
+  
+![](Images/declarDef.png)
+
+- If we use name but we do not have declaration for it, then we will get compile error
+- If we compile with declaration but without definition code compiles, but if we will use the name then we will get linker error
+- Declaration are usually in header (there could be even a definition like for classes etc.) so we must include header to have path to the declarations at compile-time
+- But we do not need to include files (source files) with only definitions because source files are compiled into object files and object files are linked together
+- So while the compiler needs to know about declarations, it is the linker job to connect references to their actual definitions
+- Exception are **Templates** where template definitions need to be available at compile-time in every translation unit where they are used.
+  - As a result template definitions are often found in header files
+
+### Variables
+
+- For variables it is not very common to separate declaration and definition.
+
+![](Images/variablesDeclarDef.png)
+
+- For some variables like for example static variables inside of classes it is possible to separate declaration and definition
+- Here declaration is inside of the class but definition is outside
+
+![](Images/staticMemberDeclarDef.png)
+
+### Functions
+
+![](Images/functionDeclarDef.png)
+
+### Classes
+
+![](Images/classesDeclarDef.png)
+
+![](Images/classesDeclarDef2.png)
+
+
+### One Definition Rule (ODR)
+
+- Certain entities can have only one definition within an entire program, even though they can be declared multiple times. 
+- Violation of this rule can lead to undefined behavior
+- Certain entities like **classes, functions and variables** can be defined only once in any single translation unit and
+  if they have linkage (internal or external), they can also be defined only once across the entire program
+- Exceptions:
+  - **'inline'** functions (including implicitly inline function like class member functions defined within the class definition)
+  - **Templates** (because they can be instantiated in multiple translation units)
+  - **'constexpr'** variables and functions (since they are implicitly inline)
+  - There is also exception for class definitions, that multiple definitions are allowed as long as they are identical (so header of the class can be included multiple times)
+    This exception is possible because class definitions does not allocate storage, instead they just describes the blueprint. That is also reason why we need to define static member
+    outside of that header file because that would break the ODR.
+  
+- Implications:
+  - If we define a non-inline function in header file and this header file is included in multiple source files, we will violate ODR
+  - The same goes for global variables defined in header file
+  - To avoid such issues, functions and global variables are typically declared in header and defined in source files.
+  - Inline functions and templates which are exceptions are often directly in headers
+  - Good practice to have 'include guards' in headers ('#ifndef', '#define', '#endif') or '#pragma once' to ensure that even if header
+    is included multiple times in single translation unit, its content is actually processed only once.
+
+
+### Forward Declaration
+
+- To introduce name in a file (mostly for classes) for cases when we need name but we do not need definition
+
+![](Images/forwardDeclaration.png)
+
+- Another benefit is that if we changed something in the dog header the farm class does not need to be recompiled
+  because we do not need the definition
+- Works only if we do not need the definition
+
+
+
+
+
+
+
+
+
+## Inline Variables and Functions
+
+### Inline Functions
+
+- Introduced to hint the compiler that a function should be inlined
+- When function is inlined its function call is replaced with the function body thereby eliminating the overhead of a function call
+- Typically the functions definition is provided in header files to make inlining possible across different TU
+- By default it has external linkage but the compiler is free to ignore the 'inline' hint and not inline the function
+- With inline we can put function definition in header file and we can include it in multiple files
+- Useful for header only libraries
+
+![](Images/inlineHeader.png)
+
+### Inline Variables (C++17)
+
+- To allow variables to be defined in header files
+- useful for defining constants or static data members of classes in header file
+
+### Inline with Multiple Files
+
+![](Images/inlineMultiple.png)
+
+- With 'inline' keyword the compiler will unify functions and variables with the same signature to one so we wont brake ODR
+- Without inline we will get compiler error that we have multiple definitions
+
+
+### Inline vs Static
+
+- Inline will optimize all the definitions for a name into one
+- Static or unnamed namespaces will not do such a optimizations

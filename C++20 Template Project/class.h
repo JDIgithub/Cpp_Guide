@@ -13,10 +13,6 @@ public:
   ~Point();
   double length() const;
 
-  // Static Methods can NOT use member variables
-  static void print_point_info(){
-    std::cout << "Point: x = " << m_x << " y = " << m_y << "]" << std::endl;
-  }
 
   // But they can use member variables of some object that is passed to them of course
   static void print_point_info(const Point& p){
@@ -39,7 +35,7 @@ public:
 
 };
 
-
+/*
 
 class Outer{
 
@@ -61,4 +57,4 @@ private:
       double inner_var;
   };
 
-};
+};*/

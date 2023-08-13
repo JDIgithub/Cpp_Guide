@@ -53,3 +53,36 @@ and try to not named our namespaces with the same name
 
 ![](Images/usingNamespace.png)
 
+![](Images/usingNamespace2.png)
+
+## Anonymous Namespaces
+
+- Allows us to create namespaces without name
+- Useful for creating a unique scope and ensuring that their contents have internal linkage (Internal linkage means that it is meant only for that single source file)
+
+![](Images/anonymousNamespaces.png)
+
+- When the compiler sees an anonymous namespace declaration it will generate an internal name for the namespace
+- The generated unique namespace is not accessible to us, the developers
+- There can only be one anonymous namespace for a single translation unit (cpp file)
+- If we set up multiple anonymous namespace blocks, they will just be extensions to the first one
+- Anonymous namespaces in different translation units are completely separated, the compiler generates different unique namespace names for them
+- Because we do not have access to the compiler generated namespace name, names declared inside anonymous namespaces are only reachable in the Translation Unit
+  where they were declared
+
+- Because they are not usable from other source files, we can use them to avoid name conflicts
+- Also when we see anonymous namespace in some code it is a hint that its content is intended just for that single source file
+
+## Nested Namespaces
+
+- We can set up namespaces inside of other namespaces
+- Inner namespaces have direct access to thinks declared in the outer namespace
+- But outer namespaces has to go through the inner namespace name to access thinks declared there
+
+![](Images/nestedNamespaces.png)
+
+## Namespace Aliases
+
+- To set up reasonable name for long namespaces
+
+![](Images/namespaceAliases.png)

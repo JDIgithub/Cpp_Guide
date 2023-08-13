@@ -8,79 +8,42 @@
 #include <optional>
 #include <cstring>
 
-#define PI 3.14
 
-
-struct Person{
-  std::string name;
-  int age;
+using namespace std;
+#include <memory>
+ 
+class Rectangle {
+  int length;
+  int breadth;
+ 
+public:
+  Rectangle(int l, int b) {
+    length = l;
+    breadth = b;
+  }
+ 
+  int area() {
+    return length * breadth;
+  }
 };
-
-double adjustment{0.0};
-
-
-
-
-namespace NoAdjustment{
-  double add(double x, double y){
-    return x + y;
-  }
-  double sub(double x, double y){
-    return x - y;
-  }
-}
-
-
-double add(double x, double y){
-  return x + y;
-}
-
-
-namespace WithAdjustment{
-  double add(double x, double y){
-    return x + y - adjustment;
-  }
+ 
+int main()
+{
+ 
   
-  void do_something(){
-    double result = ::add(5,6); // 5 + 6 function from The Default Global Namespace is called
-  }
+  shared_ptr<Rectangle> sharedPtr = make_shared<Rectangle>(10,5);
+  unique_ptr<Rectangle> uniqPtr = sharedPtr;  // Compile Error
+  unique_ptr<Rectangle> uniqPtr2 {sharedPtr}; // Compile Error
+  unique_ptr<Rectangle> uniqPtr = move(sharedPtr);  // Compile Error
 
-
-  double sub(double x, double y){
-    return x - y - adjustment;
-  }
-}
-
-namespace WithAdjustment{
-  double mult(double x, double y);
-  double div(double x, double y);
-}
-
-
-#include <iostream>
-using namespace std;  // Brings in the entire namespace
-int main() {
-
-  cout << "Namespace std" << endl;
-
-
-
-  double result1 = NoAdjustment::add(4,2);    // 4 + 2
-  double result2 = WithAdjustment::add(4,2);  // 4 + 2 - adjustment
 
 
 
   return 0;
-}
+} 
 
-namespace WithAdjustment{
-  double mult(double x, double y){
-    return x*y - adjustment;
-  }
-  double div(double x, double y){
-    return x/y - adjustment;
-  }
-}
+
+
 
 
 
