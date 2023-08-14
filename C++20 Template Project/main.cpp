@@ -3,38 +3,97 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include "class.h"
+//#include "class.h"
 
 #include <optional>
 #include <cstring>
-
+#include <cassert>
 
 using namespace std;
 #include <memory>
  
-class Rectangle {
-  int length;
-  int breadth;
+class Number {
+
+public:
+  Number() = default;
+  Number(int value);
+
+  // Type conversion. double() is the operator here
+  // function has non return type because the return type is hidden in the operator so there is no need to be redundant
+   operator double() const{
+    return static_cast<double>(m_wrapped_int);
+  }
+  // We can mark function explicit if we want to forbid implicit conversion
+  explicit operator Point() const {
+    return Point(static_cast<double>(m_wrapped_int), static_cast<double>(m_wrapped_int));
+  }
+private:
+  int m_wrapped_int{0};
+};
+
+class Point {
  
 public:
-  Rectangle(int l, int b) {
-    length = l;
-    breadth = b;
+  Point() = default;
+  Point(double x, double y) : m_x(x), m_y(y){
+    some_data = new int(0);
   }
- 
-  int area() {
-    return length * breadth;
+  Point(const Point& p){ // Copy constructor 
+    if(this != &p){
+      delete some_data;                                // Deep copy
+      some_data = new int(*(p.some_data));
+      m_x = p.m_x;
+      m_y = p.m_y;
+    }
   }
+  ~Point(){
+    delete some_data;
+  }
+
+  Point& operator=(const Point& right_operand){        
+    if(this != &right_operand){
+      delete some_data;                                // Deep copy
+      some_data = new int(*(right_operand.some_data)); // Without the self assignment check we would release memory and then we couldnt copy 
+                                                       // the same data that we just released
+      m_x = right_operand.m_x;
+      m_y = right_operand.m_y;
+    }
+    return *this;
+  }
+private:
+  double m_x{};
+  double m_y{};
+  int * some_data;
 };
- 
+
+
+
+
+
+
+
+
+
+class Print{
+
+public:
+
+  void operator()(std::string name){
+    std::cout << "The name is: " << name << std::endl;
+  }
+  std::string operator()(std::string first_name, std::string last_name){
+    return first_name + " " + last_name;
+  }
+
+};
+
+
+
 int main()
 {
- 
-  
-  shared_ptr<Rectangle> sharedPtr = make_shared<Rectangle>(10,5);
-  unique_ptr<Rectangle> uniqPtr = sharedPtr;  // Compile Error
-  unique_ptr<Rectangle> uniqPtr2 {sharedPtr}; // Compile Error
-  unique_ptr<Rectangle> uniqPtr = move(sharedPtr);  // Compile Error
+  Print print;
+  print("Duncan");
+  std::cout << print("Jon", "Snow") << std::endl;
 
 
 
