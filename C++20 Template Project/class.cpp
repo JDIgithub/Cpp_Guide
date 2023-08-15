@@ -1,4 +1,5 @@
 #include "class.h"
+#include <cmath>
 /*
 size_t Point::m_point_count {}; // Initialize static member of Point class to 0
 
@@ -22,3 +23,7 @@ void Outer::createInnerClassObject(){
 Outer::Inner::Inner(double double_param) : inner_var(double_param){
 }*/
 
+
+double Point::length() const{
+    return sqrt(pow(m_x - 0, 2) +  pow(m_y - 0, 2) * 1.0); 
+}

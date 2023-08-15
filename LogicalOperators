@@ -1,0 +1,85 @@
+# Logical Operators
+
+[Logical Operators Info](https://en.cppreference.com/w/cpp/language/operator_logical)
+
+## std::rel_ops namespace
+
+[More Info](https://en.cppreference.com/w/cpp/utility/rel_ops/operator_cmp)
+
+- If we are in need of all logical operators for our type, We can over load 2 of them '<' and '==' and the compiler will generate the rest for us
+- We need to include \<utility\> header 
+
+![](Images/relOps.png)
+![](Images/relOps2.png)
+
+- This is Old C++. We have better alternatives in modern C++
+
+## Implicit Conversions
+
+- When a binary operator is implemented as a member function of a class, implicit conversions for the left operand won't work, because the left operand is considered as the object for which the member function is invoked.
+
+![](Images/operatorImplicitConv.png)
+
+- We could make it work if we overload the operator with int to be the left operand but than we need to do it for many operators and many types so that would be lot of overloads
+
+## Three way comparison operator (C++20)
+
+- To know the result of a comparison ('>', '<' or '==') in one statement
+
+![](Images/threeWayOperator.png)
+
+- The return type could actually be one of these:
+  - std::strong_ordering
+    - A type that can be used to describe absolute equality in comparisons. For example for the fundamental type 'int' we can have absolute equality
+    ![](Images/strongOrdering.png)
+  - std::weak_ordering
+    - A type that can be used to describe NON absolute equality in comparisons. (C Strings "Hello" and "HELLO" may be considered equivalent but not equal)
+    ![](Images/weakOrdering.png)
+  - std::partial_ordering
+    - A type that can be used to describe incomparable values for a certain type
+    ![](Images/partialOrdering.png)
+
+- Implicit conversions between these types:
+  - std::strong_ordering can implicitly convered to std::weak_ordering and std::weak_ordering can implicitly convert to std::partial_ordering
+- These return types can be compared to literal 0 but not to 0 that is stored in 'int' for example
+
+- If we do not want the default three way comparison we need to implement our own
+- For example:
+
+![](Images/customThreeWay.png)
+
+- In most of the cases it is better if the operator is member of the class
+- There are some cases where we need the operator as non member but they are rare
+
+### Defaulted three way comparison
+
+- If the member wise comparison is enough we can just use 'default' keyword
+  
+![](Images/defaultedThreeWay.png)
+
+- If the operator is defaulted, the compiler will also generate a '==' and '!=' operators
+- For the implicit conversion the compiler will try to switch things up to make left operand implicit conversion possible
+
+![](Images/compilerRewriting.png)
+
+- But for defaulted three way comparison to work we need to have member that supports it
+- If we have member that does not support it and we want to implement it, We can implement only '<' and '==' operators and the compiler will deduce the rest
+
+
+## Defaulted Equality Operator (C++20)
+
+- If we want to have '==' operator set up for our class and member wise comparison is enough the compiler can create it for us when we use 'default' keyword
+
+![](Images/defaultedComparison.png)
+
+- Default comparison will be member wise:
+
+![](Images/defaultComparison.png)
+
+- In C++20 if we set up '==' operator, the compiler will set up '!=' operator for free (even for default)
+- Usually if we have operator as member function we can not implicitly converse the left operand but with 'default' equality it is possible
+  - Because compiler will try to switch the operands
+
+## Graph of C++20 comparisons
+
+![](Images/graphComparison.png)
