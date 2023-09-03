@@ -1,31 +1,88 @@
 #include <iostream>
-//#include <utility>
+#include <bitset>
+#include <stdint.h>
+#include <string>
+#include <vector>
 #include "class.h"
 
+#include <optional>
+#include <cstring>
 
+
+using namespace std;
+#include <memory>
+ 
+// A generic smart pointer class
+template <class T>
+class SmartPtr {
+    T* ptr; // Actual pointer
+public:
+    // Constructor
+    explicit SmartPtr(T* p = NULL) { ptr = p; }
+ 
+    // Destructor
+    ~SmartPtr() { delete (ptr); }
+ 
+    // Overloading dereferencing operator
+    T& operator*() { return *ptr; }
+ 
+    // Overloading arrow operator so that
+    // members of T can be accessed
+    // like a pointer (useful if T represents
+    // a class or struct or union type)
+    T* operator->() { return ptr; }
+};
+ 
+
+/*
+class Node {
+private:
+    int key;
+    Node* next;
+ 
+    // Other members of Node Class 
+    friend int LinkedList::search();
+    // Only search() of linkedList
+    // can access internal members
+};
+*/
+
+/*
+int main()
+{
+  Player p1("Basketball");
+  p1.set_first_name("John");  // We do not have access to private members of Person class 
+  p1.set_last_name("Snow");   // so we have to use setters
+  std::cout << "player: " << p1 << std::endl;
+
+  return 0;
+}*/
+
+
+
+void draw_shape(Shape * s){
+    s->draw();
+}
 
 
 int main(){
 
-  int n1{5};
-  int n2{5};
+  Shape shape1("Shape1");
+  Oval oval1(2.0,3.5,"Oval1");
+  Circle circle1(3.3,"Circle1");
 
-  // <=> does not return an int like std::string::compare() but a type whose value is comparable to literal 0
-  auto result = ( n1 <=> n2);   
-  std::cout << std::boolalpha;
-  std::cout << "n1 > n2: " << ((n1 <=> n2) > 0) << std::endl;
-  std::cout << "n1 >= n2: " << ((n1 <=> n2) >= 0) << std::endl;
-  std::cout << "n1 == n2: " << ((n1 <=> n2) == 0) << std::endl;
-  std::cout << "n1 != n2: " << ((n1 <=> n2) != 0) << std::endl;
-  std::cout << "n1 < n2: " << ((n1 <=> n2) < 0) << std::endl;
-  std::cout << "n1 <= n2: " << ((n1 <=> n2) <= 0) << std::endl;
-  
+
+  //Shapes stored in collections
+  Shape* shape_collection[]{&shape1,&oval1,&circle1};
+	 
+  for(Shape* s_ptr : shape_collection){
+    s_ptr->draw();  // Will call different function according of the object type
+  }
+
+
+
   return 0;
 }
-
-
-
-
 
 
 

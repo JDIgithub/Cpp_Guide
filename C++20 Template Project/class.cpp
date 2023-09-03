@@ -1,29 +1,37 @@
 #include "class.h"
 #include <cmath>
-/*
-size_t Point::m_point_count {}; // Initialize static member of Point class to 0
 
 
 
-Outer::Outer(int int_param, double double_param) 
-  : m_var1(int_param), m_var2(double_param) {
+
+Shape::Shape(std::string_view description) 
+    : m_description(description)
+{
 }
 
-Outer::Outer() : Outer (0,0.0){
+Shape::~Shape()
+{
 }
 
-Outer::~Outer(){
+
+Oval::Oval(double x_radius, double y_radius,
+                std::string_view description)
+    : Shape(description),m_x_radius(x_radius), m_y_radius(y_radius)
+{
 }
 
-void Outer::createInnerClassObject(){
-  Inner inner1(10.0); // Inner is private class so we can create object only inside of the Outer class
+Oval::~Oval()
+{
 }
 
-// Inner constructor
-Outer::Inner::Inner(double double_param) : inner_var(double_param){
-}*/
 
 
-double Point::length() const{
-    return sqrt(pow(m_x - 0, 2) +  pow(m_y - 0, 2) * 1.0); 
+
+Circle::Circle(double radius , std::string_view description) 
+    : Oval(radius,radius,description)
+{
+}
+
+Circle::~Circle()
+{
 }
