@@ -65,25 +65,31 @@ void draw_shape(Shape * s){
 }
 
 
-int main(){
+class Base {
+public:
+    virtual void func(int) { std::cout << "Base::func(int)" << std::endl; }
+    virtual void func(double) { std::cout << "Base::func(double)" << std::endl; }
+};
 
-  Shape shape1("Shape1");
-  Oval oval1(2.0,3.5,"Oval1");
-  Circle circle1(3.3,"Circle1");
+class Derived : public Base {
+public:
+    void func(int) override { std::cout << "Derived::func(int)" << std::endl; }
+};
 
+int main() {
+    Derived d;
+    
+    // Calls using a Derived object directly
+    d.func(5);      // Calls Derived::func(int)
+    d.func(3.5);    // Calls Derived::func(int) with implicit conversion because
+                    // Base::func(double) is hidden  
+    d.Base::func(3.14); // Explicitly calls Base::func(double) to avoid the hiding issue
 
-  //Shapes stored in collections
-  Shape* shape_collection[]{&shape1,&oval1,&circle1};
-	 
-  for(Shape* s_ptr : shape_collection){
-    s_ptr->draw();  // Will call different function according of the object type
-  }
-
-
-
-  return 0;
+    // Calls using pointers for dynamic dispatch
+    Base* ptr = &d;
+    ptr->func(5);    // Calls Derived::func(int) due to dynamic dispatch
+    ptr->func(3.14); // Calls Base::func(double) due to dynamic dispatch
 }
-
 
 
 

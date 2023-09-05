@@ -15,7 +15,7 @@
 
 ![](Images/polymorphism3.png)
 
-
+- Polymorphism does not need to start always at the top base class. We can start with polymorphism in derived class and it will work with its derived class but then of course we can not use the top base object pointer but pointer at that object where the polymorphism starts
 
 
 
@@ -28,7 +28,7 @@
 - But the compiler just looks at the pointer type to decide which version of draw() to call
 - It sees Shape* and calls Shape::draw() in all three cases in the picture 
 
-## Dynamic Binding (Polymorphism)
+## Dynamic Binding (Dynamic Polymorphism)
 
 - We need to mark methods that are needed to be dynamically resolved as 'virtual'
 - With dynamic binding the compiler is not looking at the type of the pointer but at the type of the actual object that the pointer is managing
@@ -36,7 +36,99 @@
 ![](Images/dynamicBinding.png)
 ![](Images/dynamicBinding2.png)
 
-## Size of Polymorphic objects
+- Dynamic binding is not free. Size of the object will increase because the program needs to keep track of information that allows us to resolve function calls dynamically.
+
+
+## Slicing
+
+![](Images/slicing.png)
+
+- Once our data are sliced off, they are gone and there is no way to get them back
+
+![](Images/slicing2.png)
+
+
+## Override (C++11)
+
+- Introduced to avoid errors with typos when we are declaring virtual functions in derived classes
+- With 'Override' compiler will inforce that our virtual function really exists in the parent class
+  
+![](Images/override.png)
+
+
+
+## Overloading
+
+### Function Hiding
+
+- If the parent class has some overloads of some function and we override (does not matter if we use 'override' or not) any of the variant in the derived class, all of the other overloads will now be hidden for that derived object so we need to override all of the overloads that we want to use with that object.
+
+![](Images/functionHiding.png)
+
+- Function Hiding with polymorphism:
+
+![](Images/functionHiding2.png)
+
+
+### Overloading downstream
+
+- If we create new overload in the derived class that is not in the base class, we can not use it with polymorphism through the base class pointer because that function is not known to the base class
+
+
+## Polymorphism and Inheritance with static members
+
+
+- If we have some static member in the parent class, the derived class will inherit it but it will be shared with the parent:
+
+![](Images/staticMemberInheritance.png)
+
+- If we want to have the same static member in the derived class but separated from the base class, we need to declare it in the derived class as well
+
+![](Images/staticMemberInheritance2.png)
+![](Images/staticMemberInheritance3.png)
+
+
+## Final (C++11)
+
+- Restricts how we override methods in the derived classes
+- Restricts how we can derive from a base class
+
+- If we want to prohibit further overrides in derived classes we can use 'final' like this:
+  
+![](Images/final.png)
+
+- Or if we want to prohibit any further inheritance we can use 'final' this way:
+
+![](Images/final2.png)
+
+## Fun Fact
+
+- 'Override' and 'Final' are not really C++ keywords but rather context-sensitive identifiers that act as keywords in specific context but can be used as names in other context
+
+![](Images/finalOverride.png)
+
+- It is like that because when they introduced them in C++11 these words could already be used in many codes as names so they did not want to break old codes but in modern C++ we should not use them as names
+
+## Access Specifiers 
+
+### With Dynamic Binding
+
+- The base class access specifier wins when we are calling virtual functions through the base class pointer so this can lead to wierd scenarios
+- So when we call the virtual function through the base class pointer the access specifier in the base class determines whether the function is accessible, regardless of the access specifier in the derived class
+- In general, when the function call is done through dynamic binding, the access specifier of the base class is applied but if the call is done through static binding then the acces specifier of the derived class is applied
+
+- Guideline:
+  - Except for the base class, it is good to mark all other derived overrides as private, unless the specific problem requires otherwise
+
+### With Static Binding
+
+![](Images/accessSpeficierStaticBinding.png)
+
+
+
+
+
+
 
 
 
