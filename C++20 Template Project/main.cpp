@@ -65,30 +65,32 @@ void draw_shape(Shape * s){
 }
 
 
-class Base {
+class base {
 public:
-    virtual void func(int) { std::cout << "Base::func(int)" << std::endl; }
-    virtual void func(double) { std::cout << "Base::func(double)" << std::endl; }
+    virtual void print() { cout << "print base class" << endl; }
+    void show() { cout << "show base class" << endl; }
 };
-
-class Derived : public Base {
+ 
+class derived : public base {
 public:
-    void func(int) override { std::cout << "Derived::func(int)" << std::endl; }
+    // We dont have to use word "virtual" because if we have virtual function in the base class 
+    // then the same function in the derived class is already considered virtual but it is good practice to type it anyway
+    void print() { cout << "print derived class" << endl; } 
+    void show() { cout << "show derived class" << endl; }
 };
+ 
+int main()
+{
+  base* bptr;
+  derived d;
+  bptr = &d;
+ 
+  // Virtual function, bound at runtime -> Derived print will be used
+  bptr->print();  
 
-int main() {
-    Derived d;
-    
-    // Calls using a Derived object directly
-    d.func(5);      // Calls Derived::func(int)
-    d.func(3.5);    // Calls Derived::func(int) with implicit conversion because
-                    // Base::func(double) is hidden  
-    d.Base::func(3.14); // Explicitly calls Base::func(double) to avoid the hiding issue
+  // Non-virtual function, bound at compile time -> Base show will be used
+  bptr->show();
 
-    // Calls using pointers for dynamic dispatch
-    Base* ptr = &d;
-    ptr->func(5);    // Calls Derived::func(int) due to dynamic dispatch
-    ptr->func(3.14); // Calls Base::func(double) due to dynamic dispatch
 }
 
 
