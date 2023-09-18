@@ -58,55 +58,16 @@ int main()
   return 0;
 }*/
 
-
-
-void draw_shape(Shape * s){
-    s->draw();
-}
-
-
-class base {
-public:
-    virtual void print() { cout << "print base class" << endl; }
-    void show() { cout << "show base class" << endl; }
-};
- 
-class derived : public base {
-public:
-    // We dont have to use word "virtual" because if we have virtual function in the base class 
-    // then the same function in the derived class is already considered virtual but it is good practice to type it anyway
-    void print() { cout << "print derived class" << endl; } 
-    void show() { cout << "show derived class" << endl; }
-};
  
 int main()
 {
-  base* bptr;
-  derived d;
-  bptr = &d;
- 
-  // Virtual function, bound at runtime -> Derived print will be used
-  bptr->print();  
 
-  // Non-virtual function, bound at compile time -> Base show will be used
-  bptr->show();
 
+
+
+
+  return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     
 void swapPtr(int *a, int *b)

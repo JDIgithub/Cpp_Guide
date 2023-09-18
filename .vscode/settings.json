@@ -49,6 +49,8 @@
         "xutility": "cpp"
     },
     "cSpell.words": [
+        "noexcept",
+        "Rethrown",
         "Usecase"
     ]
 }
