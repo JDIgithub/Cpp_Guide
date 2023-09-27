@@ -49,8 +49,13 @@
         "xutility": "cpp"
     },
     "cSpell.words": [
+        "Duplicable",
+        "Lvalue",
+        "Lvalues",
         "noexcept",
         "Rethrown",
+        "Rvalue",
+        "Rvalues",
         "Usecase"
     ]
 }

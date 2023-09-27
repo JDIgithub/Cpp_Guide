@@ -136,18 +136,18 @@ to the type the compiler takes
 
 ![](Images/constevalFunction.png)
 
-# Functions Output
+## Functions Output
 
-## Output Parameter
+### Output Parameter
 
 - Output parameters should be passed in such a way that we can modify the arguments from inside the function
 - We can use function parameter as output as well with non-const reference or pointer
 
 ![](Images/outputParameter.png)
 
-## Return from functions
+### Return from functions
 
-### Return by value (default):
+#### Return by value (default):
   
 ![](Images/returnOutput.png)
 
@@ -158,7 +158,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/returnChangedToRef.png)
 
-### Return by Reference
+#### Return by Reference
 
 ![](Images/returnByReference.png)
 
@@ -166,7 +166,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/referencesToLocal.png)
 
-### Return by pointer
+#### Return by pointer
 
 ![](Images/returnByPointer.png)
 
@@ -175,7 +175,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/returningArray.png)
 
-## Function return type deduction
+### Function return type deduction
 
 - Lets the compiler deduce the return type of a function judging from return statements in the function
 - We have to declare function together with its body/definition so the compiler can see the return type
@@ -188,7 +188,7 @@ of str_result outside of that function, that means that compiler changes the ret
 ![](Images/returnDeductionFix.png)
 
 
-## std::optional (c++17)
+### std::optional (c++17)
 
 - Helps to handle the optional output from the functions (for example if they failed) and some other things
 
@@ -198,7 +198,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 - **Never read from std::optional without checking if it is not empty otherwise the program can crash!**
 
-### std::optional as return type
+#### std::optional as return type
 
 ![](Images/optionalReturnType.png)
 
@@ -207,7 +207,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/optionalReturnCheck.png)
 
-# Function overloading
+## Function overloading
 
 - Two or more functions can have the same name but different parameters
 - Can be considered as example of polymorphism feature 
@@ -224,7 +224,7 @@ because compiler will not know if he should use for example string parameter or 
 - When we are using const pointer to overload pointer that there will be compiler error because the pointer itself is passed by value -> also copies
 - Const reference can overload non-const reference of the same type no problem
 
-# Inline Functions
+## Inline Functions
 
 - To avoid function call overhead. 
 - Especially for the small functions
@@ -233,15 +233,21 @@ because compiler will not know if he should use for example string parameter or 
 
 ![](Images/inlineFunction.png)
 
-- They can increase the size of our application binary (Copying code)
+- They can increase the size of our application binary (Copying code)ss
 - It is recommended to use them for short, frequently used functions
 - Marking function 'inline' is just suggestion for the compiler. The compiler might agree and inline function or ignore it
 
 - It is also useful for header-only libraries to allow inclusion in multiple source files without violating the One Definition rule
 - All function templates and class templates are implicitly inline
 
-# Recursion
+## Recursion
 
 - Mechanism under which a function repeatedly calls itself to achieve some goal
 - Function that does recursion is called a recursive function
 
+## Functions Like Entities
+
+### Function Pointers
+
+- A function is just a block of code that lives somewhere in the memory map of our C++ program. 
+- We can grab the address of the function and store it in a function pointer
