@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "class.h"
 
 #include <optional>
@@ -11,63 +12,50 @@
 
 using namespace std;
 #include <memory>
- 
-// A generic smart pointer class
-template <class T>
-class SmartPtr {
-    T* ptr; // Actual pointer
-public:
-    // Constructor
-    explicit SmartPtr(T* p = NULL) { ptr = p; }
- 
-    // Destructor
-    ~SmartPtr() { delete (ptr); }
- 
-    // Overloading dereferencing operator
-    T& operator*() { return *ptr; }
- 
-    // Overloading arrow operator so that
-    // members of T can be accessed
-    // like a pointer (useful if T represents
-    // a class or struct or union type)
-    T* operator->() { return ptr; }
-};
- 
 
-/*
-class Node {
-private:
-    int key;
-    Node* next;
- 
-    // Other members of Node Class 
-    friend int LinkedList::search();
-    // Only search() of linkedList
-    // can access internal members
-};
-*/
-
-/*
-int main()
-{
-  Player p1("Basketball");
-  p1.set_first_name("John");  // We do not have access to private members of Person class 
-  p1.set_last_name("Snow");   // so we have to use setters
-  std::cout << "player: " << p1 << std::endl;
-
-  return 0;
-}*/
-
- 
 int main()
 {
 
+  std::vector<double> v{ 1.0, 2.2, 4.0, 5.5, 7.2 };
+  double r = 4.0;
+  std::for_each(v.begin(), v.end(), [&](double & v) { v += r; });
+  std::for_each(v.begin(), v.end(), [](double v) { std::cout << v << " "; });
 
-
-
-
-  return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
 void swapPtr(int *a, int *b)

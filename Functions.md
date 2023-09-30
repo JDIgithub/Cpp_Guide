@@ -245,9 +245,139 @@ because compiler will not know if he should use for example string parameter or 
 - Mechanism under which a function repeatedly calls itself to achieve some goal
 - Function that does recursion is called a recursive function
 
-## Functions Like Entities
+# Functions Like Entities 
 
-### Function Pointers
+- Callables (c++11):
+  - Function pointers
+  - Function objects (classes with overloaded function call operator() )
+  - Lambda expressions
+  - std::function objects  
+  - Bind expressions
+  
+
+## Function Pointers
 
 - A function is just a block of code that lives somewhere in the memory map of our C++ program. 
 - We can grab the address of the function and store it in a function pointer
+- Function Pointers are useful when we want to pass functions as parameter to other functions
+- Different syntaxes to setup function pointer:
+
+![](Images/functionPointerSyntaxes.png)
+
+## Callback function
+
+- Function that we pass through function pointer as parameter to other functions to be called later in the body of those functions
+- Callbacks can give us higher flexibility of functions
+- For example in the next example we can use the same function for encrypting and decrypting just with different function parameter:
+
+![](Images/callbackFunctions.png)
+
+- Or in the next example we can be flexible in the comparing of two string:
+
+![](Images/callbackFunctions2.png)
+
+- We can compare them in many different ways:
+
+![](Images/callbackFunctions3.png)
+
+
+
+- One reason to use callbacks is to write generic code which is independent from the logic in the called function and can be reused with different callbacks.
+- Many functions of the standard algorithms library [\<algorithm\>](https://en.cppreference.com/w/cpp/algorithm) use callbacks. 
+- For example the for_each algorithm applies an unary callback to every item in a range of iterators:
+
+![](Images/forEachCallbacks.png)
+
+- Which can be used to first increment and then print a vector by passing appropriate callables for example:
+
+![](Images/stlForEachUsage.png)
+
+## Function Pointer Type Aliases
+
+- With function pointers it can get harder to understand some function parameters
+- But we can make it easier with aliases:
+
+![](Images/functionPointerAliases.png)
+![](Images/functionPointersAliases2.png)
+
+- Type alias with templates:
+
+![](Images/aliasWithTemplates.png)
+
+- Or we can template the whole callback to be even more flexible:
+
+![](Images/templatedCallback.png)
+
+
+## Functors
+
+- Class objects that can be called like ordinary functions
+- We set them up by overloading the () operator for our class
+  
+![](Images/functor.png)
+![](Images/usingFunctors.png)
+
+- Most commonly used along with STLs:
+
+![](Images/functorSTL.png)
+
+- Functor can take parameters and internally store them as member variables
+
+
+
+### Standard Functors
+
+- There are some standard functors in [\<functional\>](https://en.cppreference.com/w/cpp/utility/functional) library
+
+![](Images/standardFunctors.png)
+![](Images/standardFunctors2.png)
+
+- We can see more details in the link above
+
+![](Images/functorsParameters.png)
+
+
+### Lambda Functions 
+
+- Lambda functions are modeled behind the scenes by using functors
+
+![](Images/lambdaFunctionFunctor.png)
+
+- Behind the scenes:
+
+![](Images/lambdaFunctionFunctor2.png)
+
+- We can check it in [cppinsights](https://cppinsights.io)
+
+### Lambda Functions as Callback
+
+- We can use lambda functions as callback:
+
+![](Images/lambdaCallback.png)
+
+- Even directly:
+
+![](Images/lambdaCallbackDirectly.png)
+
+
+## std::function
+
+- Defined in header [\<functional\>](https://en.cppreference.com/w/cpp/utility/functional/function)
+- Handing functions like entities in a unified way
+
+![](Images/functionalHeaderUsage.png)
+
+- We can also now define function entities to store them in collection for example:
+
+![](Images/storingFunctions.png)
+
+- Or use the std::function as a callback:
+
+![](Images/functionalCallback.png)
+
+
+
+
+
+
+
