@@ -16,10 +16,30 @@ using namespace std;
 int main()
 {
 
-  std::vector<double> v{ 1.0, 2.2, 4.0, 5.5, 7.2 };
-  double r = 4.0;
-  std::for_each(v.begin(), v.end(), [&](double & v) { v += r; });
-  std::for_each(v.begin(), v.end(), [](double v) { std::cout << v << " "; });
+  // Constructing Vector
+  std::vector<std::string> vec_str{"The","sky", "is", "blue"};
+  std::vector<int> ints {1, 2, 3, 4};
+  std::vector<int> ints2 (20, 55);  // Vector with 20 items, all initialized to 55
+
+  // Accessing elements
+
+  std::cout << vec_str[2] << std::endl; // Prints "is"
+  std::cout << vec_str.at(3) << std::endl; // Prints "blue"
+  std::cout << vec_str.front() << std::endl; // Prints first element
+  std::cout << vec_str.back() << std::endl; // Prints last element
+
+  // Pointer to the first element:
+  auto *vec_data = vec_str.data();
+  // To get vector size:
+  size_t vec_size = vec_str.size();
+  
+  // Adding elements:
+  vec_str.push_back("new"); // Adds the element at the end of the vector
+  vec_str.at(3) = "another"; // Will insert element at the specific index and the previous element will be removed
+
+  // Removing elements: 
+  vec_str.pop_back();       // Removes the last element of the vector
+
 
 }
 
