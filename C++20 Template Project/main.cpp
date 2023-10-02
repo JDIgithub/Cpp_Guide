@@ -1,6 +1,8 @@
 #include <iostream>
 #include <concepts>
 #include <vector>
+#include <array>
+#include <deque>
 #include <algorithm>
 #include "class.h"
 
@@ -11,34 +13,83 @@
 using namespace std;
 #include <memory>
 
+
+
+// Uniform traversal of containers
+template <typename T> void printCollection (const T& collection){
+
+  auto it = collection.begin();
+  std::cout << "[";
+  while(it != collection.end()){
+    std::cout << " " << *it;
+    ++it;
+  }
+  std::cout << "]" << std::endl;
+
+}
+
+
 int main()
 {
 
-  // Constructing Vector
-  std::vector<std::string> vec_str{"The","sky", "is", "blue"};
-  std::vector<int> ints {1, 2, 3, 4};
-  std::vector<int> ints2 (20, 55);  // Vector with 20 items, all initialized to 55
+  int num{0};
+
+  std::deque<int> numbers {1,2,3,4,5,6}; 
+  printCollection(numbers);
 
   // Accessing elements
+  num = numbers[3];     // No bound check
+  num = numbers[30];    // Undefined behavior
+  num = numbers.at(3);  // Bound check
+  num = numbers.front();// First element
+  num = numbers.back(); // Last element
 
-  std::cout << vec_str[2] << std::endl; // Prints "is"
-  std::cout << vec_str.at(3) << std::endl; // Prints "blue"
-  std::cout << vec_str.front() << std::endl; // Prints first element
-  std::cout << vec_str.back() << std::endl; // Prints last element
+  // Clear
+  numbers.clear();  // Deletes all the elements in the collection 
+  // Assign
+  numbers = {10,20,30,40,50,60}; 
 
-  // Pointer to the first element:
-  auto *vec_data = vec_str.data();
-  // To get vector size:
-  size_t vec_size = vec_str.size();
-  
-  // Adding elements:
-  vec_str.push_back("new"); // Adds the element at the end of the vector
-  vec_str.at(3) = "another"; // Will insert element at the specific index and the previous element will be removed
+  // Insertion
+  auto iterator = numbers.begin() + 2;
+  /*
+  std::cout << *iterator <<std::endl; // 30
+  // Elements are inserted at position in front of the *iterator element
+  numbers.insert(iterator,300);   // [10 20 300 30 40 50 60] 
+  std::cout << *iterator <<std::endl; // 30  
+  numbers.insert(iterator,400);   // [10 20 300 400 30 40 50 60] -> iterator moves as we add elements because it keeps pointing to the same element (but not always)
+  std::cout << *iterator <<std::endl; // 400 - Now the iterator points to newly inserted element to maintain its relative position in its internal block.
+  numbers.insert(iterator,500);   // [10 20 300 500 400 30 40 50 60]
+  std::cout << *iterator <<std::endl; // Still 400
+*/
+  // Emplace
+  numbers.emplace(iterator,45);  // Parameters following the iterator are passed to constructor of the type stored in the vector
+  numbers.emplace_back(15);      // Will emplace element at the end of the collection 
+ 
+  // Erase
+  numbers.erase(iterator);
+  numbers.erase(numbers.begin() + 1, numbers.begin() + 4); // Will erase numbers[1] - numbers[3]
 
-  // Removing elements: 
-  vec_str.pop_back();       // Removes the last element of the vector
+  // Pop_back
+  //numbers.pop_back()
 
 
+
+/*
+
+  // Supports regular forward iterators
+  auto it = numbers.begin();
+  while(it != numbers.end()){
+    std::cout << " " << *it;
+    ++it;
+  }
+
+  // Supports reverse iterators
+  auto rit = numbers.rbegin();
+  while(rit != numbers.rend()){
+    std::cout << " " << *rit;
+    ++rit;
+  }
+*/
 }
 
 
