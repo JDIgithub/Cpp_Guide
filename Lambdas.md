@@ -58,6 +58,9 @@
 
 ![](Images/lambdaExample3.png)
 
+- We can also capture this pointer of some class if we need to get access to its members but not to everything that would be caught with '=':
 
+![](Images/lambdaCapturingThis.png)
 
+- But '=' would of course catch the this pointer as well but it is not recommended and we should catch it explicitly like in the example above
 

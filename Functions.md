@@ -136,18 +136,18 @@ to the type the compiler takes
 
 ![](Images/constevalFunction.png)
 
-# Functions Output
+## Functions Output
 
-## Output Parameter
+### Output Parameter
 
 - Output parameters should be passed in such a way that we can modify the arguments from inside the function
 - We can use function parameter as output as well with non-const reference or pointer
 
 ![](Images/outputParameter.png)
 
-## Return from functions
+### Return from functions
 
-### Return by value (default):
+#### Return by value (default):
   
 ![](Images/returnOutput.png)
 
@@ -158,7 +158,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/returnChangedToRef.png)
 
-### Return by Reference
+#### Return by Reference
 
 ![](Images/returnByReference.png)
 
@@ -166,7 +166,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/referencesToLocal.png)
 
-### Return by pointer
+#### Return by pointer
 
 ![](Images/returnByPointer.png)
 
@@ -175,7 +175,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/returningArray.png)
 
-## Function return type deduction
+### Function return type deduction
 
 - Lets the compiler deduce the return type of a function judging from return statements in the function
 - We have to declare function together with its body/definition so the compiler can see the return type
@@ -188,7 +188,7 @@ of str_result outside of that function, that means that compiler changes the ret
 ![](Images/returnDeductionFix.png)
 
 
-## std::optional (c++17)
+### std::optional (c++17)
 
 - Helps to handle the optional output from the functions (for example if they failed) and some other things
 
@@ -198,7 +198,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 - **Never read from std::optional without checking if it is not empty otherwise the program can crash!**
 
-### std::optional as return type
+#### std::optional as return type
 
 ![](Images/optionalReturnType.png)
 
@@ -207,7 +207,7 @@ of str_result outside of that function, that means that compiler changes the ret
 
 ![](Images/optionalReturnCheck.png)
 
-# Function overloading
+## Function overloading
 
 - Two or more functions can have the same name but different parameters
 - Can be considered as example of polymorphism feature 
@@ -224,7 +224,7 @@ because compiler will not know if he should use for example string parameter or 
 - When we are using const pointer to overload pointer that there will be compiler error because the pointer itself is passed by value -> also copies
 - Const reference can overload non-const reference of the same type no problem
 
-# Inline Functions
+## Inline Functions
 
 - To avoid function call overhead. 
 - Especially for the small functions
@@ -233,15 +233,151 @@ because compiler will not know if he should use for example string parameter or 
 
 ![](Images/inlineFunction.png)
 
-- They can increase the size of our application binary (Copying code)
+- They can increase the size of our application binary (Copying code)ss
 - It is recommended to use them for short, frequently used functions
 - Marking function 'inline' is just suggestion for the compiler. The compiler might agree and inline function or ignore it
 
 - It is also useful for header-only libraries to allow inclusion in multiple source files without violating the One Definition rule
 - All function templates and class templates are implicitly inline
 
-# Recursion
+## Recursion
 
 - Mechanism under which a function repeatedly calls itself to achieve some goal
 - Function that does recursion is called a recursive function
+
+# Functions Like Entities 
+
+- Callables (c++11):
+  - Function pointers
+  - Function objects (classes with overloaded function call operator() )
+  - Lambda expressions
+  - std::function objects  
+  - Bind expressions
+  
+
+## Function Pointers
+
+- A function is just a block of code that lives somewhere in the memory map of our C++ program. 
+- We can grab the address of the function and store it in a function pointer
+- Function Pointers are useful when we want to pass functions as parameter to other functions
+- Different syntaxes to setup function pointer:
+
+![](Images/functionPointerSyntaxes.png)
+
+## Callback function
+
+- Function that we pass through function pointer as parameter to other functions to be called later in the body of those functions
+- Callbacks can give us higher flexibility of functions
+- For example in the next example we can use the same function for encrypting and decrypting just with different function parameter:
+
+![](Images/callbackFunctions.png)
+
+- Or in the next example we can be flexible in the comparing of two string:
+
+![](Images/callbackFunctions2.png)
+
+- We can compare them in many different ways:
+
+![](Images/callbackFunctions3.png)
+
+
+
+- One reason to use callbacks is to write generic code which is independent from the logic in the called function and can be reused with different callbacks.
+- Many functions of the standard algorithms library [\<algorithm\>](https://en.cppreference.com/w/cpp/algorithm) use callbacks. 
+- For example the for_each algorithm applies an unary callback to every item in a range of iterators:
+
+![](Images/forEachCallbacks.png)
+
+- Which can be used to first increment and then print a vector by passing appropriate callables for example:
+
+![](Images/stlForEachUsage.png)
+
+## Function Pointer Type Aliases
+
+- With function pointers it can get harder to understand some function parameters
+- But we can make it easier with aliases:
+
+![](Images/functionPointerAliases.png)
+![](Images/functionPointersAliases2.png)
+
+- Type alias with templates:
+
+![](Images/aliasWithTemplates.png)
+
+- Or we can template the whole callback to be even more flexible:
+
+![](Images/templatedCallback.png)
+
+
+## Functors
+
+- Class objects that can be called like ordinary functions
+- We set them up by overloading the () operator for our class
+  
+![](Images/functor.png)
+![](Images/usingFunctors.png)
+
+- Most commonly used along with STLs:
+
+![](Images/functorSTL.png)
+
+- Functor can take parameters and internally store them as member variables
+
+
+
+### Standard Functors
+
+- There are some standard functors in [\<functional\>](https://en.cppreference.com/w/cpp/utility/functional) library
+
+![](Images/standardFunctors.png)
+![](Images/standardFunctors2.png)
+
+- We can see more details in the link above
+
+![](Images/functorsParameters.png)
+
+
+### Lambda Functions 
+
+- Lambda functions are modeled behind the scenes by using functors
+
+![](Images/lambdaFunctionFunctor.png)
+
+- Behind the scenes:
+
+![](Images/lambdaFunctionFunctor2.png)
+
+- We can check it in [cppinsights](https://cppinsights.io)
+
+### Lambda Functions as Callback
+
+- We can use lambda functions as callback:
+
+![](Images/lambdaCallback.png)
+
+- Even directly:
+
+![](Images/lambdaCallbackDirectly.png)
+
+
+## std::function
+
+- Defined in header [\<functional\>](https://en.cppreference.com/w/cpp/utility/functional/function)
+- Handing functions like entities in a unified way
+
+![](Images/functionalHeaderUsage.png)
+
+- We can also now define function entities to store them in collection for example:
+
+![](Images/storingFunctions.png)
+
+- Or use the std::function as a callback:
+
+![](Images/functionalCallback.png)
+
+
+
+
+
+
 
