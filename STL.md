@@ -25,6 +25,18 @@
 ![](Images/vectorFunctions.png)
 
 - Very fast lookup by index with '[]'
+- Inserting elements to the back is very fast when the capacity is enough
+- Inserting to the front is very expensive, we have to move all the elements to the right
+- Automatically grows its capacity to accomodate for new items if the old capacity is not enough
+- The most universal and used container
+- Supports both forward and reverse iterators
+
+![](Images/vectorIterators2.png)
+
+- So we can use many iterator based functions like for example insert():
+
+![](Images/vectorInsert.png)
+
 
 #### std::array
 
@@ -34,6 +46,10 @@
 - Usually the data is inserted when array is created or with fill() method
 
 ![](Images/stdArray.png)
+
+- It is good when we want to enforce that our collection should be of given size
+- Good replacement of raw arrays because it has more funcionality for example cross assigning
+- Supports both forward and reverse iterator
 
 #### std::deque
 
@@ -54,15 +70,67 @@
 
 ![](Images/dequeInsertion.png)
 
+![](Images/dequeFunctions.png)
 
+- Supports both forward and reverse iterators
+
+![](Images/dequeIterators.png)
+
+
+#### std::forward_list
+
+- Defined in [\<forward_list\>](https://en.cppreference.com/w/cpp/container/forward_list)
+- Very fast insertions and removals in the middle of the container
+- This is possible because each element has pointer to the next element
+
+![](Images/forwardListScheme.png)
+
+- It is implemented as a single linked list in memory
+- The elements are not stored contiguously in the memory
+- Supports only forward iterator because we have only pointers to the next element
+- Poor memory locality makes things hard for the CPU optimizations when our list is being traversed
+- Does not provide random access operators like '[]'
+- To access a given item in the list, we have to perform a linear search from the beginning of the list
+- Once we are at the correct location then the inserting and removing is very fast (just rewiring the pointers)
+- Forward lists should be avoided. Vector is almost always better fit
+
+![](Images/forwardList.png)
+
+- For insertion we can use 'insert_after' or 'emplace_after' the difference is:
+  - insert_after copies or moves objects into the list
+  - emplace_after directly construct the object in the container memory avoiding unnecessary copies 
+  - Use insert_after when you already have an object and want to insert it (or copies of it) into the list
+  - Use emplace_after when you want to construct an object in place within the list, especially when the construction might be more efficient than copying or moving an existing object.
+
+![](Images/forwardListInsertion.png)
+
+- Other functions:
+  
+![](Images/forwardListFunctions.png)
 
 #### std::list
-#### std::forward_list
+
+- Defined in [\<list\>](https://en.cppreference.com/w/cpp/container/list)
+- Very fast insertions and removals in the middle of the container
+- Each element has two pointer. To the previous and to the next element.
+- Both forward and reverse iterators are supported
+- The elements are not stored contiguously in the memory 
+- Poor memory locality makes things hard for the CPU optimizations when our list is being traversed
+- Does not provide random access operators like '[]'
+
+![](Images/stdList.png)
+
+- It is really the same as forward_list but we have reverse operator here so we can use more functions because of it
+- Also we do not need to use 'insert_after' or 'emplace_after' etc. now we can use 'insert', 'emplace', etc.
+
+![](Images/stdListInsert.png)
 
 
 ### Associative Containers
 
-- Elements stored by key
+- Elements stored by key and ordering
+- 
+
 
 #### std::set
 #### std::map

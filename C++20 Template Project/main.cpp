@@ -1,17 +1,15 @@
 #include <iostream>
 #include <concepts>
 #include <vector>
-#include <array>
-#include <deque>
+
 #include <algorithm>
 #include "class.h"
 
-#include <optional>
-#include <cstring>
+#include <list>
 
 
 using namespace std;
-#include <memory>
+
 
 
 
@@ -34,62 +32,34 @@ int main()
 
   int num{0};
 
-  std::deque<int> numbers {1,2,3,4,5,6}; 
-  printCollection(numbers);
-
-  // Accessing elements
-  num = numbers[3];     // No bound check
-  num = numbers[30];    // Undefined behavior
-  num = numbers.at(3);  // Bound check
-  num = numbers.front();// First element
-  num = numbers.back(); // Last element
-
-  // Clear
-  numbers.clear();  // Deletes all the elements in the collection 
-  // Assign
-  numbers = {10,20,30,40,50,60}; 
+  std::vector<int> numbers {1,2,3,4,5,6}; 
 
   // Insertion
-  auto iterator = numbers.begin() + 2;
-  /*
-  std::cout << *iterator <<std::endl; // 30
-  // Elements are inserted at position in front of the *iterator element
-  numbers.insert(iterator,300);   // [10 20 300 30 40 50 60] 
-  std::cout << *iterator <<std::endl; // 30  
-  numbers.insert(iterator,400);   // [10 20 300 400 30 40 50 60] -> iterator moves as we add elements because it keeps pointing to the same element (but not always)
-  std::cout << *iterator <<std::endl; // 400 - Now the iterator points to newly inserted element to maintain its relative position in its internal block.
-  numbers.insert(iterator,500);   // [10 20 300 500 400 30 40 50 60]
-  std::cout << *iterator <<std::endl; // Still 400
-*/
-  // Emplace
-  numbers.emplace(iterator,45);  // Parameters following the iterator are passed to constructor of the type stored in the vector
-  numbers.emplace_back(15);      // Will emplace element at the end of the collection 
- 
-  // Erase
-  numbers.erase(iterator);
-  numbers.erase(numbers.begin() + 1, numbers.begin() + 4); // Will erase numbers[1] - numbers[3]
+  auto it = numbers.begin() + 2;
+  printCollection(numbers);
+  std::cout << *it << std::endl;    // 3
+  numbers.insert(it, 15);
+  // Iterator wont move. It will still point to the third element
+   printCollection(numbers);
+  std::cout << *it << std::endl;    // 15
 
-  // Pop_back
-  //numbers.pop_back()
-
+  
 
 
 /*
-
   // Supports regular forward iterators
   auto it = numbers.begin();
   while(it != numbers.end()){
     std::cout << " " << *it;
     ++it;
   }
-
   // Supports reverse iterators
   auto rit = numbers.rbegin();
   while(rit != numbers.rend()){
     std::cout << " " << *rit;
     ++rit;
-  }
-*/
+  }*/
+
 }
 
 
