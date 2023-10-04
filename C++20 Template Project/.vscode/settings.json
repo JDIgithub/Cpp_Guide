@@ -47,7 +47,9 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "cstring": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "list": "cpp",
+        "set": "cpp"
     },
     "cSpell.words": [
         "bptr",

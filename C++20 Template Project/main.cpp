@@ -1,12 +1,16 @@
 #include <iostream>
 #include <concepts>
 #include <vector>
-
 #include <algorithm>
 #include "class.h"
+#include <map>
+#include <set>
+#include <unordered_set>
+#include <unordered_map>
 
-#include <list>
 
+
+#include <functional>
 
 using namespace std;
 
@@ -27,38 +31,28 @@ template <typename T> void printCollection (const T& collection){
 }
 
 
+template <typename T, typename K> void printMap (const std::multimap<T,K> & map){
+
+  auto it = map.begin();
+  std::cout << "[";
+  while(it != map.end()){
+    std::cout << " " << it->first << "," << it->second;
+    ++it;
+  }
+  std::cout << "]" << std::endl;
+
+}
+
 int main()
 {
 
-  int num{0};
-
-  std::vector<int> numbers {1,2,3,4,5,6}; 
-
-  // Insertion
-  auto it = numbers.begin() + 2;
-  printCollection(numbers);
-  std::cout << *it << std::endl;    // 3
-  numbers.insert(it, 15);
-  // Iterator wont move. It will still point to the third element
-   printCollection(numbers);
-  std::cout << *it << std::endl;    // 15
-
-  
+ 
+  std::unordered_set<int> numbers = {1,2,1,6,2,8,9,24,6,2};  // Not ordered
+  std::unordered_map<int,int> numbersMap = {  {1,11}, {0,12}, {4,13}, {2,14}, {3,15} }; // Not ordered
 
 
-/*
-  // Supports regular forward iterators
-  auto it = numbers.begin();
-  while(it != numbers.end()){
-    std::cout << " " << *it;
-    ++it;
-  }
-  // Supports reverse iterators
-  auto rit = numbers.rbegin();
-  while(rit != numbers.rend()){
-    std::cout << " " << *rit;
-    ++rit;
-  }*/
+
+
 
 }
 

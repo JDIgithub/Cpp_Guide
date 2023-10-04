@@ -79,7 +79,7 @@
 
 #### std::forward_list
 
-- Defined in [\<forward_list\>](https://en.cppreference.com/w/cpp/container/forward_list)
+- Defined in [\<forward_list\>](https://en.cppreference.com/w/cpp/container/forward_list) header
 - Very fast insertions and removals in the middle of the container
 - This is possible because each element has pointer to the next element
 
@@ -110,7 +110,7 @@
 
 #### std::list
 
-- Defined in [\<list\>](https://en.cppreference.com/w/cpp/container/list)
+- Defined in [\<list\>](https://en.cppreference.com/w/cpp/container/list) header
 - Very fast insertions and removals in the middle of the container
 - Each element has two pointer. To the previous and to the next element.
 - Both forward and reverse iterators are supported
@@ -129,21 +129,99 @@
 ### Associative Containers
 
 - Elements stored by key and ordering
-- 
 
 
 #### std::set
+
+- Defined in [\<set\>](https://en.cppreference.com/w/cpp/container/set) header
+- Very fast searches for elements
+- Orders its elements
+- It does not matter in which order we insert the elements in
+- This imposes one condition on the elements we can store in the set:
+  - They must provide some way to compare elements so that they can be ordered
+- The set internally uses operator '<' to order elements, and the types stored in the set must provide operator '<'
+- Because elements are ordered, finding things in the set is very fast
+- It is possible to customize how the set orders our element either through implementing operator< for our types or by specifying the comparator callback that the set will use to compare elements
+- Does not allow duplcated elements to be stored in the container, if we try to insert a duplicate it will just be ignored
+- To decide whetre it is a duplicate, it does not use operator== but instead: if !(x < y) && !(y < x)
+- Supports both forward and reverse iterators
+ 
+![](Images/stdSet.png)
+
+- We can customize the order comparator:
+
+![](Images/stdSetCustom.png)
+
+
 #### std::map
-#### std::multiset
-#### std::multimap
+
+- Defined in [\<map\>](https://en.cppreference.com/w/cpp/container/map) header
+- Supports operator '[]' but we are inserting key not index
+
+- Stores key-value pairs
+- Stores elements ordered by key in increasing order by default
+- Does not store duplicate keys but it can store duplicate values
+- Searches for keys are very fast because they are ordered
+
+![](Images/stdMap.png)
+
+- We can set up key of any type
+- Supports both forward and reverse iterators:
+
+![](Images/stdMapIterators.png)
+
+- We have many of the same functions as the set which is really similair container, map just stored key-value pairs
+  
+![](Images/stdMapInsertion.png)
+![](Images/stdMapErase.png)
+
+- We can also customize the order comparator here
+
+#### std::multiset && std::multimap
+
+- Variants of std::set and std::map that can store duplicates
+- They are still ordered
+- The rest of the methods are similar to std::map/std::set methods
+- Multiset is defined in [\<set\>](https://en.cppreference.com/w/cpp/container/multiset) header
+- Multimap is defind in [\<map\>](https://en.cppreference.com/w/cpp/container/multimap) header
+
+![](Images/multisetMultimap.png)
+
+### Unordered Associative Containers
+
+- std::unordered_set and std::unordered_map are other variants of containers set and map but without ordering
+- Internally they use hash map to order their elements, which makes operations on them even faster that their ordered counterparts
+- It is possible to provide our own hash map to control how elements are ordered
+- They are defined in  [\<unordered_set\>](https://en.cppreference.com/w/cpp/container/unordered_set) and  [\<unordered_map\>](https://en.cppreference.com/w/cpp/container/unordered_map) headers
+
+![](Images/unorderedSetMap.png)
+
+- The operations are mostly similar to ordered set and map
+
 
 ### Container Adaptors
 
 - Specialization of sequence containers
+- Customizing and restraining the interface of some sequence containers to fit a particular purpose
+- Mostly std::vector, std::list and std::deque
+- 
+
+
 
 #### std::stack
 #### std::queue
 #### std::priority_queue
+
+
+## Utility
+
+### std::pair
+
+- Is used to store two data components as a single entity
+- Provides facilities to manipulate the components through the first and second data member
+- Defined in [\<utility\>](https://en.cppreference.com/w/cpp/utility/pair)
+
+![](Images/stdPair.png)
 
 
 
