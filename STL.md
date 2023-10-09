@@ -209,8 +209,51 @@
 
 
 #### std::stack
+
+- Defined in [\<stack\>](https://en.cppreference.com/w/cpp/container/stack) header
+- It is not a container. It is interface built on top of a few possible sequence containers (std::vector, std::list, std:deque) to allow a sellected set of few operations
+- std::deque is the default container or std::stack
+- std::stack works in order Last In First Out (LIFO) 
+- To implement LIFO semantic, a stacks requires the underlying container to support back(), push_back() and pop_back()
+- We access elements only from the top with the top() method
+- We take out elements with the pop() method
+
+![](Images/printStack.png)
+
+- Clearing the stack:
+
+![](Images/clearStack.png)
+
+- We can also specify the underlying container (deque is default one):
+
+![](Images/stackContainers.png)
+
+
 #### std::queue
+
+- Defined in [\<queue\>](https://en.cppreference.com/w/cpp/container/queue) header
+- Works in First In First Out (FIFO)
+- To implement LIFO semantic, a stacks requires the underlying container to support back(), front(), push_back() and pop_front()
+- std::vector does not support pop_front() so it can not be used but we can use std::list and std::deque(default one)
+
+![](Images/stdQueue.png)
+
+
 #### std::priority_queue
+
+- Defined in [\<queue\>](https://en.cppreference.com/w/cpp/container/priority_queue) header
+- Like queue but it orders its elements based on priority
+- It uses a comparator function 'std::less<>' by default to compare and order elements
+- It requires these methods: front(), push_back(), pop_back()
+- std::vector(default one) and std::deque are possible options
+- The elements are ordered using a comparator method
+- We can control ordering through the operator< method of custom types stored in the collection or just by specifying a custom comparator functor
+
+![](Images/stdPriorityQueue.png)
+
+- Customizing comparator:
+
+![](Images/priorityQueueCustomComparator.png)
 
 
 ## Utility

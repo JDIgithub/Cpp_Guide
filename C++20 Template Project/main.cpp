@@ -5,9 +5,9 @@
 #include "class.h"
 #include <map>
 #include <set>
-#include <unordered_set>
-#include <unordered_map>
-
+#include <stack>
+#include <queue>
+#include <list>
 
 
 #include <functional>
@@ -39,16 +39,78 @@ template <typename T, typename K> void printMap (const std::multimap<T,K> & map)
     std::cout << " " << it->first << "," << it->second;
     ++it;
   }
-  std::cout << "]" << std::endl;
+  std::cout << " ]" << std::endl;
 
+}
+
+
+
+
+
+// We need to have second parameter that tell us which container is being used. Deque is default one
+template <typename T, typename Container = std::deque<T> > void printStack (std::stack<T, Container> stack){
+
+  // We are working on copy here so it doesnt matter that we are deleting elements from stack
+  std::cout << "[";
+  while(!stack.empty()){
+    T item = stack.top();
+    std::cout << " " << item;
+    stack.pop(); // Removes the top element so the next iteration it will read the next one.
+  }
+  std::cout << " ]" << std::endl;
+
+}
+
+
+template <typename T, typename Container = std::deque<T>> void clearStack (std::stack<T,Container>& stack){
+  while(!stack.empty()){
+    stack.pop(); 
+  }
+}
+
+
+// We need to have second parameter that tell us which container is being used. Deque is default one
+template <typename T, typename Container = std::vector<T> > void printPriorityQueue (std::priority_queue<T, Container> priorityQueue){
+
+  // We are working on copy here so it doesnt matter that we are deleting elements from stack
+  std::cout << "[";
+  while(!priorityQueue.empty()){
+    std::cout << " " << priorityQueue.top();
+    priorityQueue.pop(); // Removes the front element so the next iteration it will read the next one.
+  }
+  std::cout << " ]" << std::endl;
+}
+
+template <typename T, typename Container = std::vector<T>> void clearPriorityQueue (std::priority_queue<T,Container>& priorityQueue){
+  while(!priorityQueue.empty()){
+    priorityQueue.pop(); 
+  }
 }
 
 int main()
 {
+  std::priority_queue<int> numbers; // The greatest has higher priority
+  numbers.push(10);
+  numbers.push(8);
+  numbers.push(12);
+  printPriorityQueue(numbers);  // [ 12 10 8 ]
+  numbers.push(11);
+  numbers.push(3);
+  printPriorityQueue(numbers);  // [ 12  11 10 8 3 ]
+  
+  // Access
+  numbers.top();  // Highest priority element access
+ // numbers.top() = 55;  // top() returns const reference so we can not modify it
 
- 
-  std::unordered_set<int> numbers = {1,2,1,6,2,8,9,24,6,2};  // Not ordered
-  std::unordered_map<int,int> numbersMap = {  {1,11}, {0,12}, {4,13}, {2,14}, {3,15} }; // Not ordered
+  // Erasing
+  numbers.pop();  // Highest priority element will be removed
+
+  std::priority_queue<int, std::vector<int>, std::less<int>> numbers2; // Default
+  std::priority_queue<int, std::vector<int>, std::greater<int>> numbers3; // Non-Default
+  // Using our own functor
+  auto cmp = [](int left, int right){ return left < right;};
+  std::priority_queue<int, std::vector<int>, decltype(cmp)> numbers4(cmp);
+
 
 
 
