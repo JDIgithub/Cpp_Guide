@@ -87,33 +87,28 @@ template <typename T, typename Container = std::vector<T>> void clearPriorityQue
   }
 }
 
+struct Sum
+{
+  int sum{0};
+  void operator()(int n) { sum += n; }
+};
+
+
 int main()
 {
-  std::priority_queue<int> numbers; // The greatest has higher priority
-  numbers.push(10);
-  numbers.push(8);
-  numbers.push(12);
-  printPriorityQueue(numbers);  // [ 12 10 8 ]
-  numbers.push(11);
-  numbers.push(3);
-  printPriorityQueue(numbers);  // [ 12  11 10 8 3 ]
+
+  std::vector<int> input {5,7,4,2,8,6,1,9,0,3,11,45,6,23};
+  std::vector<int> output {11,22,33};
   
-  // Access
-  numbers.top();  // Highest priority element access
- // numbers.top() = 55;  // top() returns const reference so we can not modify it
+  std::cout << "Output size: " << output.size() << std::endl;             // 3
+  std::cout << "Output capacity: " << output.capacity() << std::endl;     // 3
 
-  // Erasing
-  numbers.pop();  // Highest priority element will be removed
+  // Uses whatever space there is. Does not extend the capacity
+  std::transform(std::begin(input),std::end(input),std::begin(output),[](int n){ return n*2;}); 
+  printCollection(output);  // [ 10 14 8 ]   <- 5*2, 7*2, 4*2
 
-  std::priority_queue<int, std::vector<int>, std::less<int>> numbers2; // Default
-  std::priority_queue<int, std::vector<int>, std::greater<int>> numbers3; // Non-Default
-  // Using our own functor
-  auto cmp = [](int left, int right){ return left < right;};
-  std::priority_queue<int, std::vector<int>, decltype(cmp)> numbers4(cmp);
-
-
-
-
+  std::cout << "Output size: " << output.size() << std::endl;             // 3
+  std::cout << "Output capacity: " << output.capacity() << std::endl;     // 3
 
 
 }

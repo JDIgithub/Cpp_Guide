@@ -378,6 +378,7 @@
 
 ## Algorithms
 
+- [Link to cppreference](https://en.cppreference.com/w/cpp/algorithm)
 - The algorithms library defines functions for a variety of purposes that operate on ranges of elements
 - Range is defined as (first, last) where last refers to the element past the last element to inspect or modify
   
@@ -388,6 +389,65 @@
 - Generating
 - Transforming
 - etc.
+
+- We have legacy algorithms that work on iterator pairs
+- Also we have range algorithms that work on containers directly
+  
+
+### std::all_of std::any_of std::none_of
+
+![](Images/allOfAnyOfNoneOf.png)
+
+### std::for_each
+
+
+![](Images/stdForEach.png)
+
+![](Images/stdForEach2.png)
+
+### std::max_element std::min_element
+
+- We have more overloads of these functions
+- We can use overload with just first and last iterator or we can use overload with added comparator
+
+![](Images/stdMinMaxElement.png)
+
+
+
+### std::find std::find_if
+
+- This algorithm returns iterator of the element that we are seaching for or the end iterator if it did not find it
+
+![](Images/stdFind.png)
+
+
+
+
+
+### std::copy
+
+![](Images/stdCopy.png)
+
+- There is also std::copy_if
+
+
+### std::sort
+
+- Modifying algorithm
+- To sort out collections
+- Algorithm need random access iterator to work
+
+![](Images/stdSort.png)
+
+
+### std::transform
+
+- Copies + adjust elemnts from one collection into another
+- Does not extend the output colllectin capacity
+
+![](Images/stdTransform.png)
+
+
 
 ### Constrained Algorithms (C++20)
 
