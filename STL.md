@@ -422,8 +422,6 @@
 
 
 
-
-
 ### std::copy
 
 ![](Images/stdCopy.png)
@@ -446,7 +444,6 @@
 - Does not extend the output colllectin capacity
 
 ![](Images/stdTransform.png)
-
 
 
 ### Constrained Algorithms (C++20)
