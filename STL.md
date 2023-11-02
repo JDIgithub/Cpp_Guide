@@ -210,25 +210,50 @@
 
 #### std::stack
 
-- Last In First Out (LIFO) 
-- For that we need support of functions:
-  - back()
-  - push_back()
-  - pop_back()
-- Which give us these containers:
-  - vector
-  - list
-  - deque - default one
-- std::stack is not a container. It is an **interface** built on top of a few possible sequence containers to allow a selected set of few operations
+- Defined in [\<stack\>](https://en.cppreference.com/w/cpp/container/stack) header
+- It is not a container. It is interface built on top of a few possible sequence containers (std::vector, std::list, std:deque) to allow a sellected set of few operations
+- std::deque is the default container or std::stack
+- std::stack works in order Last In First Out (LIFO) 
+- To implement LIFO semantic, a stacks requires the underlying container to support back(), push_back() and pop_back()
 - We access elements only from the top with the top() method
-- We take things out of the stack through the pop() method
-- std::stack() has a size() method we can use to query the current number of elements in the collection
-- 
+- We take out elements with the pop() method
 
+![](Images/printStack.png)
+
+- Clearing the stack:
+
+![](Images/clearStack.png)
+
+- We can also specify the underlying container (deque is default one):
+
+![](Images/stackContainers.png)
 
 
 #### std::queue
+
+- Defined in [\<queue\>](https://en.cppreference.com/w/cpp/container/queue) header
+- Works in First In First Out (FIFO)
+- To implement LIFO semantic, a stacks requires the underlying container to support back(), front(), push_back() and pop_front()
+- std::vector does not support pop_front() so it can not be used but we can use std::list and std::deque(default one)
+
+![](Images/stdQueue.png)
+
+
 #### std::priority_queue
+
+- Defined in [\<queue\>](https://en.cppreference.com/w/cpp/container/priority_queue) header
+- Like queue but it orders its elements based on priority
+- It uses a comparator function 'std::less<>' by default to compare and order elements
+- It requires these methods: front(), push_back(), pop_back()
+- std::vector(default one) and std::deque are possible options
+- The elements are ordered using a comparator method
+- We can control ordering through the operator< method of custom types stored in the collection or just by specifying a custom comparator functor
+
+![](Images/stdPriorityQueue.png)
+
+- Customizing comparator:
+
+![](Images/priorityQueueCustomComparator.png)
 
 
 ## Utility
@@ -353,6 +378,7 @@
 
 ## Algorithms
 
+- [Link to cppreference](https://en.cppreference.com/w/cpp/algorithm)
 - The algorithms library defines functions for a variety of purposes that operate on ranges of elements
 - Range is defined as (first, last) where last refers to the element past the last element to inspect or modify
   
@@ -363,6 +389,62 @@
 - Generating
 - Transforming
 - etc.
+
+- We have legacy algorithms that work on iterator pairs
+- Also we have range algorithms that work on containers directly
+  
+
+### std::all_of std::any_of std::none_of
+
+![](Images/allOfAnyOfNoneOf.png)
+
+### std::for_each
+
+
+![](Images/stdForEach.png)
+
+![](Images/stdForEach2.png)
+
+### std::max_element std::min_element
+
+- We have more overloads of these functions
+- We can use overload with just first and last iterator or we can use overload with added comparator
+
+![](Images/stdMinMaxElement.png)
+
+
+
+### std::find std::find_if
+
+- This algorithm returns iterator of the element that we are seaching for or the end iterator if it did not find it
+
+![](Images/stdFind.png)
+
+
+
+### std::copy
+
+![](Images/stdCopy.png)
+
+- There is also std::copy_if
+
+
+### std::sort
+
+- Modifying algorithm
+- To sort out collections
+- Algorithm need random access iterator to work
+
+![](Images/stdSort.png)
+
+
+### std::transform
+
+- Copies + adjust elemnts from one collection into another
+- Does not extend the output colllectin capacity
+
+![](Images/stdTransform.png)
+
 
 ### Constrained Algorithms (C++20)
 

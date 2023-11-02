@@ -127,8 +127,10 @@
 ![](Images/rvalueLvalue.png)
                     
                   
-
+  - However that is not always true for C++ because functions can return references that we can assign to:
+    - x = func();   // x is an lvalue, func() is an rvalue
+    - func() = x;   // Not Legal in C but it is legal in C++
 
 ### For C++: 
-  - An lvalue is an expression that refers to a memory location and allows us to take the address of that memory location via the & operator. 
-  - An rvalue is an expression that is not an lvalue. 
+  - An lvalue is an expression that refers to a named memory location and allows us to take the address of that memory location via the & operator. 
+  - An rvalue is an expression that is not an lvalue.

@@ -49,7 +49,10 @@
         "cstring": "cpp",
         "forward_list": "cpp",
         "list": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "map": "cpp",
+        "unordered_set": "cpp",
+        "queue": "cpp"
     },
     "cSpell.words": [
         "bptr",
