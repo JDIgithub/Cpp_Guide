@@ -170,7 +170,7 @@
 
 ![](Images/stdMapIterators.png)
 
-- We have many of the same functions as the set which is really similair container, map just stored key-value pairs
+- We have many of the same functions as the set which is really similar container, map just stored key-value pairs
   
 ![](Images/stdMapInsertion.png)
 ![](Images/stdMapErase.png)
@@ -209,6 +209,24 @@
 
 
 #### std::stack
+
+- Last In First Out (LIFO) 
+- For that we need support of functions:
+  - back()
+  - push_back()
+  - pop_back()
+- Which give us these containers:
+  - vector
+  - list
+  - deque - default one
+- std::stack is not a container. It is an **interface** built on top of a few possible sequence containers to allow a selected set of few operations
+- We access elements only from the top with the top() method
+- We take things out of the stack through the pop() method
+- std::stack() has a size() method we can use to query the current number of elements in the collection
+- 
+
+
+
 #### std::queue
 #### std::priority_queue
 
