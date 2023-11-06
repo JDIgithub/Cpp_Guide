@@ -262,3 +262,63 @@
 
 - Inline will optimize all the definitions for a name into one
 - Static or unnamed namespaces will not do such a optimizations
+
+
+
+
+
+## Computer with Single Processor
+
+### Single Threaded Program
+
+- The program's instructions are loaded from memory
+- The instructions are executed on the processor
+- Registers store infromation needed to execute the current instruction
+  - Stack Pointer
+  - Operand Arguments
+  - etc.
+- Data is loaded from memory into processor registers as needed
+- If modified the new value is then written back to the memory
+
+### Multi Threaded Program
+
+- Implemented by "Time Slicing"
+- Each thread runs on the CPU for a short time:
+  - Tread A starts, runs for a short period, then pauses
+  - Tread B starts, runs for a short period, then pauses
+  - Tread C starts, runs for a short period, then pauses
+  - Thread B runs again from where it left off, then pauses
+  - Thread C runs again from where it left off, then pauses
+- This is done very quickly
+- The threads appear to run concurrently
+
+#### Thread Scheduler
+
+- A scheduler controls how threads execute
+- Pre-emptive task switching
+  - A thread can run for a certain time
+  - The schedular will interrupt the tread when it has used up its time slot
+  - Another thread can then run
+  - The schedular will make interrupted thread "sleep"
+- Threads may start in any order
+- A thread may be interrupted at any time
+- A thread may be restarted at any time
+- While thread is sleeping another thread may run
+  - This can run the same code as the inactive thread
+  - It can access data which it shares with the inactibe thread
+
+#### Time Slicing Disadvantages
+
+- Reqiuires a "Context Switch"
+- Save the processor state for the current thread
+  - Current values of processor registers
+  - Program's instruction pointer
+  - etc.
+- Load the saved processor state for the next thread
+  - Values of processor registers when stopped etc.
+  - May also have to reload the thread's instructions and data
+- The processor can not execute any instructions during the context switch
+
+
+## Computer with Multiple Processors
+

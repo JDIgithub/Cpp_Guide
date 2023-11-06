@@ -52,7 +52,13 @@
         "set": "cpp",
         "map": "cpp",
         "unordered_set": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "thread": "cpp",
+        "stack": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     },
     "cSpell.words": [
         "bptr",
