@@ -1,29 +1,6 @@
 
 #include <iostream>
 #include <vector>
-<<<<<<< HEAD
-#include <algorithm>
-#include "class.h"
-#include <map>
-#include <set>
-#include <stack>
-#include <queue>
-#include <list>
-#include <thread>
-#include <functional>
-
-
-
-void threadFunction(){
-  std::cout << "Im thread function" << std::endl;
-
-}
-
-int main()
-{
-  std::thread(threadFunction);  // !! Program will actually crash because when we are going out of this scope the thread object will be destroyed
-}                               // But the thread is still running !!  
-=======
 
 
 
@@ -50,7 +27,6 @@ int binarySearch(const std::vector<int>& array, int target) {
   }
     return -1; // Target not found
 }
->>>>>>> ca7a28dacfa471687debe8ab293e44f3eea055a4
 
 int main() {
   
