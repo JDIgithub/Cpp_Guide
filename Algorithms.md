@@ -4,7 +4,7 @@
 
 - Algorithms are step-by-step procedures or formulas for solving a problem. 
 - They are essential in programming for processing data and performing tasks efficiently.
-- Familiarity with common algorithms like sorting (e.g., quicksort, mergesort), searching (e.g., binary search), and graph algorithms (e.g., Dijkstra's algorithm for shortest paths) is important.
+- Familiarity with common algorithms like sorting (e.g., quicksort, merge sort), searching (e.g., binary search), and graph algorithms (e.g., Dijkstra's algorithm for shortest paths) is important.
 
 
 ## Algorithm Complexity
@@ -20,7 +20,7 @@
 - Crucial in comparing the efficiency of different algorithms
 - It help to predict performance
 
-#### Key Concepts
+**Key Concepts**
 
 1. **Upper Bound**
 - Big O provides an upper limit on the time an algorithm will take or the space it will use in the worst-case scenario
@@ -52,29 +52,12 @@
   - Extremely slow with growing n
   - Common in algorithms that generate all permutations of a dataset 
 
-## Algorithm Design Techniques:
+## Algorithm Design Techniques
 
 - Familiarity with techniques like recursion, divide and conquer, dynamic programming, and greedy algorithms.
 - Data Storage Structures
 
-## Data Structures:
-
-- These are ways of organizing and storing data so it can be accessed and modified efficiently.
-- Examples include arrays, linked lists, stacks, queues, trees, and graphs.
-- Each structure has its unique properties and use-cases, like trees for hierarchical data or graphs for networked data.
-  
-
-## Advanced Data Structures:
-
-- Understanding more complex structures like binary search trees, heaps, hash tables, and graph representations (like adjacency lists/matrices).
-  
-
-## STL Containers:
-
-- As a C++ developer, being proficient with the Standard Template Library (STL) containers (like vector, map, set, etc.) is vital.
-- Understanding the underlying data structures of these containers (e.g., a std::map typically implemented as a red-black tree) and their performance implications.
-
-## Application in Problem Solving:
+## Application in Problem Solving
 
 - Knowing when to use a particular data structure or algorithm based on the problem requirements. For example, choosing between a hash table or a binary search tree based on the need for ordered data.
 
@@ -82,6 +65,100 @@
 ## Common Algorithms
 
 ### Sorting Algorithms
+
+
+#### Bubble Sort
+
+- The algorithm gets it name because smaller elements "bubble" to the top of the list
+- It is stable sort meaning that it maintains the relative order of equal sort items
+- It can detect if the list is already sorted and stop early
+- It is not very efficient on large lists and is generally used for educational purposes to introduce the concept of sorting algorithms
+
+
+##### Steps
+
+1. **Starts at the beginning of the array:**
+
+- The algorithm compares the first two elements
+
+2. **Compare and swap:** 
+
+- If the first element is greater than the second element, they are swapped
+
+3. **Move to next pair:**
+
+- Move to the next pair of elements and repeat the comparison and swap if necessary
+
+4. **Complete the pass:**
+
+- Continue this process for the entire array
+- By the end of this first pass the largest element will "bubble up" to the end of the array
+  
+5. **Repeat:**
+
+- Repeat the entire process for the remaining elements (excluding the last element which is already on the correct position)
+
+6. **Termination:**
+
+- The algorithm stops when a pass through the array results in no swaps, indicating that the array is sorted
+
+##### Complexity
+
+- **Time Complexity:** 
+  - O(n^2)
+- **Space Complexity:**
+  - O(1) as it only requires a single additional memory space for swapping
+
+
+##### Examples
+
+![](Images/algorithmsSortingBubble.png)
+
+
+
+#### Insertion Sort
+
+- Simple and intuitive sorting algorithm
+- It builds the final sorted array one item at a time -> much less efficient than more advanced algorithms
+- **Advantages:**
+  - Simple to understand and implement
+  - Efficient for small data sets and it is more efficient than other simple quadratic algorithms such as selection sort or bubble sort
+  - It is a stable sort
+  
+##### Steps
+
+1. **Starts with second element**
+
+- Considering the first element to be a sorted sub-list of one element -> Starts with the second element
+
+2. **Compare with sorted sub-list**
+
+- Take this element and compare it to the elements in the sorted sub-list (everything to the left of the current position)
+
+3. **Insert in the correct position:**
+
+- Shift all the elements in the sorted sub-list that are greater than the current element to the right by one position and insert the current element at its correct position
+
+4. **Move to the next element:**
+
+- Move to the next element and repeat the process until the entire list is sorted
+
+##### Complexity
+
+- **Time Complexity:**
+  - O(n^2) 
+- **Space Complexity:**
+  - O(1) as it only requires a single additional memory space for the value being inserted
+
+##### Examples
+
+![](Images/algorithmsSortingInsertion.png)
+
+
+#### Selection Sort
+
+- ToDo
+
 
 #### Quick Sort Algorithm
 
@@ -207,11 +284,43 @@
 
 #### Heap Sort
 
-#### Bubble Sort
+1. **Heap Data Structure**
 
-#### Insertion Sort
+- A binary heap is complete binary tree that satisfies the heap property
+- In max heap, every parent node is greater than or equal to its child nodes
+- In min heap, every parent is less than or equal to its child nodes
 
+2. **Building Heap**
 
+- The first step in Heap Sort is to transform the list into a max heap or min heap (if sorting in descending order)
+- This is done using a process known as "heapifying" 
+
+3. **Sorting the Array**
+
+- Once the heap is built, the root of the heap is guaranteed to be the first element of the array
+- Swap this root element with the last element of the array and reduce the heap size by one. The last element now is at its final position
+- "Heapify" the root of the tree again so that the largest element is at the root
+- Repeat this process until all elements are sorted
+
+##### Complexity
+
+- **Time Complexity**
+  - O(n * log n) - Heapify process is O(log n) and it is called n times
+- **Space Complexity**
+  - O(1) - Heap Sort sorts the array in place and requires a constant amount of extra space
+
+##### Characteristics
+
+- In-place sorting
+- Not stable - The relative order of equal elements might no be preserved
+- Good for large data sets:
+  - Particularly efficient for data sets that are too large to fit into memory
+  - Effective when we need to sort large data sets with minimal space complexity.
+- However it is less efficient than other O(n * log n) sorting algorithms in practical scenarios
+
+##### Examples
+
+![](Images/algorithmsSortingHeap.png)
 
 ### Searching Algorithms
 
