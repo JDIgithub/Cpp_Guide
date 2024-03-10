@@ -8,17 +8,17 @@
 - They are critical for implementing algorithms effectively
 - Choosing the right algorithm and data structure can drastically improve the performance of an application, especially in data-intensive tasks
 
-
-
-## Types
-
-### Linear
+## Linear
 
 - Like arrays, linked lists, stacks and queues
 - They are fundamental for basic operations
 
+### Array ToDo
 
-### Tree
+- Collection of items stored in contiguous block of memory
+- For storing multiple items of the same type 
+
+## Tree
 
 - Such as Binary trees, AVL trees, Red-Black trees and heaps
 - Trees are essential for hierarchical data representation and efficient data access patterns
@@ -32,39 +32,15 @@
 - STL does not have a direct tree implementation but **set**, **map**, **multiset** and **multimap** are typically implemented using Red-Black trees
 - 
 
-#### Basic Concept
-
-1. **Node**
-
-   - The fundamental part of a tree, which contains data and references (or links) to other nodes
-
-2. **Root**
-
-   - The top node of the tree with no parent
-
-3. **Leaf**
-
-   - Node with no children
-
-4. **Child and Parent**
-
-   - A node directly connected to another node when moving away from the root
-
-5. **Siblings**
-
-   - Nodes that share the same parent
-
-6. **Subtree**
-
-   - A tree formed by a node and its descendants
-
-7. **Depth of Node**
-
-   - The length of the path from the root to the node
-
-8. **Height of a Tree** 
-
-   - The depth of the deepest node
+- **Basic Concept**
+  - **Node:** The fundamental part of a tree, which contains data and references (or links) to other nodes
+  - **Root:** The top node of the tree with no parent
+  - **Leaf:** Node with no children
+  - **Child and Parent:** A node directly connected to another node when moving away from the root
+  - **Siblings:** Nodes that share the same parent
+  - **Subtree:** A tree formed by a node and its descendants
+  - **Depth of Node:** The length of the path from the root to the node
+  - **Height of a Tree:** The depth of the deepest node
 
 #### Traversal
 
@@ -163,20 +139,20 @@
    - If the search key is less, continue in the left subtree
    - If the search key is greater, continue in the right subtree
    - If we reach leaf node, the search is unsuccessful
-   - **Time Complexity:** Avarage - O(log n)  Worst Case - O(n) for skewed tree 
+   - **Time Complexity:** Average - O(log n)  Worst Case - O(n) for skewed tree 
 
 2. **Insertion**
 
    - Begin at the root node
    - Traverse the tree similar to the search operation to find the correct position for the new node
    - ??Insert the new node as a leaf??
-   - **Time Complexity:** Avarage - O(log n)  Worst Case - O(n) 
+   - **Time Complexity:** Average - O(log n)  Worst Case - O(n) 
 3. **Deletion**
 
    - **Leaf node:** Simply remove the node
    - **Node with one child:** Remove the node and replace it with its child
    - **Node with two children:** Find the node's in-order predecessor (largest node in its left subtree) or in-order successor (the smallest node in its right subtree), swap it with the node to be deleted and then remove the node
-   - **Time Complexity:** Avarage - O(log n)  Worst Case - O(n)
+   - **Time Complexity:** Average - O(log n)  Worst Case - O(n)
 
 4. **Traversal**
 
@@ -265,18 +241,121 @@
   - Average time complexity of O(1) for searching, inserting and deleting elements 
 
 - **Components**
+
   - **Keys and Values**
-    - 
+ 
+     - The primary components of a hash table are key-value pairs
+     - The key is used to generate a unique hash
 
+  - **Hash Function**
 
+     - Takes a key as input and returns an integer, which is used as the index at which the value associated with the key is stored
+     - **Properties of good Hash Function**
+       - **Uniform Distribution:** It should distribute keys uniformly across the hash table to minimize collisions 
+       - **Fast Computation:** The function should be quick to compute
+       - **Less Collision:** It should minimize collision rate
 
+  - **Array of Buckets or Slots**
+
+     - The array where the key-value pairs are stored
+     - The size of this array can impact the performance of the hash table
+
+  - **Collision Handling**
+
+     - Since a hash function can map multiple keys to the same index, collisions can occur
+     - There are several ways to handle collisions:
+       - **Chaining:** Each slot in the array is a linked list and all key-value pairs with the same hash index are stored in the list at that slot
+       - **Open addressing:** In case of a collision, a sequence of probing is done to find an empty slot 
+
+- **Operations:**
+
+   - **Insertion**
+     - Apply hash function to the key to determine the index for storing the value
+     - Handle any collision if the calculated index is already occupied
+   - **Search**
+     - Use the hash function to find the index of the desired key
+     - If collisions are handled via chaining, traverse the chain to find the key
+   - **Deletion**
+     - Similar to search, find the key and remove the key-value pair
+
+- **Advantages**
+  - **Efficiency:** Hash tables offer very fast data retrieval ideal for applications where rapid access to data is required
+  - **Lookup-Intensive Applications:** They are widely used in situations with heavy lookup operations like database indexing, caching and associative arrays
+
+- **Limitations**
+  - **Poor Worst Case Performance**
+    - In the worst case such as when all keys hash to the same index, the performance can degrade to O(n)
+  - **Memory Overhead**
+    - Hash Tables require extra space for the storage structure which can be significant especially for chaining
+
+- **Implementation**
+  - In C++ STL provides implementations of hash tables in the form of **std::unordered_map** and **std::unordered_set**
 
 ### Graphs
 
-- Representing and working with networks of nodes and edges
+- Collection of nodes (also called vertices) and edges that connect pairs of nodes
+- Used to represent relationships between pairs of objects
+- They are incredibly versatile and applicable in various domains
+
+- **Basic Concepts**
+  - **Node(Vertex):** Represents an entity (for example city on map)
+  - **Edge:** Represents connection or relationship between two nodes (for example road between cities)
+
+- **Graph Representation**
+  - **Adjacency Matrix**
+    - 2D array of size V*V (V is number of vertices)
+    - **matrix[i][j] = 1** if there is an edge from vertex i to vertex j, else **0**
+    - Simple but takes more space (O(V^2) for sparse graphs)
+  - **Adjency list**
+    - An array of list
+    - The size of the array is equal to the number of vertices
+    - **list[i]** contains all the vertices that are adjacent to vertex i
+    - Saves space for sparse graphs but can be less efficient for dense graphs
+ 
+- **Graph Algorithms**
+  - **Traversal**
+    - Depth-First Search (DFS) and Breadth-First Search (BFS) are fundamental for exploring nodes in a graph
+  - **Shortest Path**
+    - Algorithms like Dijkstra's, Bellman-Ford, etc.. find the shortest path between nodes in a weighted graph
+  - **Minimum Spanning Tree**
+    - Algorithms like Prim's and Kruskal's find the minimum spanning tree of a graph
+  - **Topological Sorting**
+    - Applies do directed acyclic graphs and results in a linear ordering of vertices
+
+- **Applications**
+  - **Social Networks:** Analyzing social structures
+  - **Google Maps:** Finding the shortest path between locations
+  - **Internet Routing:** Finding optimal paths for data packet transmission
+  - **Dependency Analysis:** In project planning or software compilation
+- **C++ Implementation**
+  - In C++ graphs are often implemented using either adjacency lists (**std::vector** or **std::list**) or adjacency matrices (**std::vector** of vectors)
 
 
+#### Undirected Graphs
 
+- Edges have no direction
+- The edge(u,v) is identical to edge(v,u)
+- **Example:** Twitter followings
+
+#### Weighted Graphs
+
+- Edges have weights associated with them
+- These weights could represent distances, cost, or any other metric
+- **Example:** Road maps with distances
+
+#### Unweighted Graphs
+
+- Edges do not have weights
+
+#### Cyclic vs Acyclic Graphs
+
+- Cyclic graphs contain at least one graph cycle (a path of edges and vertices wherein vertex is reachable from itself)
+- Acyclic graphs do not have any cycles
+
+#### Connected vs Disconnected
+
+- In a connected graph there is a path between every pair of vertices
+- In disconnected graph some vertices cannot be reached from others
 
 ## Advanced Data Structures:
 

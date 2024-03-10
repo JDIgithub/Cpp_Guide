@@ -22,35 +22,49 @@
 
 **Key Concepts**
 
-1. **Upper Bound**
-- Big O provides an upper limit on the time an algorithm will take or the space it will use in the worst-case scenario
-2. **Input Size(n)**
-3. **Ignoring Constants**
-- Big O notation abstracts away constants and less significant terms
-- For example O(2n) is simplified to O(n) and O(n^2 + n) to O(n^2)
-4. **Common Big O Types:**
+- **Upper Bound**
+  - Big O provides an upper limit on the time an algorithm will take or the space it will use in the worst-case scenario
+- **Input Size(n)**
+- **Ignoring Constants**
+  - Big O notation abstracts away constants and less significant terms
+  - For example O(2n) is simplified to O(n) and O(n^2 + n) to O(n^2)
+
+- **Common Big O Types:**
+
+  - **O(1) - Constant Time** 
+    - The algorithm takes the same amount of time regardless of the input size
+    - For example: Algorithm that determines if a number is even or odd
+  - **O(log n) - Logarithmic Time**  
+    - The complexity increases logarithmically with the input size
+    - Algorithms that divide the problem in half each time (Binary Search,...)
+  - **O(n) - Linear Time**
+    - The complexity is directly proportional to the input size
+    - For example: Iterating through an array to find an element and so on
+  - **O(n * log n) - Log-Linear Time**
+    -  Common in algorithms that break problems down into smaller parts, solve them individually and ofthen combine solutions (Merge Sort,...)
+  - **O(n^2) - Quadratic Time**
+    - Time complexity increases quadratically with the input size
+    - It is common in algorithms with nested iterations over the data set
+  - **O(2^n) - Exponential Time**
+    - The time complexity doubles with each adition to the input data set
+    - Common in brute-force algorithms for solving problems
+  - **O(n!) - Factorial Time**
+    - Extremely slow with growing n
+    - Common in algorithms that generate all permutations of a dataset 
+
 
 ![](Images/bigOgraph.png)
 
 
-- **O(1) - Constant Time** 
-  - The algorithm takes the same amount of time regardless of the input size
-- **O(log n) - Logarithmic Time**  
-  - The complexity increases logarithmically with the input size
-  - Algorithms that divide the problem in half each time (Binary Search,...)
-- **O(n) - Linear Time**
-  - The complexity is directly proportional to the input size
-- **O(n * log n) - Log-Linear Time**
-  -  Common in algorithms that break problems down into smaller parts, solve them individually and ofthen combine solutions (Merge Sort,...)
-- **O(n^2) - Quadratic Time**
-  - Time complexity increases quadratically with the input size
-  - It is common in algorithms with nested iterations over the data set
-- **O(2^n) - Exponential Time**
-  - The time complexity doubles with each adition to the input data set
-  - Common in brute-force algorithms for solving problems
-- **O(n!) - Factorial Time**
-  - Extremely slow with growing n
-  - Common in algorithms that generate all permutations of a dataset 
+
+### Space Complexity
+ 
+- Creating array of size n -> O(n) space complexity
+- Creating Matrix n x n -> O(n^2) space complexity
+- When we are using recursive calls, each function call is added to the call stack and picks up actual space in memory
+
+### Time Complexity
+
 
 ## Algorithm Design Techniques
 

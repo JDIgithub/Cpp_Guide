@@ -228,6 +228,12 @@
 
 ![](Images/stackContainers.png)
 
+- Stack function complexities:
+
+  ![](Images/stackFunctionComplexities.png)
+  
+
+
 
 #### std::queue
 
@@ -237,7 +243,7 @@
 - std::vector does not support pop_front() so it can not be used but we can use std::list and std::deque(default one)
 
 ![](Images/stdQueue.png)
-
+![](Images/queueFunctions.png)
 
 #### std::priority_queue
 
