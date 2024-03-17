@@ -1,45 +1,32 @@
 #include <iostream>
 #include <thread>
 
-class thread_guard {
-  
-  std::thread thr;
 
-public:
-  // Constructor takes rvalue reference argument (std::thread is move-only)
-  explicit thread_guard(std::thread&& thr): thr(std::move(thr)){}
-  ~thread_guard(){
-    if(thr.joinable()){
-      thr.join();
+
+void insertionSort(int array[], int size){
+  
+  for(size_t i{1}; i < size; ++i){
+    int temp = array[i];
+    int j = i - 1;  // Compare to previous element  
+
+    // Move elements that are grater than temp
+    // to one position ahead of their current position
+    while(j >= 0 && temp < array[j] ) {
+      array[j + 1] = array[j];
+      array[j] = temp;
+      j--;
     }
   }
-
-  thread_guard(const thread_guard&) = delete; // Prevents copying
-  thread_guard& operator=(const thread_guard&) = delete;
-
-  // The move assignment operator is not synthesized
-
-};
-
-void hello(){
-  std::cout << "Hello, Thread!\n";
 }
 
-
-// Main function
 int main() {
-  
-  try{
-    std::thread thr(hello);
-    thread_guard tguard{std::move(thr)};
-    throw std::exception();
-  } catch ( std::exception& e) {
-    std::cout << "Exception caught: " << e.what() << std::endl;
-  }
 
+  int array[] = {6,4,2,5,1,3};
+  int size = sizeof(array)/sizeof(array[0]);
+  insertionSort(array,size);
+  for(auto value: array){
+    std::cout << value << " ";
+  }
+  std::cout << std::endl;
   return 0;
 }
-
-
-
-

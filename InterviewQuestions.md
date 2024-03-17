@@ -3,6 +3,11 @@
 
 ## Algorithms
 
+
+![](Images/questionsSortingAlg.png)
+
+![](Images/questionsSortingAlg2.png)
+
 - What does the Big O notation primarily indicate about algorithm? **The maximum time and space complexities in the worst cases**
 - What is the Big O notation for the worst-case scenario of a binary search algorithm? **O(log n)**
 - What is the time complexity of the standard dynamic programming implementation of the Fibonacci sequence? **O(n)**
@@ -220,6 +225,18 @@
   - In Binary search tree, in what order are elements arranged in an in-order traversal? 
     - In order is *Left,Root,Right* and BST has everting lower than node in the left subtree and everything higher in right subtree so it means -> **Ascending Order**  
 
+
+- **BST vs HT**
+
+  ![](Images/bstVSht.png)
+
+- **Hash Table**
+
+  ![](Images/questionsHashTableLookup.png)
+
+- **Removing vertex from Graph**
+
+  ![](Images/questionsRemovingVertex.png)
 
 
 ## Data Types

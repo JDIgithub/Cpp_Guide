@@ -6,37 +6,46 @@
 
 ## Containers
 
-- Containers store elements in different ways
-- The STL offers different containers for use in different scenarios to fit our particular use case in the best way possible
-- Choosing the right container for the job is very strong skill
-- If we do not know beforehand which container to choose, we can start with std::vector
-- More info [here](https://en.cppreference.com/w/cpp/container)
+  - Containers store elements in different ways
+  - The STL offers different containers for use in different scenarios to fit our particular use case in the best way possible
+  - Choosing the right container for the job is very strong skill
+  - If we do not know beforehand which container to choose, we can start with std::vector
+  - More info [here](https://en.cppreference.com/w/cpp/container)
 
-### Sequence Containers
+  ### Sequence Containers
 
-- For elements stored in a sequence
-  
-#### std::vector
+  - For elements stored in a sequence
+    
+  #### std::vector
 
-- Storing stuff contiguously in memory and providing helper methods to manipulate the data
-- Defined in the [\<vector\>](https://en.cppreference.com/w/cpp/container/vector) header
-- Some basic functions:
-  
-![](Images/vectorFunctions.png)
+  - Storing stuff contiguously in memory and providing helper methods to manipulate the data
+  - Defined in the [\<vector\>](https://en.cppreference.com/w/cpp/container/vector) header
+  - Some basic functions:
+    
+    ![](Images/vectorFunctions.png)
 
-- Very fast lookup by index with '[]'
-- Inserting elements to the back is very fast when the capacity is enough
-- Inserting to the front is very expensive, we have to move all the elements to the right
-- Automatically grows its capacity to accomodate for new items if the old capacity is not enough
-- The most universal and used container
-- Supports both forward and reverse iterators
+  - Very fast lookup by index with '[]'
+  - Inserting elements to the back is very fast when the capacity is enough
+  - Inserting to the front is very expensive, we have to move all the elements to the right
+  - Automatically grows its capacity to accomodate for new items if the old capacity is not enough
+  - The most universal and used container
+  - Supports both forward and reverse iterators
 
-![](Images/vectorIterators2.png)
+    ![](Images/vectorIterators2.png)
 
-- So we can use many iterator based functions like for example insert():
+  - So we can use many iterator based functions like for example insert():
 
-![](Images/vectorInsert.png)
+    ![](Images/vectorInsert.png)
 
+
+**Big O of Vector**
+
+- Adding element to the end of the vector with **push_back()** has O(1) because it does not touch other elements
+- Removing element from the end of the vector with **pop_back()** has O(1) because it does not touch other elements
+- But if we are adding or removing elements from start of the vector then we need to re-index the whole vector so it is O(n)
+- It is O(n) even if the element is in the middle because O notation is ignoring constants and it is worst case scenario based as well
+- Searching element by value is O(n) because we need to go through the whole vector to find it if it is not sorted
+- But Looking by the index is O(1) we can go straight to the index
 
 #### std::array
 

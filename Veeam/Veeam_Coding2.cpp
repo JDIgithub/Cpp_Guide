@@ -91,7 +91,7 @@ public:
   }
 
   void push(int value) {
-    if (top < capacity - 1) {
+    if (top < capacity - 1) { 
       arr[++top] = value;
     } else {
       std::cout << "Stack overflow" << std::endl;
