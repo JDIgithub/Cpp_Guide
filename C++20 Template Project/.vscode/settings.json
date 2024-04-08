@@ -58,7 +58,10 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "semaphore": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "sstream": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp"
     },
     "cSpell.words": [
         "bptr",
