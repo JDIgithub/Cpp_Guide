@@ -98,12 +98,3 @@
 ##### Performance
 
 - Efficient data handling and buffer management are important for high-performance network applications
-
-
-
-## Network protocols
-
-### TCP/IP
-
-### HTTP
-

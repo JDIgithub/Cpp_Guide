@@ -1,58 +1,43 @@
 #include <iostream>
 #include <vector>
 
-void quickSort(std::vector<int>& arr, int low, int high);
-int partition(std::vector<int>& arr, int low, int high);
-void swap(int* a, int* b);
+
+// Function to choose pivot and swap all elements smaller to the left of pivot 
+int pivot(std::vector<int>& array, int pivotIndex, int endIndex) {
+  
+  int swapIndex = pivotIndex;
+
+  for (int i = pivotIndex + 1; i <= endIndex; i++) {
+    if(array[i] < array[pivotIndex]){
+      swapIndex++;
+      std::swap(array[i],array[swapIndex]);
+    }
+  }
+  std::swap(array[pivotIndex], array[swapIndex]);
+  return swapIndex;
+}
+
+// Function to perform QuickSort
+void quickSort(std::vector<int>& array, int leftIndex, int rightIndex) {
+  if (leftIndex >= rightIndex) { return; } // End of the recursion
+  
+  int pivotIndex = pivot(array, leftIndex, rightIndex);
+  // Separately sorts sub-arrays to the left of the pivot and to the right of the pivot
+  quickSort(array, leftIndex, pivotIndex - 1);
+  quickSort(array, pivotIndex + 1, rightIndex);
+}
 
 int main() {
   
   std::vector<int> array = {3, 6, 8, 10, 1, 2, 1};
-  int n = array.size();
-  int low = 0;
-  int high = n - 1;
-  quickSort(array, low, high);
+  int pivotIndex = 0;
+  int rightIndex = array.size() - 1;
+  quickSort(array, pivotIndex, rightIndex);
 
   std::cout << "Sorted array: \n";
-  for (int i = 0; i < n; i++) {
-    std::cout << array[i] << " ";
+  for (int element : array) {
+    std::cout << element << " ";
   }
   std::cout << std::endl;
-
   return 0;
-}
-
-// Function to perform QuickSort
-void quickSort(std::vector<int>& array, int low, int high) {
-  if (low < high) {
-    int partitioningIndex = partition(array, low, high);
-
-    // Separately sort elements before partition and after partition
-    quickSort(array, low, partitioningIndex - 1);
-    quickSort(array, partitioningIndex + 1, high);
-  }
-}
-
-// Function to partition the array
-int partition(std::vector<int>& array, int low, int high) {
-  
-  int pivot = array[high]; // pivot
-  int i = (low - 1); // Index of smaller element
-
-  for (int j = low; j <= high - 1; j++) {
-    // If current element is smaller than the pivot
-    if (array[j] < pivot) {
-      i++; // increment index of smaller element
-      swap(&array[i], &array[j]);
-     }
-  }
-  swap(&array[i + 1], &array[high]);
-  return (i + 1);
-}
-
-// Function to swap two elements
-void swap(int* a, int* b) {
-    int t = *a;
-    *a = *b;
-    *b = t;
 }

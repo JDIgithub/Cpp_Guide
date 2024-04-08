@@ -210,9 +210,17 @@
 - Another difference is in default inheritance type which is public by default here as well
 - But of course we can override these defaults same like with Classes
 
-### Structured Bindings
+## Structured Bindings
 
+- Introduced in C++17
+- Provides a convenient and readable way to unpack tuple-like objects into individual named variables
+- This feature enhances the readability and conciseness of the code especially when dealing with tuples, pairs, arrays or structs that return multiple values from a function or require decomposition
+
+![](Images/structuredBindingsTuple.png)
 ![](Images/structuredBindings.png)
+
+- By default, the unpacked variables are immutable (const). If you need to modify them, you should declare the structured binding as auto& (for lvalues) or auto&& (for rvalues) depending on the context.
+
 
 ## Objects
 
@@ -358,3 +366,22 @@
 
 - **ToDo Rules of 3: If we have explicit destructor then we should have copy and move constructor as well!!   why?**
   
+
+
+## Singleton
+
+- Design pattern that restricts the instantiation of a class to one single instance
+- This is useful when exactly one object is needed to coordinate actions across the system
+- The singleton pattern is often used in scenarios such as managing a connection to a database or in setting where having more than one instance of the class would lead to problems
+
+- **Basic Implementation**
+  - **Private Constructor:** Constructor is made private to prevent direct construction calls with the **new** operator
+  - **Deleted Copy Constructor and Assignment Operator**
+  - **Static Method for Access:** A public static method allows the class instance to be accessed
+  - **Static Instance:** Static Instance of the class itself is maintained within the class
+
+  ![](Images/classSingleton.png)
+
+  - This basic implementation is not thread-safe. To make it thread-safe mechanisms like mutexes would need to be used to lock the code that initializes the instance
+- **Static Initialization:** 
+  - Another approach to ensure that the instance is created only once is to use the magic static feature of C++11, which guarantees that a static local variable is initialized only once, even when called from multiple threads.

@@ -53,6 +53,7 @@
         "Lvalue",
         "Lvalues",
         "noexcept",
+        "POSIX",
         "Rethrown",
         "Rvalue",
         "Rvalues",

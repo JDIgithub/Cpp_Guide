@@ -1,33 +1,32 @@
 #include <iostream>
+#include <thread>
 
-// Function to perform Insertion Sort
-void insertionSort(int array[], int n) {
+
+
+void insertionSort(int array[], int size){
   
-  int i, key, j;
-  for (i = 1; i < n; i++) {
-    key = array[i];
-    j = i - 1;
+  for(size_t i{1}; i < size; ++i){
+    int temp = array[i];
+    int j = i - 1;  // Compare to previous element  
 
-    // Move elements of array[0..i-1], that are greater than key,
+    // Move elements that are grater than temp
     // to one position ahead of their current position
-    while (j >= 0 && array[j] > key) {
+    while(j >= 0 && temp < array[j] ) {
       array[j + 1] = array[j];
-      j = j - 1;
+      array[j] = temp;
+      j--;
     }
-    array[j + 1] = key;
   }
 }
 
-// Main function
 int main() {
-  
-    int array[] = {12, 11, 13, 5, 6};
-    int n = sizeof(array) / sizeof(array[0]);
-    insertionSort(array, n);
 
-    return 0;
+  int array[] = {6,4,2,5,1,3};
+  int size = sizeof(array)/sizeof(array[0]);
+  insertionSort(array,size);
+  for(auto value: array){
+    std::cout << value << " ";
+  }
+  std::cout << std::endl;
+  return 0;
 }
-
-
-
-
