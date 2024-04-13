@@ -2,14 +2,6 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-<<<<<<< HEAD
-#include <unordered_map>
-#include <mutex>
-#include <thread>
-#include <vector>
-#include <stack>
-#include <iostream>
-=======
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -19,16 +11,9 @@
 #include <mutex>
 #include <condition_variable>
 using namespace std;
->>>>>>> eef2c9b7d142965aa02e105bae70e34fff2c9ed7
 
 // LeetCode 1. Two sum
 
-<<<<<<< HEAD
-
- 
-int main() {
-
-=======
 vector<int> twoSum(vector<int>& nums, int target) {
         
   // with HashMap
@@ -66,7 +51,6 @@ vector<int> myTwoSum(vector<int>& nums, int target) {
 
 int main(){
 
->>>>>>> eef2c9b7d142965aa02e105bae70e34fff2c9ed7
 
   return 0;
 }
