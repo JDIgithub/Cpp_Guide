@@ -6,21 +6,6 @@
 #include <mutex>
 #include <thread>
 #include <vector>
-#include <queue>
-#include <memory>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <future>
-#include <functional>
-#include <stdexcept>
-#include <stack>
-#include <cassert>
-
-#include <iostream>
-#include <limits>
-#include <cstring>
-#include <climits>
 
 
 class Node{
@@ -266,6 +251,60 @@ public:
 
 
 
+
+
+
+
+
+
+  // LL coding interview 3 -------------------------------------------------------------------
+		//   | Description:                                        |
+		//   | - This method sorts the linked list using the       |
+		//   |   Bubble Sort algorithm.                            |
+		//   | - Starts at the head node and iteratively swaps     |
+		//   |   adjacent nodes if they are in the wrong order.    |
+		//   |                                                     |
+		//   | Return type: void                                   |
+		//   |                                                     |
+		//   | Tips:                                               |
+		//   | - Uses two nested while loops for iteration.        |
+		//   | - Utilizes a 'sortedUntil' node to optimize.        |
+
+
+  void bubbleSort(){
+
+    Node*temp ={};
+    for(int i{0}; i < m_length; i++){
+      temp = m_head;
+      while(temp->m_next != nullptr){
+        if(temp->m_value > temp->m_next->m_value){
+          std::swap(temp->m_value,temp->m_next->m_value);
+        }    
+        temp = temp->m_next;
+      }
+    }
+  }
+
+  // Optimization with sortedUntil ToDo
+  void bubbleSort2() {
+    if (m_length < 2) return;
+        
+    Node* sortedUntil = nullptr;
+    while (sortedUntil != m_head->m_next) {
+      Node* temp = m_head;
+      while (temp->m_next != sortedUntil) {
+        Node* nextNode = temp->m_next;
+        if (temp->m_value > temp->m_next->m_value) {
+          std::swap(temp->m_value,temp->m_next->m_value);
+        }
+        temp = temp->m_next;
+      }
+      sortedUntil = temp;
+    }
+  }
+
+
+
 private:
   Node* m_head;
   Node* m_tail;
@@ -283,12 +322,8 @@ int main() {
   myLinkedList->printList();
   myLinkedList->insert(1,8);
   myLinkedList->printList();
-//  myLinkedList->deleteNode(2);
-//  myLinkedList->printList();
-  myLinkedList->reverse();
+  myLinkedList->bubbleSort();
   myLinkedList->printList();
 
   return 0;
 }
-
-

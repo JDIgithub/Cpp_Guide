@@ -250,3 +250,176 @@ public:
 In this example, if someCondition is true, the constructor throws a std::runtime_error. If this exception is not caught when an object of MyClass is instantiated, the program will terminate (or the exception must be caught by the caller).
 
 It's crucial to handle exceptions thrown by constructors, especially when dealing with dynamic memory allocation or other resource management, to ensure that there are no leaks or undefined behaviors.
+
+
+
+
+Which modifier should be used for the function f() so that the following
+code compiles:
+class B
+{
+public:
+  void  f(){ printf("B:f()"); }
+};
+
+void Do()
+{
+  B::f();
+}
+
+•  no modifier is necessary, the code is correct
+•  inline
+•  static
+•  unsure
+
+2.  What would be the output after executing the function f()?
+class Parent
+{
+public:
+    virtual void f(){ printf("Parent:f "); }
+};
+
+class Child : public Parent
+{
+public:
+  virtual void f(){ printf("Child:f "); }
+};
+
+void f1(Parent p) { p.f(); } 
+void f2(Parent* p) { p->f(); } 
+void f3(Parent& p) { p.f(); } 
+
+void f()
+{
+  Child c;
+  f1( c ); f2( &c ); f3( c );
+}
+
+•  Child:f  Child:f Child:f
+•  Parent:f  Parent:f Parent:f
+•  Parent:f  Child:f Child:f 
+•  Parent:f  Child:f Parent:f
+•  unsure
+
+
+3. What will happen when the function Do() is executed?
+struct ExcType1
+{};
+
+struct ExcType2
+{};
+
+class A
+{
+public:
+  ~A() { throw ExcType1(); }
+};
+
+void Do()
+{
+  try
+  {
+    A a;
+    throw ExcType2();
+  }
+  catch( ExcType1& )
+  {
+    printf( "ExcType1 ");
+    exit(1);
+  }
+  catch( ExcType2& )
+  {
+    printf( "ExcType2 ");
+    exit(2);
+  }  
+  printf( "… but Continue");
+
+}
+
+•  "ExcType2 … but Continue" will be printed to output
+•  "ExcType1 … but Continue" will be printed to output
+•  "… but Continue" will be printed to output
+•  the application will be terminated
+•  unsure
+
+4. What will happen when the function Do() is executed?
+class A
+{
+public:
+  A(): _d( 1 ) { memset( this,  0, sizeof( A ) ); }
+  virtual void f(){ printf("%d", _d); }
+private:
+  int _d;
+};
+
+class B : public A
+{
+public:
+  virtual void f(){ printf("123"); }
+}
+
+void print(A* pA)
+{
+  pA->f();
+}
+
+void Do()
+{
+  A* pA = new A();
+
+  pA -> f();
+}
+
+•  "1" will be printed to output
+•  "0" will be printed to output
+•  the application will be terminated
+•  unsure
+
+5. What will the function Do() return? 
+struct A
+{ 
+  void f() { printf("A"); };
+};
+
+struct B : public A
+{
+  void f() { printf("B"); }
+};
+
+struct C
+{
+  void f() { printf("C"); };
+}
+
+bool Do()
+{
+  C* p_a = new C(); 
+  if (B* p_b = dynamic_cast<B*>(p_a)) 
+    return true; 
+  else
+    return false; 
+} 
+
+• true
+• false 
+• the application won’
+
+std::mutex m1;
+std::mutex m2;
+
+void f1()
+{
+  m1.lock();
+  m2.lock();
+}
+
+void f2()
+{
+  m1.lock();
+  m2.lock();
+
+
+}
+
+  
+

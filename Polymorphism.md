@@ -1,5 +1,6 @@
 # Polymorphism
 
+- Polymorphism in general is the condition of occurring in several different forms
 - Two types:
   - Run-Time polymorphism (virtual functions)
   - Compile-Time polymorphism (function overloading, operator overloading)
