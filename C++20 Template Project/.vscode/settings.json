@@ -62,7 +62,8 @@
         "fstream": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "sstream": "cpp"
     },
     "cSpell.words": [
         "bptr",
