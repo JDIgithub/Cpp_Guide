@@ -7,7 +7,6 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-#include <math.h>
 using namespace std;
 
 /*
@@ -20,18 +19,6 @@ Consider the number of elements in nums which are not equal to val be k, to get 
   Change the array nums such that the first k elements of nums contain the elements which are not equal to val. 
   The remaining elements of nums are not important as well as the size of nums.
   Return k.
-Custom Judge:
-  The judge will test your solution with the following code:
-    int[] nums = [...]; // Input array
-    int val = ...; // Value to remove
-    int[] expectedNums = [...]; // The expected answer with correct length. It is sorted with no values equaling val.
-    int k = removeElement(nums, val); // Calls your implementation
-    assert k == expectedNums.length;
-    sort(nums, 0, k); // Sort the first k elements of nums
-    for (int i = 0; i < actualLength; i++) {
-      assert nums[i] == expectedNums[i];
-    }
-If all assertions pass, then your solution will be accepted.
 
 Example 1:
 
@@ -49,21 +36,22 @@ It does not matter what you leave beyond the returned k (hence they are undersco
 */
 
 
-double NormAng360(double ang) {
-	ang = fmod(ang, 360);
-	if (ang < -0.01) {
-		ang += 360.0;
-	}
-	return ang;
+int removeElement(std::vector<int>& nums, int val) {
+  int index = 0;
+  for(int num: nums){
+    if(num != val){
+      nums[index] = num;
+      index++;
+    }
+  }
+  return index;
 }
 
 
 int main(){
 
   std::vector nums {0,1,2,2,3,0,4,2};
-
-  std::cout << NormAng360(360.0) << std::endl;
-  
+  std::cout << removeElement(nums,2) << std::endl;
   for(int num:nums){
     std::cout << num << ' ';
   }

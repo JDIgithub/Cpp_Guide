@@ -125,68 +125,6 @@ int main2() {
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 /*
-Problem: Longest Substring Without Repeating Characters
-Given a string s, find the length of the longest substring without repeating characters.
-
-Example 1:
-Input: s = "abcabcbb"
-Output: 3
-Explanation: The answer is "abc", with the length of 3.
-
-Example 2:
-Input: s = "bbbbb"
-Output: 1
-Explanation: The answer is "b", with the length of 1.
-
-Example 3:
-Input: s = "pwwkew"
-Output: 3
-Explanation: The answer is "wke", with the length of 3.
-Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
-
-Constraints:
-0 <= s.length <= 5 * 10^4
-s consists of English letters, digits, symbols, and spaces.
-Approach:
-A common approach to solve this problem is using the Sliding Window technique combined with a Hash Map to track characters and their indices in the string.
-This allows us to skip characters immediately when we encounter a repeated character.
-
-*/
-
-int longestSubstring(const std::string& str){
-
-  if(str.empty()) return 0;
-
-  std::unordered_map<char,int> charIndx;
-  int maxLength = 0; // Store the maximum length found.
-  int start = 0; // Sliding window start index.
-  
-  for(int end = 0; end< str.size(); end++){
-
-    if(charIndx.find(str[end]) != charIndx.end() && charIndx[str[end]] >= start){ 
-      start = charIndx[str[end]] + 1; // Move the start of the window past this character's last occurrence.
-    }
-    charIndx[str[end]] = end; // Saves characeters and their idex into hash map. If char is already there just update his last index
-    maxLength = std::max(maxLength, end - start + 1); // If length of actual windows is higher than maxlength then update it
-  }
-
-  return maxLength;
-}
-
-int main3() {
-
-  std::string str {"pwwkew"};
-
-  std::cout << longestSubstring(str);
-
-  return 0;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------------------------------
-
-/*
 
 Problem: Coin Change
 You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
