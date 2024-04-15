@@ -421,6 +421,49 @@
     - used for asynchronous computations
 
 
+  - **Conditional Variable**
+
+    - They are defined in [\<condition_variable\>](https://en.cppreference.com/w/cpp/thread/condition_variable) header
+    - **wait()**
+      - Takes an argument of type **std::unique_lock**
+      - It unlocks its argument and blocks the thread until a notification is received
+    - **wait_for()** and **wait_until()**
+      - Re-lock their argument if a notification is not received in time
+    - **notify_one()**
+      - Wake up one of the waiting threads
+      - The scheduler decides which thread is woken up
+    - **notify_all()**
+      - Wake up the waiting threads
+
+
+    - Thread A tells the condition variable it is waiting
+    - Thread B notifies the condition variable when it updates the string
+    - The condition variable wakes thread A up
+    - Thread A then uses the string
+    
+    ![](Images/conditionalVar.png)
+
+
+  - **Atomic Types**
+
+    - **Atomic Operations**
+      - Operations on atomic types are performed as a single, indivisible step. 
+      - This means that no other thread can see an intermediate state or interfere with the operation. 
+      - Common operations include reading (load), writing (store), and atomic modifications such as increment, decrement, or bitwise operations.
+    - **Memory Order**
+      -  Atomics in C++ also involve memory ordering semantics, which dictate the visibility of memory operations across threads. 
+      -  There are several memory order options ranging from memory_order_relaxed (least strict, only guarantees atomicity) to memory_order_seq_cst (most strict, full sequential consistency).
+
+    - **std::atomic Template**
+      - The std::atomic template can be instantiated with any TriviallyCopyable type that is also CopyConstructible and CopyAssignable. This includes most built-in types like int, float, pointer types, and user-defined types meeting these criteria.
+    - **Lock-Free Property** 
+      - Atomic types are usually implemented in a way that does not require locking. 
+      - They're often implemented using machine-specific instructions that are more efficient than locks. 
+      - However, not all atomic types are guaranteed to be lock-free. 
+      - You can check if an instance of std::atomic is lock-free using its is_lock_free() member function.
+
+    ![](Images/atomicType.png)
+
 
 ## Deadlock
 
@@ -506,3 +549,22 @@ could be fast (since the condition in while loop appears to be true always).
 - So, to ensure the desired result, we need to somehow stop the compiler from optimizing the while loop. 
 - That is where the volatile keyword plays its role:
   - **volatile int some_int = 100;**
+
+
+
+
+
+## Lazy Initialization
+
+- It means that we declare variable but we initialize later just before we need it
+- Common Pattern in functional programming
+- A variable is only initialized when it is first used
+- This is useful when the variable is expensive to construct
+- Can be used in multi-threaded code
+  - But we need to avoid data races
+
+![](Images/lazyInitiation.png)
+
+- but the code above is not thread safe
+
+![](Images/lazyInitiationThreadSafe.png)

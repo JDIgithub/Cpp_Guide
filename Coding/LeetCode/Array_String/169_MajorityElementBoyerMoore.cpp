@@ -10,9 +10,7 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-#include <math.h>
 using namespace std;
-
 
 // LeetCode 169. Majority Element
 /*

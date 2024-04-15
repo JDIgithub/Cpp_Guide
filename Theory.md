@@ -1,9 +1,33 @@
 # Theory
 
 ## Introduction ToDo
-    
-- Some C++ or programming in general theory sumup
 
+### History of Programming
+
+- **Non-Structured Programming**
+
+  ![](Images/nonStructuredProgramming.png)
+
+  - 1950
+  - Sequentially ordered Instructions
+  - Creates "Spaghetti Code" which is complicated code, difficult to understand and maintain
+
+
+- **Structured Programming**
+
+  ![](Images/structuredProgramming.png)
+
+  - 1960
+  - Breaks down code into logical steps
+  - They rely on sub-routines which contains set of instructions to be carried out
+  - Named functions and Data structures improved the readability of the code
+  - Reduces development time
+
+- **Object-Oriented Programming**
+  - 1980
+  - Splits apart the program into self-contained objects
+  - Object acts as a program and operates on its own data
+  - Objects interact with each other and they can even contain other objects
 
 
 ## Compilers ToDo
