@@ -36,7 +36,6 @@ Output: 1
 
 */
 
-
 int maxArea(vector<int>& height) {
         
   if(height.size() < 2) return 0;
@@ -66,7 +65,6 @@ int maxArea(vector<int>& height) {
 int main(){
 
   std::vector<int> nums {1,8,6,2,5,25,8,25,7};
-
   std::cout << maxArea(nums);
 
 
