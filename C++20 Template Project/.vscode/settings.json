@@ -63,7 +63,13 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "future": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "iomanip": "cpp",
+        "span": "cpp",
+        "variant": "cpp",
+        "format": "cpp"
     },
     "cSpell.words": [
         "bptr",

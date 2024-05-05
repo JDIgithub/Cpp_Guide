@@ -432,8 +432,15 @@
     - **notify_one()**
       - Wake up one of the waiting threads
       - The scheduler decides which thread is woken up
+      - Only one of the threads which called **wait()** will be woken up
+      - The other waiting threads will remain blocked
+      - A different reader thread processes the data each time
     - **notify_all()**
       - Wake up the waiting threads
+      - The condition variable wakes up all the threads which have called **wait()**
+      - The threads could wake up in any order
+      - All the reader threads process the data
+
 
 
     - Thread A tells the condition variable it is waiting
@@ -442,6 +449,76 @@
     - Thread A then uses the string
     
     ![](Images/conditionalVar.png)
+
+    - std::condition_variable only works with std::mutex
+    - There is also std::condition_variable_any
+      - Works with any mutex-like object
+      - Including our own types
+      - May have more overhead
+
+  - **Conditional Variable with Predicate**
+
+    - The example in the previous lecture has a problem
+    - **wait()** will block until the condition variable is notified
+    - If the writer calls **notify()** before the reader calls **wait()**
+      - The condition variable is notified when there are no threads waiting
+      - The reader will never be woken up
+      - The reader could be blocked forever
+    - This is known as **lost wake-up**
+    - Occasionally, the reader could be woken up for no reason. This is called **spurious wakeup**
+      - The condition variable can occasionally wakes the reader up even when no notify() was called
+      - This is due to the way that std::condition_variable is implemented
+    - Fortunately, there is a way to solve both spurious and lost wake-ups -> **wait() with predicate**
+    - **wait()** takes an optional second argument: a predicate
+    - Typically the predicate checks a shared bool
+      - The bool is init to false
+      - It is set to true when the writer sends the notification
+    - The reader thread will call this predicate
+    - It will only call **wait()** if the predicate returns false
+    - **Using wait() with predicate**:
+      - Add a shared boolean flag, initialized to false
+      - In the **wait()** call ,provide a callable object that checks the flag
+
+      ![](Images/waitWithPredicate.png)
+      ![](Images/notifyWithPredicate.png)
+
+
+    - **Lost Wake-up Avoidance**
+      - The writer notifies the condition variable
+      - The reader thread locks the mutex
+      - The reader thread calls the predicate
+      - If the predicate returns true
+        - Lost wake-up scenario - the writer has already sent a notification
+        - The reader thread continues with the mutex locked
+
+    - **Spurious Wakeup Avoidance**
+      - The writer notifies the condition variable
+      - The reader locks the mutex
+      - The reader calls the predicate
+      - If the predicate returns false
+        - Spurious wake-up scenario - the writing thread has not sent a notification
+        - The reader thread calls **wait()** again
+
+    - **Multiple Threads**
+      -  Condition variables are particularly useful here
+         -  Multiple threads are waiting for the same event
+
+  - **Condition Variable Example**
+
+    ![](Images/cvExample.png)
+
+    - **data_cv**
+      - The fetching thread notifies this when it has new data
+      - The progress bar waits on it and updates itself
+    - **completed_cv**
+      - The fetching thread notifies this when the download completes
+      - The progress bar waits on it and exits
+      - The processing thread waits on it and processes the data
+    - We use predicates with the condition variables to avoid lost and spurious wake-ups
+
+    ![](Images/cvExample2.png)
+    ![](Images/cvExample3.png)
+    ![](Images/cvExample4.png)
 
 
   - **Atomic Types**
@@ -464,6 +541,120 @@
 
     ![](Images/atomicType.png)
 
+
+
+## Transferring Data
+
+- So far we have used shared variables to share data between threads
+- Conditional variables can signal to another thread that shared data has been modified but can not directly transfer data from one thread to another
+- But we can transfer data with **std::future** and **std::promise**
+- Together they set up a "shared state" between threads
+- The shared state can transfer data from one thread to another
+  - No shared data variables
+  - No explicit locking
+
+- **Producer-Consumer Model**
+  - Futures and Promises use a producer-consumer model
+  - A producer thread will generate result
+  - A consumer thread waits for the result
+  - The producer thread stores the generated result in the shared state
+  - The consumer thread reads the result from the shared state
+  - 
+- **std::promise** object is associated with the producer
+  - The promise object stores the result in the shared state
+- **std::future** object is associated with the consumer
+  - The consumer calls a member function of the future object
+  - The function blocks until the result becomes available
+  - The member function reads the result from the shared state
+  - The member function returns the result
+
+  ![](Images/futurePromise.png)
+
+
+- **Exception Handling**
+  - Futures and Promises also work with exceptions
+    - The promises stores the exception in the shared state
+  - This exception will be rethrown in the consumer thread
+  - The producer throws the exception to the consumer
+  
+  ![](Images/futurePromiseException.png)
+
+  - **std::make_exception_ptr()**
+    - To throw an exception ourselves we could:
+      - Throw the exception inside a try block
+      - Write catch block that calls set_exception()
+    - C++11 has **std::make_exception_ptr()**
+      - Takes the exception object we want to throw
+      - Returns a pointer to its argument
+      - Pass this pointer to set_exception()
+      - Avoid "boilerplate" code
+      - Better code generation
+
+  ![](Images/exceptionPointer.png)
+
+
+
+- **std::future and std::promise**
+  - An promise object is associated with a future object
+  - Together they create a **shared state**
+    - The promise object stores a result in the shared state
+    - The future object gets the result from the shared state
+
+  - **std::future**
+    - Template class defined in \<future\>
+    - The parameter is the type of the data that will be returned
+    - Represents a result that is not yet available
+    - One of the most important classes in C++ concurrency
+      - Works with many different asynchronous objects and operations, not just std::promise
+    - An **std::future** object is not usually created directly
+      - Obtained from an std::promise object
+      - Or returned by an asynchronous operation
+    - **get()** member function
+      - Obtains the result when ready
+      - Blocks until the operation is complete
+      - Fetches the result and returns it
+    - **wait()** and friends
+      - Block but do not return a result
+      - wait() blocks until the operation is complete
+      - wait_for() and wait_until() block with a timeout
+
+  - **std::promise**
+    - Template class defined in \<future\>
+    - The parameter is the type of the result
+    - Constructor creates an associated std::future object
+    - Sets up the shared state with it
+    - **get_future()** member function
+      - returns the associated future
+      - std::promise\<int\> prom;
+      - std::future fut = prom.get_future();
+    - **set_value()** 
+      - Sets result to its argument
+    - **set_exception()**
+      - Indicates that an exception has occurred
+      - This can be stored in the shared state
+
+- **Multiple Threads**
+  
+  - **Example**:
+    - Single producer thread
+    - Multiple consumer threads
+
+  - **std::future** is designed for use with a single consumer thread
+    - Can not be safely shared between threads
+    - Can not be copied -> Move-only class
+
+  - The code in the example below can work properly sometimes but sometimes it will not so it is unsafe code
+
+    ![](Images/mutipleConsumers.png)
+
+  - **std::shared_future**
+    - Each thread has its own object
+    - They all share the same state with the **std::promise**
+    - Calling **get()** or **wait()** from different copies is safe
+
+    ![](Images/sharedFutureExample.png)
+
+  
 
 ## Deadlock
 
@@ -493,7 +684,7 @@
   - Lock multiple mutexes in a single operation
   - C++ provides library for this
     - **std::scoped_lock  (C++17)**
-      - Very similar to std::lock_guard except it cna lock more than one mutex at the same time: std::scoped_lock scope_lck(mut1,mut2,...);
+      - Very similar to std::lock_guard except it can lock more than one mutex at the same time: std::scoped_lock scope_lck(mut1,mut2,...);
       - The mutexes are locked in the order given in the constructor call
     - **std::try_lock**
       - Also locks multiple mutexes in single operation: std::try_lock(uniq_lk1, uniq_lk2);
@@ -568,3 +759,6 @@ could be fast (since the condition in while loop appears to be true always).
 - but the code above is not thread safe
 
 ![](Images/lazyInitiationThreadSafe.png)
+
+
+
