@@ -19,140 +19,98 @@
 
 using namespace std;
 
-// 71. Simplify Path
+// 2487. Removes Nodes From Linked List
 
 /*
 
-Given an absolute path for a Unix-style file system, which begins with a slash '/', transform this path into its simplified canonical path.
-In Unix-style file system context, a single period '.' signifies the current directory, a double period ".." denotes moving up one directory level,
-and multiple slashes such as "//" are interpreted as a single slash. In this problem, treat sequences of periods not covered by the previous rules (like "...") 
-as valid names for files or directories.
-
-The simplified canonical path should adhere to the following rules:
-
-It must start with a single slash '/'.
-Directories within the path should be separated by only one slash '/'.
-It should not end with a slash '/', unless it's the root directory.
-It should exclude any single or double periods used to denote current or parent directories.
-Return the new path.
-
- 
+You are given the head of a linked list.
+Remove every node which has a node with a greater value anywhere to the right side of it.
+Return the head of the modified linked list.
 
 Example 1:
 
-Input: path = "/home/"
-
-Output: "/home"
-
-Explanation:
-
-The trailing slash should be removed.
-
- 
+Input: head = [5,2,13,3,8]
+Output: [13,8]
+Explanation: The nodes that should be removed are 5, 2 and 3.
+- Node 13 is to the right of node 5.
+- Node 13 is to the right of node 2.
+- Node 8 is to the right of node 3.
 Example 2:
 
-Input: path = "/home//foo/"
-
-Output: "/home/foo"
-
-Explanation:
-
-Multiple consecutive slashes are replaced by a single one.
-
-Example 3:
-
-Input: path = "/home/user/Documents/../Pictures"
-
-Output: "/home/user/Pictures"
-
-Explanation:
-
-A double period ".." refers to the directory up a level.
-
-Example 4:
-
-Input: path = "/../"
-
-Output: "/"
-
-Explanation:
-
-Going one level up from the root directory is not possible.
-
-Example 5:
-
-Input: path = "/.../a/../b/c/../d/./"
-
-Output: "/.../b/d"
-
-Explanation:
-
-"..." is a valid name for a directory in this problem.
-
+Input: head = [1,1,1,1]
+Output: [1,1,1,1]
+Explanation: Every node has value 1, so no nodes are removed.
  
-
 Constraints:
 
-1 <= path.length <= 3000
-path consists of English letters, digits, period '.', slash '/' or '_'.
-path is a valid absolute Unix path.
+The number of the nodes in the given list is in the range [1, 105].
+1 <= Node.val <= 105
+
 */
 
+struct ListNode {
+  int val;
+  ListNode *next;
+  ListNode() : val(0), next(nullptr) {}
+  ListNode(int x) : val(x), next(nullptr) {}
+  ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
 
-void buildans(std::stack<std::string> &myStack,std::string &ans){
-  if(myStack.empty()) return;
-  
-  std::string mini=myStack.top();
-  myStack.pop();
-  buildans(myStack,ans);
-  ans+=mini;
+// Recursion 
+// T: O(N)
+// S: O(N)
 
-}
+ListNode* removeNodes(ListNode* head) {
 
-std::string simplifyPath(std::string path) {
-  std::stack<std::string> myStack;
+  if(!head) return nullptr;
+  ListNode *node = head;
+  ListNode *greater = removeNodes(node->next);
+  node->next = greater;
 
-  int i=0;
-  while(i<path.size()){
-
-    int start=i;
-    int end=i+1;
-
-    while(end<path.size()&&(path[end]!='/')){ end++; }
-
-    i=end;
-    std::string minipath=path.substr(start,end-start);
-
-    if(minipath=="/"||minipath=="/.") { 
-      continue; 
-    }
-
-    if(minipath!="/.."){ 
-      myStack.push(minipath);
-    } else if(!myStack.empty()){ 
-      myStack.pop(); 
-    }
-
+  if (greater == nullptr || node->val >= greater->val) {
+    return node;
   }
-
-  std::string ans=myStack.empty()?"/":"";
-  buildans(myStack,ans);
-  return ans;
-
+  
+  return greater;
 }
 
+// Stack for storage
+// T: O(N)
+// S: O(N)
 
+// We can also use stack
+// Initialize a stack to store nodes in non-decreasing order of their values.
+// Traverse the linked list:
+// If the current node's value is greater than the top element of the stack, pop elements from the stack until the condition is met.
+// Push the current node onto the stack.
+// Reverse the stack to obtain the modified linked list.
+// Return the head of the modified linked list.
+
+// To Do
+
+
+// Reversing list 
+// T: O(N)
+// S: O(1)
+// Reverse the given linked list.
+// Initialize a dummy node to hold the result.
+// Traverse the reversed list, keeping nodes whose values are greater than or equal to the previous node's value.
+// Reverse the resulting list to obtain the modified linked list.
+// Return the head of the modified linked list.
+
+// To Do
 
 int main(){
 
-  std::string path1{"/home/"};
-  std::string path2{"/home//foo/"};
-  std::string path3{"/home/user/Documents/../Pictures"};
+  ListNode *head = new ListNode(5);
+  head->next = new ListNode(2);
+  head->next->next = new ListNode(13);
+  head->next->next->next = new ListNode(3);
+  head->next->next->next->next = new ListNode(8);
 
+  removeNodes(head);
 
-  std::cout << simplifyPath(path3) << std::endl;
-  
-
+  int jojo = 42;
   return 0;
 }
 

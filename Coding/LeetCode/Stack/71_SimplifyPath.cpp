@@ -99,26 +99,26 @@ path is a valid absolute Unix path.
 */
 
 
-void buildans(std::stack<std::string> &myStack,std::string &ans){
+void createSimplePath(std::stack<std::string> &myStack,std::string &simplePath){
   if(myStack.empty()) return;
   
   std::string mini=myStack.top();
   myStack.pop();
-  buildans(myStack,ans);
-  ans+=mini;
+  createSimplePath(myStack,simplePath);
+  simplePath+=mini;
 
 }
 
 std::string simplifyPath(std::string path) {
   std::stack<std::string> myStack;
 
-  int i=0;
-  while(i<path.size()){
-
+  
+  for(int i = 0; i < path.size();){
+    
     int start=i;
     int end=i+1;
 
-    while(end<path.size()&&(path[end]!='/')){ end++; }
+    while( (end < path.size()) && (path[end] != '/') ){ end++; }
 
     i=end;
     std::string minipath=path.substr(start,end-start);
@@ -135,9 +135,9 @@ std::string simplifyPath(std::string path) {
 
   }
 
-  std::string ans=myStack.empty()?"/":"";
-  buildans(myStack,ans);
-  return ans;
+  std::string simplePath = myStack.empty() ? "/":"";
+  createSimplePath(myStack,simplePath);
+  return simplePath;
 
 }
 
