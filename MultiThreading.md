@@ -41,6 +41,104 @@
 
 
 
+## Atomic Types
+
+
+- **Integer Operations**
+  
+  - Integer Operations are usually a single instruction
+    - Provided the data is correctly aligned and fits into a single word
+  - Thread can not be interrupted while performing integer operations
+  - Do we still need to lock a shared integer?
+
+      ![](Images/integerOperationThreads.png)
+  
+  - In the example above the result should be 1'000'000 but it is much less. Why when integer operation can not be interrupted?
+    - The **++** operation is a single instruction but **++counter** involves three operations:
+      - Pre-fetch the value of count from L1 cache
+      - Increment the value in the processor core register
+      - Publish the new value of count into the L1 cache
+    - The thread could use an outdated value in its calculation or publish its result after a thread which ran later
+
+    ![](Images/integerOperationThreads2.png)
+
+    - We need to make sure that
+      - Thread B uses the latest value for counter
+      - Thread A publishes its result immediately
+    - A mutex does this internally when we call **lock()** and **unlock()**
+    
+    ![](Images/integerOperationMutex.png) 
+
+    - Here, we can do this by declaring counter as **atomic**
+  
+  - **Atomic Keyword**
+
+    - The compiler will generate special instructions which
+      - Disable pre-fetch for counter
+      - Flush the store buffer immediately after doing the increment
+    - This also avoids some other problems
+      - Hardware optimizations which change the instruction order
+      - Compiler optimizations which change the instruction order
+    - The result is that only one thread can access counter at a time
+    - This prevents data race but it also makes the operation take much longer
+
+  ![](Images/integerOperationAtomic.png)
+
+
+- **Atomic Types**
+
+  - All operations on the variable will be atomic
+  - C++11 defines an atomic template
+    - In the [\<atomic\>](https://en.cppreference.com/w/cpp/header/atomic) header
+    - The parameter is the type of the object
+    - The parameter must be a type which is "trivially copyable"
+      - Scalar Type
+      - Class where all the copy and move constructors are trivial
+    - Normally only integer types and pointers are used
+    - For more complex types, locks may be silently added
+      - Locking a mutex takes longer
+      - **To avoid this**, use a pointer to the type
+    - The object must be initialized: **std::atomic\<int\> x = 0;**
+  - We can assign to and from the object
+  - These are two distinct atomic operations -> Other threads could interleave between them
+  - Operations such as **++** are atomic
+    - Fetch old value
+    - Increment
+    - Store new value
+
+
+    ![](Images/integerOperationAtomic2.png)
+
+  - In high performing codes we prefer atomic to mutexes because it is faster
+
+  - **Double-Checked Locking**
+
+    - One solution is to make the initialized object atomic
+    - Atomic types do not support the "." or "->" operators
+    - We must copy to a non-atomic pointer before we can use it:
+
+      - std::atomic\<Test*\> ptest = nullptr;
+      - Test *ptr = ptest;
+      - ptr->func();
+
+
+- **Volatile Keyword**
+
+  - May change without explicit modification
+    - Prevents some compiler optimizations
+    - Typically used when accessing hardware
+  - Often mistakenly used in threading
+    - Some programmers expect the Java/C# behavior
+    - Has no impact on thread safety
+  
+    ![](Images/integerOperationVolatile.png)
+
+
+- **Atomic Operations**
+
+
+
+
 
 ## Concurrency
 

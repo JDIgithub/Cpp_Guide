@@ -19,155 +19,103 @@
 
 using namespace std;
 
-<<<<<<< HEAD
-// 9. Palindrome Number
+// 2373. Largest Local Values in a Matrix
 
 /*
 
-Given an integer x, return true if x is a 
-palindrome
-, and false otherwise.
+You are given an n x n integer matrix grid.
+Generate an integer matrix maxLocal of size (n - 2) x (n - 2) such that:
+
+  maxLocal[i][j] is equal to the largest value of the 3 x 3 matrix in grid centered around row i + 1 and column j + 1.
+
+In other words, we want to find the largest value in every contiguous 3 x 3 matrix in grid.
+
+Return the generated matrix.
 
  
 
 Example 1:
 
-Input: x = 121
-Output: true
-Explanation: 121 reads as 121 from left to right and from right to left.
+
+Input: grid = [[9,9,8,1],[5,6,2,6],[8,2,6,4],[6,2,2,2]]
+Output: [[9,9],[8,6]]
+Explanation: The diagram above shows the original matrix and the generated matrix.
+Notice that each value in the generated matrix corresponds to the largest value of a contiguous 3 x 3 matrix in grid.
 Example 2:
 
-Input: x = -121
-Output: false
-Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
-Example 3:
 
-Input: x = 10
-Output: false
-Explanation: Reads 01 from right to left. Therefore it is not a palindrome.
-=======
-// 2487. Removes Nodes From Linked List
-
-/*
-
-You are given the head of a linked list.
-Remove every node which has a node with a greater value anywhere to the right side of it.
-Return the head of the modified linked list.
-
-Example 1:
-
-Input: head = [5,2,13,3,8]
-Output: [13,8]
-Explanation: The nodes that should be removed are 5, 2 and 3.
-- Node 13 is to the right of node 5.
-- Node 13 is to the right of node 2.
-- Node 8 is to the right of node 3.
-Example 2:
-
-Input: head = [1,1,1,1]
-Output: [1,1,1,1]
-Explanation: Every node has value 1, so no nodes are removed.
->>>>>>> 4a43da137e43d694e4f72a5ee060df537e162010
+Input: grid = [[1,1,1,1,1],[1,1,1,1,1],[1,1,2,1,1],[1,1,1,1,1],[1,1,1,1,1]]
+Output: [[2,2,2],[2,2,2],[2,2,2]]
+Explanation: Notice that the 2 is contained within every contiguous 3 x 3 matrix in grid.
  
+
 Constraints:
 
-<<<<<<< HEAD
--231 <= x <= 231 - 1
- 
-
-Follow up: Could you solve it without converting the integer to a string?
-*/
-
-bool isPalindrome(int x) {
-
-  if (x < 0) return false;  // Negative numbers are not palindromes
-  if (x < 10) return true;  // Single digit numbers are always palindromes
-
-  long reversed = 0;  // Reversed must be able to store bigger number than the original -> long 
-  int original = x;
-  
-  while (x > 0) {
-    if(INT_MAX/reversed < 10){ return false;}
-    reversed = reversed * 10 + x % 10;
-    x /= 10;
-  }
-
-  return original == reversed;
-=======
-The number of the nodes in the given list is in the range [1, 105].
-1 <= Node.val <= 105
+n == grid.length == grid[i].length
+3 <= n <= 100
+1 <= grid[i][j] <= 100
 
 */
 
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
+/*
+vector<int> plusOne(vector<int>& digits) {
+    
 
-// Recursion 
-// T: O(N)
-// S: O(N)
+  for(int i = digits.size()-1; i >= 0 ; --i){  
 
-ListNode* removeNodes(ListNode* head) {
+    if(digits[i] < 9){
 
-  if(!head) return nullptr;
-  ListNode *node = head;
-  ListNode *greater = removeNodes(node->next);
-  node->next = greater;
+      digits[i]++;
+      break;
 
-  if (greater == nullptr || node->val >= greater->val) {
-    return node;
+    } else {
+      
+        digits.push_back(0);
+      
+
+
+
+      
+    }  
   }
-  
-  return greater;
->>>>>>> 4a43da137e43d694e4f72a5ee060df537e162010
+}
+*/
+
+
+volatile int counter = 0;
+
+void task() {
+  for(int i = 0; i < 100'000; ++i){
+    ++counter;
+  }
 }
 
-// Stack for storage
-// T: O(N)
-// S: O(N)
 
-// We can also use stack
-// Initialize a stack to store nodes in non-decreasing order of their values.
-// Traverse the linked list:
-// If the current node's value is greater than the top element of the stack, pop elements from the stack until the condition is met.
-// Push the current node onto the stack.
-// Reverse the stack to obtain the modified linked list.
-// Return the head of the modified linked list.
-
-// To Do
-
-
-// Reversing list 
-// T: O(N)
-// S: O(1)
-// Reverse the given linked list.
-// Initialize a dummy node to hold the result.
-// Traverse the reversed list, keeping nodes whose values are greater than or equal to the previous node's value.
-// Reverse the resulting list to obtain the modified linked list.
-// Return the head of the modified linked list.
-
-// To Do
 
 int main(){
 
-<<<<<<< HEAD
-  std::cout << isPalindrome(1234567899) << std::endl;  
 
-=======
-  ListNode *head = new ListNode(5);
-  head->next = new ListNode(2);
-  head->next->next = new ListNode(13);
-  head->next->next->next = new ListNode(3);
-  head->next->next->next->next = new ListNode(8);
 
-  removeNodes(head);
 
-  int jojo = 42;
->>>>>>> 4a43da137e43d694e4f72a5ee060df537e162010
+  std::atomic<Test*> ptest = nullptr;
+  Test *ptr = ptest;
+  ptr->func();
+
+
+
+
+
+  std::vector<std::thread> tasks;  
+  for(int i = 0; i < 10; ++i){
+    tasks.push_back(std::thread(task));
+  }
+  for(auto& task: tasks){
+    task.join();
+  }
+
+  // Should be 1'000'000 but it is around 340'000 because volatile is not working in threading
+  std::cout << counter << '\n';   
+
   return 0;
 }
 
