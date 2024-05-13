@@ -19,98 +19,96 @@
 
 using namespace std;
 
-// 2487. Removes Nodes From Linked List
+// 67. Add Binary
 
 /*
 
-You are given the head of a linked list.
-Remove every node which has a node with a greater value anywhere to the right side of it.
-Return the head of the modified linked list.
+Given two binary strings a and b, return their sum as a binary string.
 
 Example 1:
 
-Input: head = [5,2,13,3,8]
-Output: [13,8]
-Explanation: The nodes that should be removed are 5, 2 and 3.
-- Node 13 is to the right of node 5.
-- Node 13 is to the right of node 2.
-- Node 8 is to the right of node 3.
+Input: a = "11", b = "1"
+Output: "100"
 Example 2:
 
-Input: head = [1,1,1,1]
-Output: [1,1,1,1]
-Explanation: Every node has value 1, so no nodes are removed.
- 
-Constraints:
-
-The number of the nodes in the given list is in the range [1, 105].
-1 <= Node.val <= 105
+Input: a = "1010", b = "1011"
+Output: "10101"
 
 */
 
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
-// Recursion 
-// T: O(N)
-// S: O(N)
-
-ListNode* removeNodes(ListNode* head) {
-
-  if(!head) return nullptr;
-  ListNode *node = head;
-  ListNode *greater = removeNodes(node->next);
-  node->next = greater;
-
-  if (greater == nullptr || node->val >= greater->val) {
-    return node;
+string addBinary(string a, string b) {
+  string ans;
+  int carry = 0;
+  int i = a.length() - 1;
+  int j = b.length() - 1;
+  while (i >= 0 || j >= 0 || carry) {
+    if (i >= 0)
+      carry += a[i--] - '0';
+    if (j >= 0)
+      carry += b[j--] - '0';
+    ans += carry % 2 + '0';
+    carry /= 2;
   }
-  
-  return greater;
+  ans=std::to_string(carry%2)+ans;
+ // std::reverse(begin(ans), end(ans));
+  return ans;
 }
 
-// Stack for storage
-// T: O(N)
-// S: O(N)
 
-// We can also use stack
-// Initialize a stack to store nodes in non-decreasing order of their values.
-// Traverse the linked list:
-// If the current node's value is greater than the top element of the stack, pop elements from the stack until the condition is met.
-// Push the current node onto the stack.
-// Reverse the stack to obtain the modified linked list.
-// Return the head of the modified linked list.
+std::string addBinary(std::string a, std::string b) {
+  
 
-// To Do
+  // Fill the shorter string with 0 to match the length of the longer string  10010,11 -> 10010,00011 
+  while(a.size() < b.size()) {
+    a = "0" + a;
+  }
+  while(b.size() < a.size()) {
+    b = "0" + b;
+  }
 
+  int carry = 0;
+  std::string result = "";
 
-// Reversing list 
-// T: O(N)
-// S: O(1)
-// Reverse the given linked list.
-// Initialize a dummy node to hold the result.
-// Traverse the reversed list, keeping nodes whose values are greater than or equal to the previous node's value.
-// Reverse the resulting list to obtain the modified linked list.
-// Return the head of the modified linked list.
+  for(int i = b.size()-1; i >= 0 ; --i)
+  {    
+    if(b[i] == '1' && a[i]=='1') {
+      if(carry == 0) {
+        result = "0" + result;
+      } else {
+        result = "1" + result;
+      }
+      carry = 1;
+    } else if(b[i] =='0' && a[i] =='0') {
+      if(carry == 0) {
+        result = "0" + result;
+      } else {
+        result = "1" + result;
+        carry = 0;
+      }
 
-// To Do
+    } else if((b[i]=='0' && a[i]=='1') || (b[i]=='1' && a[i] == '0')) { 
+      if(carry == 0) { 
+        result = "1" + result;
+      } else { 
+        result = "0" + result;     
+      }
+    }     
+  }
+  
+  
+  if(carry == 1) result = "1" + result;
+  
+  return result;
+}
+
 
 int main(){
 
-  ListNode *head = new ListNode(5);
-  head->next = new ListNode(2);
-  head->next->next = new ListNode(13);
-  head->next->next->next = new ListNode(3);
-  head->next->next->next->next = new ListNode(8);
+  std::string s {"11"};
+  std::string t {"1"};
 
-  removeNodes(head);
+  std::cout << addBinary(s,t);
 
-  int jojo = 42;
   return 0;
 }
 
