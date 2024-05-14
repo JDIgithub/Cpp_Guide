@@ -136,8 +136,17 @@
 
 - **Atomic Operations**
 
-
-
+  - **Member Functions for Atomic Types**
+    - **store()** - Atomically replace the object value with its argument
+    - **load()** - Atomically return the object value
+    - **opeator =()**, **operator T()** - Synonyms for **store()** and **load()**
+    - **exchange** - Atomically replace the object value with its argument and returns the previous value
+  - Atomic pointers support pointer arithmetic:
+    - **fetch_add()** synonym for **x++**
+    - **fetch_sub()** synonym for **x--**
+    - **-=** and **+=** operators
+  - Integer specializations have these as well and also:
+    - Atomic bitwise logical operations **&, |, ^**
 
 
 ## Concurrency
