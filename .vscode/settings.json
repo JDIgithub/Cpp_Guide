@@ -49,7 +49,9 @@
         "xutility": "cpp"
     },
     "cSpell.words": [
+        "composability",
         "Duplicable",
+        "livelock",
         "Lvalue",
         "Lvalues",
         "noexcept",

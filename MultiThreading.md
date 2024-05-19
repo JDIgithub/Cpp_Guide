@@ -1,44 +1,100 @@
 # MultiThreading
 
-## Introduction
+- **Introduction**
 
-- Some classes here are move-only to support RAII (Resource Acquisition Is Initialization) idiom
-  - Object acquires ownership in the constructor
-  - Object releases ownership in the destructor
-  - The resource instance can be moved from one object to another
+  - Some classes here are move-only to support RAII (Resource Acquisition Is Initialization) idiom
+    - Object acquires ownership in the constructor
+    - Object releases ownership in the destructor
+    - The resource instance can be moved from one object to another
 
-- Each thread has its own entry point function
-  - When the thread starts, it executes the code in this function
-  - When the function returns the thread ends
-  - The main thread continues to execute its own code
-  - It does not wait for the other threads, unless we explicitly tell it to
+  - Each thread has its own entry point function
+    - When the thread starts, it executes the code in this function
+    - When the function returns the thread ends
+    - The main thread continues to execute its own code
+    - It does not wait for the other threads, unless we explicitly tell it to
 
-- **Thread**
-  - Single sequence stream within a process
-  - Software thread
-  - For example an object of the C++ std::thread class
-  - Because threads have some of the properties of processes, they are sometimes called lightweight process
+  - **Thread**
+    - Single sequence stream within a process
+    - Software thread
+    - For example an object of the C++ std::thread class
+    - Because threads have some of the properties of processes, they are sometimes called lightweight process
 
-- **Thread vs Process**
-  - Threads are not independent of one other like processes
-  - As a result thread shares with other threads their code section, data section and OS resources like open files and signals
-  - But like processes thread has its own program counter, register set and stack space
+  - **Thread vs Process**
+    - Threads are not independent of one other like processes
+    - As a result thread shares with other threads their code section, data section and OS resources like open files and signals
+    - But like processes thread has its own program counter, register set and stack space
 
-- **Task**
-  - Higher level abstraction
-  - Some work that should be performed concurrently
+  - **Task**
+    - Higher level abstraction
+    - Some work that should be performed concurrently
 
-- **Why MultiThreading?**
-  - To improve application through parallelism
-  - Thread creation is much faster
-  - Context switching between thread is much faster
-  - Threads can be terminated easily
-  - Communication between threads is faster
+  - **Why MultiThreading?**
+    - To improve application through parallelism
+    - Thread creation is much faster
+    - Context switching between thread is much faster
+    - Threads can be terminated easily
+    - Communication between threads is faster
 
-- Multithreading is not supported by the C language standard -> **POSIX Threads** (**Pthreads**) has to be used in C.
-- In C++11+ we have **std::thread**
+  - Multithreading is not supported by the C language standard -> **POSIX Threads** (**Pthreads**) has to be used in C.
+  - In C++11+ we have **std::thread**
 
 
+
+## Asynchronous Processing
+
+- C++ provides several ways to implement asynchronous programming:
+
+- std::async: This function runs a function asynchronously (potentially in a new thread) and returns a std::future that will eventually hold the result of that function.
+- std::thread: You can manually create threads using std::thread. Each thread can execute tasks concurrently.
+- Thread Pools: Libraries like Boost.Asio or Intel’s Threading Building Blocks (TBB) provide more sophisticated ways to handle asynchronous tasks, including thread pools.
+- Callbacks, Promises, and Futures: These are mechanisms to handle the results of asynchronous operations, allowing a non-blocking design in your application.
+
+
+## Asynchronous Programming
+
+- **Synchronous** - Wait for each task to complete
+- **Asynchronous** - Continue without waiting for tasks to complete
+  - Tasks starts another task, the current task can continue
+  - The new task runs in the background
+- **Advantages**
+  - The current task can do other work (if it does not require the data)
+  - The current task only blocks when it needs the data
+  - This maintains throughput and user satisfaction
+
+- **Blocking and Multi-Threading Programs**
+  - Blocking is undesirable in threaded programs
+    - Blocking reduces throughput and responsiveness of the blocked thread
+    - Any threads which join with this thread will also be blocked
+  - Particularly in a critical section
+    - Any threads which are waiting to enter the critical section are also blocked
+    - Possibility of deadlock if we are using locks
+  - Using asynchronous programming reduces the need to block but may not avoid it completely
+
+- **Blocking Synchronization**
+  - Blocking operations
+  - Synchronized by mutexes - Thread is blocked until another thread unlocks the mutex
+  - Atomic Operations - Thread is blocked until another thread completes an atomic operation 
+
+- **Non-Blocking Synchronization**
+  - Non-Blocking operations
+  - Synchronized by message queues
+    - A thread pushes a message onto a concurrent queue
+    - Another thread takes the message of the queue and processes it
+    - The first thread continues running without waiting
+  - The message often consist of callable objects
+    - The message is processed by invoking the callable object
+  - C++ does not have a standard concurrent queue
+    - Available in Boost, Microsoft PPL, Intel TBB
+
+- Asynchronous programming can be used to perform parallel operations
+  - Start new threads which all perform the same task
+  - Collect the result from each thread as it completes its task
+  - Combine the results into the final answer
+- It can also be used in single-threaded programs
+  - Using operating system features 
+
+
+- **std::packaged_task** 
 
 
 ## Atomic Types
@@ -121,6 +177,19 @@
       - Test *ptr = ptest;
       - ptr->func();
 
+  - **Atomic Pointer**
+
+    - If we are initializing some potentially big class we want to do it only once
+    - But doing it with mutex could be problematic:
+    - 
+      - This statement represents 3 separate operation (allocates memory, initializes it, stores address of the memory to this variable)    
+      - But the compiler is allowed to switch the order of the operations so it is possible it allocates memory, then stores address and then initializes it ->
+      - This means if another thread will check between storing address and initializing it, it can access this allocated memory with garbage values 
+      - We can have static variable instead of pointer but it could also be solved with **std::atomic\<Test*\> ptest**
+
+      ![](Images/atomicPointerInit.png)
+
+
 
 - **Volatile Keyword**
 
@@ -139,7 +208,7 @@
   - **Member Functions for Atomic Types**
     - **store()** - Atomically replace the object value with its argument
     - **load()** - Atomically return the object value
-    - **opeator =()**, **operator T()** - Synonyms for **store()** and **load()**
+    - **operator =()**, **operator T()** - Synonyms for **store()** and **load()**
     - **exchange** - Atomically replace the object value with its argument and returns the previous value
   - Atomic pointers support pointer arithmetic:
     - **fetch_add()** synonym for **x++**
@@ -147,6 +216,44 @@
     - **-=** and **+=** operators
   - Integer specializations have these as well and also:
     - Atomic bitwise logical operations **&, |, ^**
+
+  ![](Images/atomicOperations.png)
+
+- **std::atomic_flag**
+  - Boolean atomic type that has less overhead than **std::atomic<bool>**
+  - It has only 3 operations:
+    - **clear()** sets flag to false
+    - **test_and_set()** sets flag to true and returns previous value
+    - **operator=()**
+  - Must be initialized to false - atomic_flag lock = ATOMIC_FLAG_INIT;
+
+- **Spin Lock**
+  - An alternative to locking a mutex or using a condition variable
+  - Spin lock is essentially an infinite loop
+    - It keeps "spinning" until a condition becomes true
+  - We can use **std::atomic_flag** to implement a basic spin lock
+    - The loop condition is the value of the flag
+    - Each thread calls **test_and_set() in a loop
+    - If it returns true - Some other thread has set the flag and is in the critical section -> iterate again
+    - If it returns false - This thread has set the flag -> exit the loop and proceed into the critical section
+    - After the critical section set the flag to false
+
+    ![](Images/spinLock.png)
+
+  - **Pros**
+    - A spinning thread remains active (A mutex may block the thread)
+    - It can continue immediately when it gets the lock (With mutex, the thread may need to be reloaded or woken up)
+      
+  - **Cons**
+    - Processor-intensive
+    - Only suitable for protecting very short critical sections
+    - And/or very low contention
+    - Performance can be heavily impacted if spinning threads interrupt each other
+    - Usually only used in operating systems and libraries 
+  
+  - Often used to implement **std::mutex**
+
+
 
 
 ## Concurrency
@@ -167,6 +274,114 @@
   - A program can perform multiple activities at the same time
     - These activities are managed by the operating system
   - Typically there are more software thread than hardware threads
+
+
+
+## Launching
+
+- We can launch a thread by creating an std::thread object
+- The constructor will starts a new execution
+- The parent thread will continue its own execution
+- The constructor takes a callable object (entry point function)
+- The execution thread will invoke this function
+- The entry point function
+  - Can be any callable object
+  - Cannot be overloaded
+  - Any return value is ignored
+
+![](Images/launchThread.png)
+
+- As shown in the picture above We must be careful about thread termination
+- We can also use functor as a thread entry point:
+
+![](Images/launchThreadFunctor.png)
+
+
+
+## Lock-Free Programming
+
+- Threads execute critical sections concurrently 
+  - Without data races
+  - But without using the operating system locking facilities
+- Avoid or reduces some of the drawbacks of using locks
+  - Race conditions caused by forgetting to lock or using the wrong mutex
+  - Lack of composability
+  - Risk of deadlock
+  - High overhead
+  - Lack of scalability caused by coarse-grained locking
+  - Code complexity and increased overhead caused by fine-grained locking
+- **Pros**
+  - If done correctly, threads can never block each other
+    - No possibility of deadlock or livelock
+    - If a thread is blocked, other threads can continue to execute
+    - Useful if work must be completed within a time limit (real time systems, etc...)
+- **Cons**
+  - Very difficult to write code which is correct and efficient
+  - The extra complexity makes it unsuitable for many applications
+  - Should be used only if
+    - A data structure in the program is subject to high contention which causes unacceptable performance
+    - And the lock-free version brings performance up to acceptable levels
+- **Locking vs Lock-Free**
+  - Both programming styles are used to manage shared state
+  - **Locks**
+    - Traffic lights control access
+    - Stop and wait until able to proceed into critical section
+    - Global state is consistent
+      - Provided we only access shared data inside a locked region
+      - No other threads will see our changes until the lock is released
+    - Logical consistency
+      - When working inside a locked region, global state will not change
+    - Code Order
+      - Statements will execute in the same order as in the source code or at least they will appear to
+    - None of these assumptions apply to lock-free programs
+  - **Lock-Free**
+    - Motorway-style intersection
+    - Traffic from different levels can go over the same section at the same time
+    - Traffic from one level can merge with traffic from a different level without stopping
+    - If not done carefully, collisions can occur
+    - Shared data may have different values in different threads
+    - The value may change between in "if" statement and its body
+    - Statements may execute in a different order from the source code
+
+- **Transactions**
+
+  - Transactional model of lock-free programming - **ACID**
+  - Atomic / All or Nothing
+    - Transaction either complete successfully ("commit")
+    - Or it fails and leaves everything as it was ("rollback")
+  - Consistent 
+    - The transaction takes the database from one consistent state to another
+    - As seen by other users, the database is never in an inconsistent state
+  - Isolated 
+    - Two transactions can never work on the same data simultaneously
+  - Durable
+    - Once a transaction is committed it can not be overwritten until the next transaction sees the result of the commit 
+    - There is no possibility of losing an update
+  
+- **Atomic Instructions** - Basically only way to write lock-free program is with the use of Atomic Instructions   
+
+- **Lock-Free examples**
+  
+  - **Lock-Free Queue**
+
+    - No internal or external locks
+    - The queue is only accessed by two threads
+      - Producer - inserts elements into the queue
+      - Consumer - removes elements from the queue
+    - The consumer and producer never work on adjacent elements
+    - The two threads always work on different parts of the queue
+
+      ![](Images/lockFreeQueue.png)
+      ![](Images/lockFreeQueueConsumerThread.png)
+      ![](Images/lockFreeQueueProducerThread.png)
+      ![](Images/lockFreeQueueThreadSeparation.png)
+
+    - Result is we tried to do it lock-free but we failed:
+
+      ![](Images/lockFreeQueueResult.png)
+
+
+
 
 ## std::thread (C++11)
 
@@ -194,25 +409,6 @@
   ![](Images/startingThread.png) 
 
 
-
-## Launching
-
-- We can launch a thread by creating an std::thread object
-- The constructor will starts a new execution
-- The parent thread will continue its own execution
-- The constructor takes a callable object (entry point function)
-- The execution thread will invoke this function
-- The entry point function
-  - Can be any callable object
-  - Cannot be overloaded
-  - Any return value is ignored
-
-![](Images/launchThread.png)
-
-- As shown in the picture above We must be careful about thread termination
-- We can also use functor as a thread entry point:
-
-![](Images/launchThreadFunctor.png)
 
 ## Thread Termination
 
@@ -808,16 +1004,6 @@
 - Livelock can result from badly done deadlock avoidance
   - A thread cannot get lock
   - Instead of blocking indefinitely it backs off and tries again
-
-
-## Asynchronous processing
-
-- C++ provides several ways to implement asynchronous programming:
-
-- std::async: This function runs a function asynchronously (potentially in a new thread) and returns a std::future that will eventually hold the result of that function.
-- std::thread: You can manually create threads using std::thread. Each thread can execute tasks concurrently.
-- Thread Pools: Libraries like Boost.Asio or Intel’s Threading Building Blocks (TBB) provide more sophisticated ways to handle asynchronous tasks, including thread pools.
-- Callbacks, Promises, and Futures: These are mechanisms to handle the results of asynchronous operations, allowing a non-blocking design in your application.
 
 
 
