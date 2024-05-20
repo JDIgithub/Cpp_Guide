@@ -19,79 +19,47 @@
 
 using namespace std;
 
-// 28. Index of the first occurence
+// 242. Valid Anagram
 /*
 
-Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
  
 
 Example 1:
 
-Input: haystack = "sadbutsad", needle = "sad"
-Output: 0
-Explanation: "sad" occurs at index 0 and 6.
-The first occurrence is at index 0, so we return 0.
+Input: s = "anagram", t = "nagaram"
+Output: true
 Example 2:
 
-Input: haystack = "leetcode", needle = "leeto"
-Output: -1
-Explanation: "leeto" did not occur in "leetcode", so we return -1.
+Input: s = "rat", t = "car"
+Output: false
  
 
 Constraints:
 
-1 <= haystack.length, needle.length <= 104
-haystack and needle consist of only lowercase English characters.
-  
+1 <= s.length, t.length <= 5 * 104
+s and t consist of lowercase English letters.
+ 
+
+Follow up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?
+
 */
 
-int strStr(string haystack, string needle) {
+bool isAnagram(string s, string t) {
         
-  if(haystack.empty() || needle.empty()) return -1;
-  int nIndex = 0;
-  int hIndex = 0;
-  int needleFound = -1;
-  
-  while(hIndex < haystack.size()){
-    
-    if(nIndex == needle.size()) return needleFound;
-
-    if(haystack[hIndex] == needle[nIndex]){
-      if(needleFound == -1){
-        needleFound = hIndex;
-      }
-      nIndex++;
-    } else {
-      hIndex = hIndex - nIndex;
-      nIndex = 0;
-      needleFound = -1;
-    }
-
-    hIndex++;
-  }
-  if(nIndex != needle.size()) {
-    return -1;
-  } else {
-    return needleFound;
-  }
 }
 
-int strStrWithSubstrFunction(std::string haystack, std::string needle) {
-  for (int i = 0; i <= haystack.length() - needle.length(); ++i) {
-    if (haystack.substr(i, needle.length()) == needle) {
-      return i;
-    }
-  }
-  return -1;
-}
+
 
 int main(){
 
-  std::string haystack = {"mississippi"};
-  std::string needle = {"issip"};
+  std::string str = {"dog dog dog dog"};
+  std::string pattern = {"abba"};
 
-  std::cout << strStr(haystack,needle);
+  std::cout << isAnagram(pattern,str);
 
 
   return 0;
