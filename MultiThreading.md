@@ -93,9 +93,126 @@
 - It can also be used in single-threaded programs
   - Using operating system features 
 
-
 - **std::packaged_task** 
+  
+  - Defined in \<[future](https://en.cppreference.com/w/cpp/thread/future)\>
+  - Encapsulates a task
+    - A callable object for task's code
+    - An **std::promise** for the result of the task
+  - Provides a higher level of abstraction
+  - Template class 
+    - The parameter is the callable object signature: std::packaged_task<int(int,int)> ptask(...);
+  - The constructor takes the callable object as argument
+  - Also functor class -> operator() overloaded
+    - Invokes the calable object
+    - Stores the return value in the promise object
+  - **get_future()** - returns std::future object associated with the promise
+  - **std::pacaged_task** is a move-only class
+  - **Usage:**
+    - Pass a callable object to the constructor
+    - The packaged task start when operator() is called
+      - In the same thread by calling it directly
+      - In a new thread, by passing the task to std::thread constructor
+    - We call **get_future()**
+    - We call **get()** on the returned future object or **wait()** and friends
 
+  - Synchronous example:
+
+    ![](Images/packagedTaskSync.png)
+
+  - Asynchronous example:
+
+    ![](Images/packagedTaskAsync.png)
+
+  - Avoids boilerplate code -> cleaner and simple code 
+  - **Applications:**  
+    - Create a container of packaged_task objects
+      - Threads do not start up until we are ready for them
+    - Useful for managing threads
+      - Each task can be run on a specified thread
+      - Thread scheduler runs threads in a certain order
+      - Thread pool consists of threads waiting for work to arrive
+
+- **std::async()** 
+  
+  - Defined in \<[future](https://en.cppreference.com/w/cpp/thread/future)\>
+  - Higher-level abstraction than **std::thread**
+    - We can execute a task with **std::async()** which uns in the background
+    - This allows us to do other work while the task is running
+    - Alternatively, it can run synchronously in the same thread
+  - Similar syntax to **std::thread** constructor
+    - The task function is the first argument
+    - Followed by the arguments to the task function
+
+  ![](Images/simplestAsync.png)
+
+  - **std::async()** returns an **std::future** object that contains the resut of the task
+  - We can call get() on the future or wait() and friend
+  - This can be in a different thread from the call to **std::async()**
+
+    ![](Images/asyncFibonacci.png)
+
+  - **Exceptions**V
+
+    ![](Images/asyncExceptions.png) 
+
+  - **Launch Options**
+    - **std::async()** may start a new thread for the task or it may run the task in the same thread
+    - Controlled by the "launch flag" (Optional argument to **std::async()**)
+    - **std::lauch::async**
+      - A new thread is started for the task
+      - The task is executed as soon as the thread starts
+    - **std::launch::deferred**
+      - Nothing happens until **get()** is called on the returned future
+      - The task is then executed("lazy evaulation")
+    - **Default: Both Flags Are Set**
+      - The implementation decidec whether to start a new thread
+      - Lack of certainty
+        - The task could execute synchronously or concurrently with the initiating thread
+        - It could execute concurrently with the thread that calls **get()**
+        - If **get()** is not called, the task may not execute at all
+      - Thread-local storage (**TLS**) - We do not know which thread's data will be used
+
+    ![](Images/asyncLaunches.png)
+
+    - **Launch Policy Recommendations**
+      - Use the **async** launch option if any of these are true:
+        - The task must execute in separate thread
+        - The task must start immediately
+        - The task will use thread-local storage
+        - The task function must be executed even if get() is not called
+        - The thread receiving the future will call **wait_for()** pr **wait_until()**
+      - Use the **deferred** launch option if
+        - The task must run in the thread which calls **get()**
+        - The task must be executed, even if no more threads can be created
+        - You want lazy execution of the task
+      - Otherwise, let the implementation choose with the **default** launch option
+
+  - **wait()** - Returns nothing
+  - **wait_for()** and **wait_until()** 
+    - Returns **std::future_status::ready** if the result is available
+    - Returns **std::future_status::timeout** if the time out has expired
+    - Returns **std::future_status::deferred** if the result is being lazily evaluated
+  - In lazy evaluation, the task does not run until **get()** is called
+
+
+- **Choosing a Thread Object**
+  - We now havethree different ways to execute a task
+    - Create an **std::thread** object
+    - Create an **std::packaged_task** object
+    - Call **std::async()**
+  
+  - **Pros of std::async()**
+    - The simplest way to execute a task
+    - Easy to obtain the return value or to catch any exception thrown in the task
+    - Choice of running the task sync or async
+    - Higher level abstraction than **std::thread**
+    - The library manages the threads and the inter-thread communication for the programmer
+    - No need to use shared data
+  - **Cons of std::async()**
+    - Can not detach tasks
+    - A task executed with **std::launch::async** is implicitly joined -> we can not leave the scope before the task is completed
+    - The returned future's destructor will block until the task completes
 
 ## Atomic Types
 
