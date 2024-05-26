@@ -1,5 +1,9 @@
 # Algorithms
 
+
+
+
+
 ## Algorithm Complexity
 
 - Knowledge of Big O notation is crucial. It describes the performance or complexity of an algorithm, especially in terms of time (time complexity) and space (space complexity).
@@ -549,3 +553,36 @@ With LinkedList:
     ![](Images/recursionFactorialCallstack.png)
 
 
+
+
+
+
+
+## Standard Algorithms
+
+- Set of functions in the standard library
+- Implement classic algorithms such as searching and sorting, populating, copying, reordering etc...
+- Operate on containers and sequences of data
+- Most are in \<[algorithm](https://en.cppreference.com/w/cpp/algorithm)\>
+- Some in \<[numeric](https://en.cppreference.com/w/cpp/numeric)\>
+
+- **Algorithm Execution**
+
+  - Function call which takes an iterator range
+    - Usually corresponds to sequence of elements in a container
+    - Often **begin()** and **end()** to process the entire container
+  - Iterates over the range of elements
+  - Performs an operation on the elements
+  - Returns either:
+    - An iterator representing an element of interest
+    - The result of the operation on the elements
+
+- Many algorithms use a **predicate** - a function which returns bool
+- Easiest way to create a predicate is with the **lambda** expression
+
+  ![](Images/stdFindIf.png)
+
+
+
+- We can se more in [STL chapter](STL.MD)
+  

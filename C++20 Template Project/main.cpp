@@ -16,6 +16,10 @@
 #include <stack>
 #include <list>
 #include <atomic>
+#include <random>
+#include <numeric>
+#include <execution>
+
 
 using namespace std;
 
@@ -56,44 +60,39 @@ bool isAnagram(string s, string t) {
 using namespace std::literals;
 
 
-int task(){
+std::timed_mutex t_mutex;
 
-  std::cout << "Executing task() in thread with ID: ";
-  std::cout << std::this_thread::get_id() << "\n";
+void task1(){
+  std::cout << "Task1 trying to lock the mutex \n";
+  std::lock_guard<std::timed_mutex> lck_guard(t_mutex);
+  std::cout << "Task1 locks the mutex \n";
   std::this_thread::sleep_for(5s);
-  std::cout << "Returning from task()\n";
-
-  return 42; 
+  std::cout << "Task1 unlocking the mutex \n";
 }
 
-void func(const std::string& option = "default"){
+void task2(){
+  std::this_thread::sleep_for(500ms);
+  std::cout << "Task2 trying to lock the mutex \n";
+  std::unique_lock<std::timed_mutex> unique_lck(t_mutex, std::defer_lock);  // Defer lock so we could lock it ourselves
 
-  std::future<int> result;
-  if(option == "async"s){
-    result = std::async(std::launch::async, task);
-  } else if (option == "deferred"s){
-    result = std::async(std::launch::deferred, task);
-  } else { 
-    result = std::async(task);
+  // Try for 1 second to lock the mutex
+  while(!unique_lck.try_lock_for(1s)){
+    // Returned false
+    std::cout << "Task2 could not lock the mutex \n"; 
   }
-
-  std::cout << "Calling Async with option \"" << option << "\"\n";
-  std::this_thread::sleep_for(2s);
-  std::cout << "Calling get() \n";
-  std::cout << "Task result: " << result.get() << "\n";
-
+  // Returned true -> mutex is now locked
+  std::cout << "Task2 locked the mutex \n";
 }
+
+
 
 int main(){
 
-  std::cout << "In main thread with ID: " << std::this_thread::get_id() << "\n";
+  std::thread thr1(task1);
+  std::thread thr2(task2);
   
-  func("async");
-  func("deferred");   // Deferred runs in the same thread as the main thread here but 
-                      // but task is not running before get() is called.
-  func("default");
-
-  std::cout << "Exiting main()\n";
+  thr1.join();
+  thr2.join();
 
   return 0;
 }

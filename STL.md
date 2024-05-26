@@ -409,56 +409,110 @@
 - Also we have range algorithms that work on containers directly
   
 
-### std::all_of std::any_of std::none_of
+- **std::all_of std::any_of std::none_of**
 
-![](Images/allOfAnyOfNoneOf.png)
+  ![](Images/allOfAnyOfNoneOf.png)
 
-### std::for_each
-
-
-![](Images/stdForEach.png)
-
-![](Images/stdForEach2.png)
-
-### std::max_element std::min_element
-
-- We have more overloads of these functions
-- We can use overload with just first and last iterator or we can use overload with added comparator
-
-![](Images/stdMinMaxElement.png)
+- **std::for_each**
 
 
+  ![](Images/stdForEach.png)
 
-### std::find std::find_if
+  ![](Images/stdForEach2.png)
 
-- This algorithm returns iterator of the element that we are seaching for or the end iterator if it did not find it
+- **std::max_element std::min_element**
 
-![](Images/stdFind.png)
+  - We have more overloads of these functions
+  - We can use overload with just first and last iterator or we can use overload with added comparator
+
+  ![](Images/stdMinMaxElement.png)
 
 
 
-### std::copy
+- **std::find**
 
-![](Images/stdCopy.png)
+  - This algorithm returns iterator of the element that we are searching for or the end iterator if it did not find it
+  - **std::find** uses the **== operator** as a predicate -> Compares each element to the target value
 
-- There is also std::copy_if
+  ![](Images/stdFind.png)
+
+- **std::find_if** 
+  - Allow us to supply our own predicate
+  - Pass a callable object as an extra argument
+  - Allow us to change the definition of "equality"
+  - The predicate takes an argument of the element type and returns bool
+  - We can create a predicate with the lambda expression
+    
+    ![](Images/stdFindIf.png)
+
+  
+  
+- **std::copy**
+
+  ![](Images/stdCopy.png)
+
+  - There is also std::copy_if
 
 
-### std::sort
+- **std::sort**
 
-- Modifying algorithm
-- To sort out collections
-- Algorithm need random access iterator to work
+  - Modifying algorithm
+  - To sort out collections
+  - Algorithm need random access iterator to work
 
-![](Images/stdSort.png)
+  ![](Images/stdSort.png)
+
+<a id="transform"></a>
+- **std::transform()**
+
+  - Copies + adjust elements from one collection into another
+  - Does not extend the output collecting capacity
+  - Takes an iterator range and a callable object
+  - Applies the callable object to every element in the range
+  - Store the result in a destination
+
+  ![](Images/stdTransform.png)
+
+  - **Binary overload of std::transform()**
+
+    - **std::transform()** can take an extra argument
+      - This represents a second source
+      - The function object is now a binary operator
+      - Applied to corresponding pairs of elements from each source
+      - The result is stored in the destination
+
+      ![](Images/stdTransformOverload.png)
 
 
-### std::transform
 
-- Copies + adjust elemnts from one collection into another
-- Does not extend the output colllectin capacity
 
-![](Images/stdTransform.png)
+<a id="accumulate"></a>
+- **std::accumulate()**
+  - Adds each element to an initial value
+  - Returns the result
+  - By default the operator **+** is used to perform the addition
+  - We can pass a callable object as an optional fourth argument
+  - Specified to execute sequentially
+  - Can not be parallelized - Each operation must complete before the next one can start
+  - Can not be vectorized - Each operation can only take two arguments
+  
+  ![](Images/stdAccumulate.png)
+
+<a id="partialSum"></a>
+- **std::partial_sum()**
+  
+  - Calculates the sum of the elements so far
+  - As with **std::accumulate()** the calculation must be done in fixed order
+
+  ![](Images/stdPartialSum.png)
+
+<a id="innerProduct"></a>
+- **std::inner_product()**
+
+  - Multiplies the corresponding elements of two containers together
+  - Calculates the sum of these products
+
+  ![](Images/stdInnerProduct.png)
 
 
 ### Constrained Algorithms (C++20)
@@ -467,3 +521,125 @@
 - In these algorithms a rance can be specified as either an iterator-sentinel pair or as a single range argument
 - Projections and pointer to member callables are supported
 - Additionally, the return types of most algorithms have been changed to return all potentially useful information
+
+
+### Algorithms and Exceptions (C++14)
+
+- Algorithms can throw exceptions
+  - e.g. an algorithm call which applies a function to every element
+  - The function throws an exception
+- The exception will be handled by other code (if there is no handler -> execution ends)
+
+![](Images/stlAlgorithmsWithException.png)
+
+- **Execution policies (C++17)**
+  - But this approach does not work with execution policies (C++17)
+    - Maybe multiple threads
+    - Each thread has its own execution stack
+  - If and exception is thrown **std::terminate()** is called -> it will terminate all threads included main thread
+
+  ![](Images/stlAlgorithmsWithException2.png)
+  
+
+### Parallel Algorithms
+
+- **std::reduce()**
+  
+  - Re-implementation of [**std::accumulate()**](#accumulate)
+  - Supports execution policies
+
+  ![](Images/stdReduce.png)
+  ![](Images/stdReduceGraph.png)
+
+  - **Restrictions**
+    - **std::reduce()** will not give the correct answer if reordering the operations or regrouping them alters the result
+    - The operator used must be **Commutative** and **Associative**
+  
+
+- **std::inclusive_scan()**
+  
+  - Works the same way as [**std::partial_sum()**](#partialSum)  
+  - But we can optionally add an execution policy
+
+  ![](Images/stdInclusiveScan.png)
+
+- **std::exclusive_scan()**
+  
+  - Similar to **std::inclusive_scan()** but excludes the current element
+  - Takes an extra argument and uses it instead of the current element
+  
+  ![](Images/stdExclusiveScan.png)
+  
+
+- **Transform and Reduce Pattern**
+
+  - A very common pattern in parallel programming
+  - Also known as **map and reduce**
+    - Divide the data into subsets
+    - Start each thread for each subset
+    - Each thread calls **std::transform()**
+    - **std::transform()** performs some operation on the thread subset
+    - Call **std::reduce()** to combine each thread result into the final answer
+  - Using separate algorithm calls slows things down
+    - Each transform() thread has to store its result
+    - reduce() can not start until all the transform() threads have finished
+    - reduce() has to read the results from the transform() threads
+    - reduce() may start up its own threads
+
+- **std::transform_reduce()**
+
+  - Combines the two functions to avoid the overhead of separate [**std::transform()**](#transform) and **std::reduce()**  calls
+  - Is a re-implementation of [**std::inner_product()**](#innerProduct) 
+  - Support for execution policies
+
+  ![](Images/stdTransformReduce.png)
+
+
+  - **Overload**
+
+    - We can use our own binary functions instead of the default **+** and **\*** operators for the elements
+    - We can replace **\*** operator by a **transform** function
+      - Takes two arguments of the element type
+      - Returns value of its result type
+    - We can replace the **+** operator by a **reduce** function
+      - Takes two arguments of the transform return type
+      - Returns a value of the final result type
+    - **Example:**
+
+      ![](Images/stdTransformReduceOverload.png)
+
+
+- **When to use Parallel Algorithms**
+
+  - **Cons**
+    - May not have any effect
+      - Not supported on some compilers
+      - Not fully implemented on all compilers
+      - May fall back to non-policy version
+    - Extra overhead
+      - The algorithm may start up new threads
+      - The algorithm must manage these threads
+  - Do not use an execution police if:
+    - Your code has to be portable to other compilers
+    - The task ise essentially sequential
+    - Operation order is important
+    - The algorithm call throws exceptions (Unless immediate termination is acceptable)
+    - Preventing data races cots more than not using the execution policy
+  - Consider using an execution policy if:
+    - Measurement shows a worthwhile improvement in performance
+    - It can be done safely and correctly
+
+- **Which Execution Policy**
+  - **Sequenced** execution is mainly used for debugging
+    - Same as non-policy, but allows out of order execution and terminates on exceptions
+  - **Parallel unsequenced** execution
+    - Has the most potential to improve performance
+    - Also has the strictest requirement
+    - Use when data races can not occur
+    - Use when Code does not modify shared state
+  - **Parallel** execution
+    - Use when vectorization is not safe
+    - Data races can not occur but code modifies shared state
+  - **Unsequenced** execution
+    - Can be used with single threading
+    - If code does not modify shared state

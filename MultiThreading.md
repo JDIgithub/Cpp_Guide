@@ -152,7 +152,7 @@
 
     ![](Images/asyncFibonacci.png)
 
-  - **Exceptions**V
+  - **Exceptions**
 
     ![](Images/asyncExceptions.png) 
 
@@ -213,6 +213,38 @@
     - Can not detach tasks
     - A task executed with **std::launch::async** is implicitly joined -> we can not leave the scope before the task is completed
     - The returned future's destructor will block until the task completes
+
+      ![](Images/asyncDestructor.png)
+
+  - **Pros of std::packaged_task**
+    - The best choice if we want to represent tasks as objects -> To create a container of tasks
+    - A lower-level abstraction than **std::async()**
+    - Can control when a task is executed
+    - Can control on which thread it is executed
+
+  - **Pros of std::thread**
+    - The most flexible
+    - Allows access to the underlying software thread
+    - Useful for features not supported by standard C++
+    - Can be detached
+  
+  - **Recommendations**
+    - For starting new thread in general -> Use **std::async()**
+    - For containers of thread objects -> Use **std::packaged_task**
+    - For starting detachable thread or for more specialized requirements -> Use **std::thread** 
+
+
+- **C++ asynchronous limitations**
+  - Lacks a number of important features
+    - Continuations - "Do this task, then do that task"
+    - Only supports waiting on one future at a time
+    - Waiting on multiple threads has to be done sequentially
+    - Concurrent queue missing
+  - But we can use **3rd Party Libraries**
+    - Microsoft Parallel Patterns Library
+    - Apple Grand Central Dispatch
+    - Intel oneAPI Thread Building Blocks
+    - HPX
 
 ## Atomic Types
 
@@ -371,6 +403,19 @@
   - Often used to implement **std::mutex**
 
 
+## Clocks
+
+- **std::chrono**
+  - **chrono::system_clock**
+    - Gets time from operating system
+    - May change unpredictably
+    - We can use it for time points
+  - **chrono::steady_clock**
+    - Always increases steadily
+    - We can use it for measuring intervals
+  - 
+
+- **try_lock_for()** and **try_lock_until()** may return later than requested due to scheduling issues but they will never return too early
 
 
 ## Concurrency
@@ -393,6 +438,216 @@
   - Typically there are more software thread than hardware threads
 
 
+## Code Execution
+
+- Modern computers support four different ways:
+  - **Sequential**
+    - A single instruction processes one data item
+    
+  - **Vectorized**
+    - A single instruction processes several data items
+    - Requires suitable data structure and hardware support
+    - All the element must be contiguous (no gap in memory)
+  - **Parallelized**
+    - Several instructions each process one data item at the same time
+    - Requires suitable algorithm
+  - **Parallelized + Vectorized**
+    - Several instructions each process several data items at the same time
+    - Requires suitable algorithm, data structure and hardware support
+  
+- **Execution Policy Objects**
+  - Global objects in \<[execution](https://en.cppreference.com/w/cpp/header/execution)\>  C++17
+    - In the **std::execution** namespace
+  - We can pass a policy object as an optional first argument:  
+
+    ![](Images/executionPolicyObject.png)
+
+  - **Sequential C++17 Execution Object**
+    - All operations are performed on single thread (The thread which calls the algorithm)
+    - Operations will not be interleaved
+    - May not necessarily be executed in a specific order
+
+    ![](Images/sequencedExecutionObject.png)
+
+  - **Parallel C++17 Execution Object**
+    - Operations performed in parallel across a number of threads
+    - May include the thread which calls the algorithm
+    - **Guarantees**
+      - An operation will run on the same thread for its entire duration
+      - Operations performed on the same thread will not be interleaved
+      - But may not necessarily be executed in a specific order
+    - **Cautions**
+      - Operations performed on different threads may interleave
+      - The programmer must prevent data races
+      - Parallel Execution with Data Race:
+
+      ![](Images/parallelExecutionObject.png)
+
+  - **Unsequenced C++20 Execution Object**
+    - Operations are performed on a single thread (thread which calls the algorithm)
+    - **Guarantees**
+      - Operations will not be interleaved
+    - **Cautions**
+      - Operations may not necessarily be executed in a specific order
+      - The programmer must avoid any modification of shared state between elements or between threads
+      - Memory allocation and deallocation
+      - Mutexes, locks and other forms of synchronization
+
+    ![](Images/unsequenceExecutionObject.png)
+
+  - **Parallel Unsequenced Execution**
+    - Operations performed in parallel across a number of threads
+    - **Cautions**
+      - Operations performed on the same thread may be interleaved
+      - They may not necessarily be executed in a specific order
+      - An operation may be migrated from one thread to another
+      - The programmer must avoid data races
+      - The programmer must avoid any modification of shared state between elements or between threads
+
+    ![](Images/parallelUnsequenceExecutionObject.png)
+
+
+
+- **Algorithms and Execution Policies**
+  - Most functions in \<[algorithm](https://en.cppreference.com/w/cpp/algorithm)\> were respecified in C++17
+    - An optional argument for the execution police was added
+  - Some algorithms are naturally sequential -> these were left unchanged
+    - e.g. **equal_range()**
+  - Some algorithms in \<[numeric](https://en.cppreference.com/w/cpp/numeric)\> now have two versions:
+    - The C++14 version
+    - A new version with policy support
+    - The new versions have new names:
+      - **accumulate()** -> **reduce()**
+      - **partial_sum()** -> **inclusive_scan()**, **exclusive_scan()**
+    - There is also a new fused algorithm with policy support:
+      - **transform()** + **inner_product()** -> **transform_reduce()**
+  
+- **When to use Parallel Algorithms**
+
+  - **Cons**
+    - May not have any effect
+      - Not supported on some compilers
+      - Not fully implemented on all compilers
+      - May fall back to non-policy version
+    - Extra overhead
+      - The algorithm may start up new threads
+      - The algorithm must manage these threads
+  - Do not use an execution police if:
+    - Your code has to be portable to other compilers
+    - The task ise essentially sequential
+    - Operation order is important
+    - The algorithm call throws exceptions (Unless immediate termination is acceptable)
+    - Preventing data races cots more than not using the execution policy
+  - Consider using an execution policy if:
+    - Measurement shows a worthwhile improvement in performance
+    - It can be done safely and correctly
+
+- **Which Execution Policy**
+  - **Sequenced** execution is mainly used for debugging
+    - Same as non-policy, but allows out of order execution and terminates on exceptions
+  - **Parallel unsequenced** execution
+    - Has the most potential to improve performance
+    - Also has the strictest requirement
+    - Use when data races can not occur
+    - Use when Code does not modify shared state
+  - **Parallel** execution
+    - Use when vectorization is not safe
+    - Data races can not occur but code modifies shared state
+  - **Unsequenced** execution
+    - Can be used with single threading
+    - If code does not modify shared state
+
+
+
+## Deadlock
+
+- Thread is deadlocked when it can not run
+- Often used to refer to **mutual deadlock**
+  - Two or more threads are waiting for each other
+  - Thread A waits for thread B to do something
+  - Thread B is waiting for A to do something
+  - The classic example involves waiting for mutexes
+
+  - Thread A locks mutex 1
+  - Thread B lock mutex 2
+  - Thread A wait to lock mutex 2
+  - Thread B wait to lock mutex 1
+
+  ![](Images/threadsDeadlock.png)
+
+  - Can also occur when waiting for:
+    - The result of computation performed by another thread
+    - A message sent by another thread
+    - A GUI event produced by another thread
+  - The second most common problem in multi-threading code 
+
+- **Avoidance**
+  - Both threads try to acquire locks in the same order
+    - The successful thread then tries to lock mutex2
+  - Lock multiple mutexes in a single operation
+  - C++ provides library for this
+    - **std::scoped_lock  (C++17)**
+      - Very similar to std::lock_guard except it can lock more than one mutex at the same time: std::scoped_lock scope_lck(mut1,mut2,...);
+      - The mutexes are locked in the order given in the constructor call
+    - **std::try_lock**
+      - Also locks multiple mutexes in single operation: std::try_lock(uniq_lk1, uniq_lk2);
+      - Returns Immediately if it cannot obtain all the locks
+        - On failure it returns index of the object that failed to lock
+        - On success it returns -1
+
+
+## Exceptions
+
+- Each thread has its own execution stack
+- This stack is "unwound" when the thread throws an exception
+  - The destructor for all objects in scope are called
+  - The program moves up the thread's stack until it finds a suitable handler
+  - If no handler is found, the program is terminated
+- Other threads in the program can not catch the exception
+  - Including the parent thread and the main thread
+- Exceptions can only be handled in the thread where they occur
+  - Use try/catch block in the normal way
+
+![](Images/threadExceptions.png)
+
+- If we do not handle exception within the thread where it is thrown, it will terminate all threads including main thread
+
+- **Exception in Parent Thread**
+
+  - The destructors are called for every object in scope
+    - Including std::thread's destructor
+    - This checks whether join() or detach() have been called
+    - If neither, it calls std::terminate()
+  - We must call either join() or detach() before the thread is destroyed
+  - Possibe solution:
+    
+  ![](Images/threadParentException.png)
+
+  - But the above solution is verbose and not very elegant
+  - **RAII** solution:
+    - Better solution is to use RAII idiom
+    - Wrap the **std::thread** object inside a class
+    - The class's destructor calls join() on the **std::thread** object  
+  - An **std::thread** object can only be joined once
+  - The **joinable()** member function
+    - Returns false if **join()** or **detach()** have already been called
+    - Or if the thread object is not associated with an execution thread
+    - Returns true if we need to call **join()**
+
+![](Images/threadGuard.png)
+
+  - The thread_guard destructor is called first
+  - If necessary it calls thr.join() and waits for the execution thread to finish
+  - The thread_guard's **std::thread** member is then destroyed
+  - It is not associated with an execution thread
+  - Its destructor does not call **std::terminate()**
+
+- **Stopping thread**
+  - Execution threads can be interrupted or stopped (**Killed**, **Cancelled**, **Terminated**)
+  - In general, abruptly terminating a thread is not a good idea
+  - **std::thread** does not support this
+    - The operating system can be used to stop the underlying execution thread
+
 
 ## Launching
 
@@ -414,6 +669,32 @@
 ![](Images/launchThreadFunctor.png)
 
 
+
+
+## Lazy Initialization
+
+- It means that we declare variable but we initialize later just before we need it
+- Common Pattern in functional programming
+- A variable is only initialized when it is first used
+- This is useful when the variable is expensive to construct
+- Can be used in multi-threaded code
+  - But we need to avoid data races
+
+![](Images/lazyInitiation.png)
+
+- but the code above is not thread safe
+
+![](Images/lazyInitiationThreadSafe.png)
+
+
+## Livelock
+
+- A program can not make progress
+  - In Deadlock the thread are inactive
+  - In Livelock the threads are still active
+- Livelock can result from badly done deadlock avoidance
+  - A thread cannot get lock
+  - Instead of blocking indefinitely it backs off and tries again
 
 ## Lock-Free Programming
 
@@ -500,221 +781,8 @@
 
 
 
-## std::thread (C++11)
-
-- The base level of concurrency
-- Rather low level implementation
-- Maps onto a software thread
-- Managed by the operating system
-- Similar to Boost threads, but with some important differences:
-  - No thread cancellation
-  - Different argument passing semantics
-  - Different behavior on thread destruction
-
-- **Launching a Thread**
-
-  - We need to create an std::thread object defined in [\<thread\>](https://en.cppreference.com/w/cpp/thread/thread) header
-  - The constructor starts a new execution thread
-  - The parent thread will continue its own execution
-  - std::thread constructor takes a callable object - Thread's entry point function
-    - The execution thread will invoke this function
-  - The entry point function
-    - Can be any callable object
-    - Can not be overloaded
-    - Any return value is ignored
-
-  ![](Images/startingThread.png) 
 
 
-
-## Thread Termination
-
-- If the parent thread completes its execution it will call destructor of the child thread
-- But that can happen while the child is still running and that is a problem
-- By default the destructor calls std::terminate() which will terminate all threads 
-- We can avoid this by joining the threads
-
-- **Join a thread**
-
-  - std::thread has a join() member function
-  - This is a "blocking" call
-    - Does not return until the thread has completed execution
-    - The parent has to stop and wait for the thread to complete
-  - Prevents std::thread's destructor calling std::terminate()
-  - The program can continue after the std::thread object is destroyed
-    
-  ![](Images/joinThread.png)
-
-
-## Thread Function
-
-- **Thread Function with Arguments**
-
-  - We can pass arguments to the entry point function
-  - We list them as extra arguments to the constructor
-
-  ![](Images/functionArguments.png)
-
-  - The std::thread object owns the arguments
-    - lvalue arguments are passed by value
-    - rvalue arguments are passed by move
-
-  ![](Images/threadPassByMove.png)
-
-  - But we can pass argument by reference also with use of a reference wrapper
-    - Wrap the argument in a call to std::ref()
-    - Use std::cref() for constant reference
-    - **Beware of dangling references!**
-
-  ![](Images/threadPassByReference.png)
-
-- **Member Function**
-
-  - We can use a member function as the entry point
-  - Requires an object of the class
-
-  ![](Images/threadWithMemberFunction.png)
-
-- **Lambda Function**
-
-  - We can also use lambda function as the entry point:
-
-  ![](Images/threadWithLambda.png)
-
-  - We can pass arguments as well:
-
-  ![](Images/threadWithLambaArguments.png)
-
-![](Images/threadCallables.png)
-
-## Synchronization Issues
-
-- Different threads execute on different cores
-- They may share data
-- This can cause synchronization issues
-- Example of synchronization issue:
-  - Core 1's thread modifies the shared data
-  - Core 1 writes the new value to its store buffer
-  - Core 2's thread wants to use the shared data
-  - Core 2 pre-fetches the shared data or loads it from cache
-  - Core 2 gets the old value
-  - Core 2's thread does its computation using the old value
-  - Core 1's store buffer writes the new value to cache
-- Solution to this issue is to make sure Core 1 buffer will flush before Core 2 fetches the shared data
-
-## System Thread Interface
-
-- std::thread uses the system's thread implementation
-- We may need to use the thread implementation directly
-- Some functionality is not available in standard C++ like:
-  - Thread Priority
-    - Give a thread higher or lower share of processor time
-  - Thread Affinity
-    - Pin a thread on a specific processor core
-
-- **native_handle()**
-
-- Each execution thread has a "handle"
-  - Used internally by the system's thread implementation
-  - Needed when making calls into the implementation's API
-  - Necessary when we want to perform operations that are not supported by the standard C++ thread interface and We need to directly use platform-specific or implementation-specific features.
-- Returned by the native_handle() member function
-
-![](Images/nativeHandle.png)
-
-- **std::thread ID**
-
-- Each execution thread has a thread identifier
-- Guaranteed to be unique
-  - Could be used to store std::thread objects in associative containers
-  - A new thread may get the ID of an earlier thread which has completed
-
-![](Images/threadID.png)
-
-- **Pausing Threads**
-
-- We can pause a thread or make it "sleep"
-  - std::this_thread::sleep_for()
-- Takes an argument of type std::chrono::duration
-  - C++14 - std::this_thread::sleep_for(2s);
-  - C++11 - std::this_thread::sleep_for(std::chrono::seconds(2));
-- This also works with single threaded programs (Pauses main thread)
-
-![](Images/threadPause.png)
-
-
-## std::thread Class
-
-- Implemented using RAII
-  - Similar to std::unique_ptr, std::fstream etc.
-  - The constructor acquires a resource
-  - The destructor releases the resource
-- An std::thread object has ownership of an execution thread
-  - Only one object can be bound to an execution thread at a time
-- Move-only class 
-  - std::thread objects can not be copied
-- Move operations
-  - Transfer ownership of the execution thread
-  - The move-from object is no longer associated with an execution thread
-- For passing std::thread object we must use 'move'
-
-![](Images/movingThread.png)
-
-- When we need to return std::thread object, the compiler will automatically move it for us
-
-![](Images/threadMoveReturn.png)
-
-## Threads and Exceptions
-
-- Each thread has its own execution stack
-- This stack is "unwound" when the thread throws an exception
-  - The destructor for all objects in scope are called
-  - The program moves up the thread's stack until it finds a suitable handler
-  - If no handler is found, the program is terminated
-- Other threads in the program can not catch the exception
-  - Including the parent thread and the main thread
-- Exceptions can only be handled in the thread where they occur
-  - Use try/catch block in the normal way
-
-![](Images/threadExceptions.png)
-
-- If we do not handle exception within the thread where it is thrown, it will terminate all threads including main thread
-
-- **Exception in Parent Thread**
-
-  - The destructors are called for every object in scope
-    - Including std::thread's destructor
-    - This checks whether join() or detach() have been called
-    - If neither, it calls std::terminate()
-  - We must call either join() or detach() before the thread is destroyed
-  - Possibe solution:
-    
-  ![](Images/threadParentException.png)
-
-  - But the above solution is verbose and not very elegant
-  - **RAII** solution:
-    - Better solution is to use RAII idiom
-    - Wrap the **std::thread** object inside a class
-    - The class's destructor calls join() on the **std::thread** object  
-  - An **std::thread** object can only be joined once
-  - The **joinable()** member function
-    - Returns false if **join()** or **detach()** have already been called
-    - Or if the thread object is not associated with an execution thread
-    - Returns true if we need to call **join()**
-
-![](Images/threadGuard.png)
-
-  - The thread_guard destructor is called first
-  - If necessary it calls thr.join() and waits for the execution thread to finish
-  - The thread_guard's **std::thread** member is then destroyed
-  - It is not associated with an execution thread
-  - Its destructor does not call **std::terminate()**
-
-- **Stopping thread**
-  - Execution threads can be interrupted or stopped (**Killed**, **Cancelled**, **Terminated**)
-  - In general, abruptly terminating a thread is not a good idea
-  - **std::thread** does not support this
-    - The operating system can be used to stop the underlying execution thread
 
 
 ## Managing a Thread
@@ -804,6 +872,630 @@
     - Easier to work with
     - Calling a sequence of member functions may be problematic
     - Usually better to implement them as memory locations
+
+
+## Parallelism
+
+- **Concurrency vs Parallelism**
+  - Sometimes useful to distinguish Concurrency from Parallelism
+  
+  - **Concurrency** 
+    - Describes conceptually distinct tasks
+      - Separation of concerns
+      - Can run on a single core
+    - These tasks often interact (Wait for an event, Wait for each other, etc...)
+    - The tasks often overlap in time
+    - Concurrency is a feature of the program structure
+  
+  - **Parallelism**
+    - The tasks are identical
+    - They all run at the same time (Run on multiple cores to improve scalability)
+    - These tasks run independently of each other (They are not supposed to interact with each other)
+    - Parallelism is a feature of the algorithm being run
+
+- **Explicit Parallelism**
+  - The programmer specified how to parallelize the work
+    - Involves more work for the programmer
+    - Can produce better performance
+    - Not scalable
+  - Mainly useful when writing for specific hardware
+  - Or if the work naturally divides into a fixed number of tasks
+
+- **Implicit Parallelism**
+  - The decision is left to the implementation
+  - Makes the best use of available resources
+  - Usually the best option
+  
+- **Task Parallelism**
+  - Distributed processing also known as **Thread-Level Parallelism (TLP)**
+  - Split a large task into smaller tasks
+  - The sub-tasks run concurrently on separate threads
+  - e.g Database server runs many threads to reduce latency
+
+- **Data Parallelism**
+  - Distributed data
+    - Data set is divided up into several subsets
+    - Process all the subsets concurrently
+  - Each thread works on one of the subsets
+  - A final "reduce" step
+    - Collects the result for each subset
+    - Combines the partial results into the overall result
+  - Also know as **vector processing** or **vectorization** (Used in Graphic Processor Units)
+  - Modern CPUs have support for vectorization
+  - Can improve data locality
+    - Program processes 20 MB of data
+    - A core has 4 MB of cache
+    - Each core processes 1/5 of the data
+    - All the data each core needs is in cache -> No fetches from RAM, No Interaction with cache controller
+
+  - Data Parallelism with **std::async()**:
+    ![](Images/dataParallelismWithAsync.png)
+  
+  - Data Parallelism with **std::packaged_task**:
+    ![](Images/dataParallelismWithPackagedTask.png)
+
+
+
+
+
+
+
+
+- **Pipelining**
+  - Dependent tasks
+    - Task B requires output from Task A, Task C requires output from Task B
+    - B can not start until A has completed and produced its output
+  - If A,B and C are processing a stream of data
+    - A processes first item in stream
+    - B starts processing A's output
+    - A starts processing the next item
+  - Perform dependent tasks sequentially but process data concurrently
+
+- **Graph Parallelism**
+  - Similar to pipelining but with an arbitrary graph of dependencies
+
+
+## std::thread Class
+
+- Implemented using RAII
+  - Similar to std::unique_ptr, std::fstream etc.
+  - The constructor acquires a resource
+  - The destructor releases the resource
+- An std::thread object has ownership of an execution thread
+  - Only one object can be bound to an execution thread at a time
+- Move-only class 
+  - std::thread objects can not be copied
+- Move operations
+  - Transfer ownership of the execution thread
+  - The move-from object is no longer associated with an execution thread
+- For passing std::thread object we must use 'move'
+
+![](Images/movingThread.png)
+
+- When we need to return std::thread object, the compiler will automatically move it for us
+
+![](Images/threadMoveReturn.png)
+
+
+## std::thread (C++11)
+
+- The base level of concurrency
+- Rather low level implementation
+- Maps onto a software thread
+- Managed by the operating system
+- Similar to Boost threads, but with some important differences:
+  - No thread cancellation
+  - Different argument passing semantics
+  - Different behavior on thread destruction
+
+- **Launching a Thread**
+
+  - We need to create an std::thread object defined in [\<thread\>](https://en.cppreference.com/w/cpp/thread/thread) header
+  - The constructor starts a new execution thread
+  - The parent thread will continue its own execution
+  - std::thread constructor takes a callable object - Thread's entry point function
+    - The execution thread will invoke this function
+  - The entry point function
+    - Can be any callable object
+    - Can not be overloaded
+    - Any return value is ignored
+
+  ![](Images/startingThread.png) 
+
+
+## Shared Data
+
+- **Critical Sections**
+  - A region of code
+  - Must only be executed by one thread at a time
+  - Usually when accessing a shared resource (shared data, network connection, hardware device, ...)
+  - The thread enters the critical section
+    - It start executing the code in the critical section
+  - The thread leaves the critical section
+    - It has executed all the code in the critical section
+  
+  - **Locking Protocol**
+    - One thread can enter the critical section
+      - All the other threads are locked out
+      - Only this thread can execute the code in the critical section
+    - The thread leaves the critical section
+      - One of the other threads can now enter it
+    - 
+
+
+- **Mutexes**
+  
+  - **MUT**ual **EX**clusion Object
+  - A mutex has two states
+    - Locked
+    - Unlocked
+  - The Mutex is used to exclude threads from entering the critical section
+  - The threads agree to respect the mutex
+  - **Locking**
+    - If the mutex is unlocked, a thread can enter the critical section
+    - IF the mutex is locked, no thread can enter until it becomes unlocked
+    - A thread locks the mutex when it enter the critical section
+    - A thread unlocks the mutex when it leaves the critical section
+  - Mutexes are synchronizing the threads:
+    - Threads can not interleave when they execute in the critical section
+    - There is no data race
+  - Unlocking a mutex publishes any changes
+    - Thread A modifies shared data
+    - The new value is now available to other threads
+    - It will be seen by the next thread which accesses the shared data
+  - **Acquire-Release** Semantics
+    - A thread locks a mutex - It **acquires** exclusive access to the critical section
+    - The thread unlocks the mutex
+      - It releases exclusive access to the critical section
+      - It also releases the result of any modifications
+      - The next thread that locks the mutex will acquire these results
+    - These Semantics impose ordering on the threads 
+      - There is no data race
+      - The shared data is always in a consistent state
+    
+  - **std::mutex**
+    - Defined in \<[mutex](https://en.cppreference.com/w/cpp/thread/mutex)\>
+    - We can use a mutex to implement locking
+    - A mutex object must be visible in all task functions which uses it
+    - It must also be defined outside the task functions
+      - Global/Static variable with global task
+      - Class data member with member task function
+      - Variable captured by reference with lambda expressions
+    - **std::mutex interface**
+      - Three main member functions
+      - **lock()**
+        - Tries to lock the mutex
+        - If not successful, wait until it locks the mutex
+      - **try_lock()**
+        - Tries to lock the mutex
+        - Returns immediately 
+        - If not successful returns **false** or **true** otherwise
+      - **unlock()**
+        - Releases the lock on the mutex
+
+
+    - **Example:**
+
+      - Eliminate interleaving with mutex, the accesses to the critical section are synchronized
+      - Output will be 5x "abc", 5x "def", 5x "xyz" but with random order
+      - We do not know which 5x series will be first which second and which last...
+
+      ![](Images/stdMutexExample.png)
+
+
+    - **Drawbacks:**
+      - Calling **lock()** requires a corresponding call to **unlock()**
+      - **unlock()** must always be called even if
+        - There are multiple paths through the critical section
+        - An exception is thrown
+      - Relies on the programmer to get it right
+      - For these reasons we do not normally use **std::mutex** directly
+
+  - **Mutex Wrapper Classes**
+    - The C++ library provides mutex wrapper classes (Classes with mutex object as a private member)
+    - Defined in \<[mutex](https://en.cppreference.com/w/cpp/thread/mutex)\>
+    - These use the **RAII** idiom for managing resources
+    - In this case, the resource is lock on a mutex
+    - The constructor locks mutex
+    - The destructor unlocks mutex
+    - We create the wrapper class on the stack
+      - The mutex will always be unlocked when the object goes out of scope
+      - Including when an exception is thrown
+
+
+  - **std::lock_guard**
+
+    - To solve problem with mutex that was not unlocked for some unexpected reason like thrown exception:
+
+        ![](Images/stdMutexWithException.png)
+     
+    - All other threads which are waiting to lock the mutex are blocked
+    - If **main()** is joined on these blocked threads it will be blocked as well -> The entire program will be blocked
+
+    - **std::lock_guard** is a vary basic mutex wrapper 
+    - It has constructor and destructor only
+    - The constructor takes a mutex object as argument and locks that mutex
+    - The destructor unlocks the mutex member
+    - It is a template class
+    - The template parameter is the type of the mutex
+
+      ![](Images/stdLockGuard.png)
+
+    - In **C++17** the compiler can deduce the mutex type:
+
+      ![](Images/stdLockGuardCPP17.png)
+
+    - However the drawback with **std::lock_guard** is that we can not unlock it manually before we reach the end of the scope...
+    - The end of the scope that will call the destructor is the only way we can unlock the mutex
+
+  - **std::unique_lock**
+  
+    - Another mutex wrapper
+    - The same basic features as **std::lock_guard**
+      - Mutex data member
+      - Constructor locks the mutex
+      - Destructor unlocks it
+    - But it also has **unlock()** member function
+      - We can call this after the critical section
+      - Avoids blocking other threads while we execute non-critical code
+    - If we do not call **unlock()**, the destructor will unlock the mutex (The lock is always released)
+
+    ![](Images/stdUniqueLock.png)
+
+    - **Constructor Options**
+      - The default
+        - Call the mutex lock() member function
+      - Try to get the lock
+        - Do not wait if unsuccessful
+        - (Timed mutex) Wait with a time-out if unsuccessful
+      - Do not lock the mutex
+        - It will be locked later
+        - Or the mutex is already locked
+      - We can also use optional second argument:
+        - **std::try_to_lock**
+          - Call the mutex **try_lock()** member function
+          - The **unique_lock::owns_lock()** member function checks if the mutex is locked
+        - **std::defer_lock**
+          - Does not lock the mutex
+          - We can lock it later by calling the **lock()** member function
+          - Or by passing the **std::unique_lock** object to **std::lock()**
+        - **std::adopt_lock**
+          - Takes a mutex that is already locked
+          - Avoids locking the mutex twice
+
+    - **Move Semantics**
+      - A **std::unique_lock** can not be copied
+      - It can be moved
+        - The lock is transferred to another **std::unique_lock** object
+        - Can only be done within the same thread
+      - We can write function that creates a lock object and returns it
+        - The function could lock different types of mutex depending on its arguments
+        - Factory design pattern
+
+
+    - **Member Functions**
+      - **std::unique_lock** has member function even for timed_mutex 
+      - These are:
+        - **try_lock_for()**
+        - **try_lock_until()**
+        - These are forwarded to the wrapped mutex -> Will only compile if the mutex supports the operation
+
+        ![](Images/stdUniqueLockTimedMutex.png)
+
+
+
+
+
+
+    - **std::unique_lock** is much more flexible than **std::lock_guard** 
+    - But requires slightly more storage and is slightly slower
+    - **Recommendations**
+      - Use **lock_guard** to lock mutex for an entire scope
+      - Use **unique_lock** if we need to unlock within the scope
+      - Use **unique_lock** if we need the extra features
+
+
+
+
+
+
+  - **Multiple Locking**
+  
+    - A thread locks an **std::mutex**
+    - It must not call **lock()** again until it has called **unlock** (Undefined behavior otherwise)
+    - **std::recursive_mutex**
+      - Its **lock()** member function can be called repeatedly without calling **unlock()** first
+      - Normally a sign of bad design
+  
+  - **std::timed_mutex**
+    - Similar to **std::mutex** but with extra member functions
+      - **try_lock_for()** - Keep trying to lock the mutex for a specified duration
+
+        ![](Images/stdTimedMutex.png)
+
+      - **try_lock_until()** - Keep trying to lock the mutex until a specified time
+
+        ![](Images/stdTimedMutexUntil.png)
+
+      - Both of these functions return True if the mutex was locked or false otherwise
+       
+
+
+
+
+  - **std::recursive_timed_mutex**
+    - Mix between recursive and timed mutex
+
+
+
+
+
+
+
+
+
+
+
+
+
+- **Internal Synchronization**
+
+  - Multiple threads accessing the same memory location
+    - With modification
+    - Must be synchronized to prevent data races
+  - C++ STL containers need to be externally synchronized (e.g. by locking mutex before calling a member function)
+  - Our own types can provide internal synchronization
+    - An **std::mutex** as a data member
+    - The member functions lock the mutex before accessing the class data
+    - They unlock the mutex after accessing the class data
+    
+  - **Example: Wrapper for std::vector** 
+    - **std::vector** acts as a memory location
+    - We may need to lock the mutex before calling it member function
+    - Alternatively we could write an internally synchronized wrapper for it
+    - A class which:
+      - Has an **std::vector** data member
+      - Has an **std::mutex** data member
+      - Member functions which lock the mutex before accessing the **std::vector**
+      - Then unlock the mutex after accessing it
+    - An internally synchronized class
+
+    ![](Images/internalSyncWrapperExample.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Synchronization Issues
+
+- Different threads execute on different cores
+- They may share data
+- This can cause synchronization issues
+- Example of synchronization issue:
+  - Core 1's thread modifies the shared data
+  - Core 1 writes the new value to its store buffer
+  - Core 2's thread wants to use the shared data
+  - Core 2 pre-fetches the shared data or loads it from cache
+  - Core 2 gets the old value
+  - Core 2's thread does its computation using the old value
+  - Core 1's store buffer writes the new value to cache
+- Solution to this issue is to make sure Core 1 buffer will flush before Core 2 fetches the shared data
+
+## System Thread Interface
+
+- std::thread uses the system's thread implementation
+- We may need to use the thread implementation directly
+- Some functionality is not available in standard C++ like:
+  - Thread Priority
+    - Give a thread higher or lower share of processor time
+  - Thread Affinity
+    - Pin a thread on a specific processor core
+
+- **native_handle()**
+
+- Each execution thread has a "handle"
+  - Used internally by the system's thread implementation
+  - Needed when making calls into the implementation's API
+  - Necessary when we want to perform operations that are not supported by the standard C++ thread interface and We need to directly use platform-specific or implementation-specific features.
+- Returned by the native_handle() member function
+
+![](Images/nativeHandle.png)
+
+- **std::thread ID**
+
+- Each execution thread has a thread identifier
+- Guaranteed to be unique
+  - Could be used to store std::thread objects in associative containers
+  - A new thread may get the ID of an earlier thread which has completed
+
+![](Images/threadID.png)
+
+- **Pausing Threads**
+
+- We can pause a thread or make it "sleep"
+  - std::this_thread::sleep_for()
+- Takes an argument of type std::chrono::duration
+  - C++14 - std::this_thread::sleep_for(2s);
+  - C++11 - std::this_thread::sleep_for(std::chrono::seconds(2));
+- This also works with single threaded programs (Pauses main thread)
+
+![](Images/threadPause.png)
+
+
+## Transferring Data
+
+- So far we have used shared variables to share data between threads
+- Conditional variables can signal to another thread that shared data has been modified but can not directly transfer data from one thread to another
+- But we can transfer data with **std::future** and **std::promise**
+- Together they set up a "shared state" between threads
+- The shared state can transfer data from one thread to another
+  - No shared data variables
+  - No explicit locking
+
+- **Producer-Consumer Model**
+  - Futures and Promises use a producer-consumer model
+  - A producer thread will generate result
+  - A consumer thread waits for the result
+  - The producer thread stores the generated result in the shared state
+  - The consumer thread reads the result from the shared state
+  - 
+- **std::promise** object is associated with the producer
+  - The promise object stores the result in the shared state
+- **std::future** object is associated with the consumer
+  - The consumer calls a member function of the future object
+  - The function blocks until the result becomes available
+  - The member function reads the result from the shared state
+  - The member function returns the result
+
+  ![](Images/futurePromise.png)
+
+
+- **Exception Handling**
+  - Futures and Promises also work with exceptions
+    - The promises stores the exception in the shared state
+  - This exception will be rethrown in the consumer thread
+  - The producer throws the exception to the consumer
+  
+  ![](Images/futurePromiseException.png)
+
+  - **std::make_exception_ptr()**
+    - To throw an exception ourselves we could:
+      - Throw the exception inside a try block
+      - Write catch block that calls set_exception()
+    - C++11 has **std::make_exception_ptr()**
+      - Takes the exception object we want to throw
+      - Returns a pointer to its argument
+      - Pass this pointer to set_exception()
+      - Avoid "boilerplate" code
+      - Better code generation
+
+  ![](Images/exceptionPointer.png)
+
+
+
+- **std::future and std::promise**
+  - An promise object is associated with a future object
+  - Together they create a **shared state**
+    - The promise object stores a result in the shared state
+    - The future object gets the result from the shared state
+
+  - **std::future**
+    - Template class defined in \<future\>
+    - The parameter is the type of the data that will be returned
+    - Represents a result that is not yet available
+    - One of the most important classes in C++ concurrency
+      - Works with many different asynchronous objects and operations, not just std::promise
+    - An **std::future** object is not usually created directly
+      - Obtained from an std::promise object
+      - Or returned by an asynchronous operation
+    - **get()** member function
+      - Obtains the result when ready
+      - Blocks until the operation is complete
+      - Fetches the result and returns it
+    - **wait()** and friends
+      - Block but do not return a result
+      - wait() blocks until the operation is complete
+      - wait_for() and wait_until() block with a timeout
+
+  - **std::promise**
+    - Template class defined in \<future\>
+    - The parameter is the type of the result
+    - Constructor creates an associated std::future object
+    - Sets up the shared state with it
+    - **get_future()** member function
+      - returns the associated future
+      - std::promise\<int\> prom;
+      - std::future fut = prom.get_future();
+    - **set_value()** 
+      - Sets result to its argument
+    - **set_exception()**
+      - Indicates that an exception has occurred
+      - This can be stored in the shared state
+
+- **Multiple Threads**
+  
+  - **Example**:
+    - Single producer thread
+    - Multiple consumer threads
+
+  - **std::future** is designed for use with a single consumer thread
+    - Can not be safely shared between threads
+    - Can not be copied -> Move-only class
+
+  - The code in the example below can work properly sometimes but sometimes it will not so it is unsafe code
+
+    ![](Images/mutipleConsumers.png)
+
+  - **std::shared_future**
+    - Each thread has its own object
+    - They all share the same state with the **std::promise**
+    - Calling **get()** or **wait()** from different copies is safe
+
+    ![](Images/sharedFutureExample.png)
+
+  
+
+
+## Thread Function
+
+- **Thread Function with Arguments**
+
+  - We can pass arguments to the entry point function
+  - We list them as extra arguments to the constructor
+
+  ![](Images/functionArguments.png)
+
+  - The std::thread object owns the arguments
+    - lvalue arguments are passed by value
+    - rvalue arguments are passed by move
+
+  ![](Images/threadPassByMove.png)
+
+  - But we can pass argument by reference also with use of a reference wrapper
+    - Wrap the argument in a call to std::ref()
+    - Use std::cref() for constant reference
+    - **Beware of dangling references!**
+
+  ![](Images/threadPassByReference.png)
+
+- **Member Function**
+
+  - We can use a member function as the entry point
+  - Requires an object of the class
+
+  ![](Images/threadWithMemberFunction.png)
+
+- **Lambda Function**
+
+  - We can also use lambda function as the entry point:
+
+  ![](Images/threadWithLambda.png)
+
+  - We can pass arguments as well:
+
+  ![](Images/threadWithLambaArguments.png)
+
+![](Images/threadCallables.png)
+
+
+
+
+
+## Thread Pool
+
+- A design pattern used in concurrent programming to manage a collection of reusable threads
+- These threads can be used to perform a variety of tasks providing an efficient way of managing resources, especially in high-load scenarios
+- Using thread pool helps minimize the overhead associated with thread creation and destruction, especially in applications that require the execution of large number of short lived tasks
+
+
 
 ## Thread Synchronization
 
@@ -963,172 +1655,23 @@
 
 
 
-## Transferring Data
+## Thread Termination
 
-- So far we have used shared variables to share data between threads
-- Conditional variables can signal to another thread that shared data has been modified but can not directly transfer data from one thread to another
-- But we can transfer data with **std::future** and **std::promise**
-- Together they set up a "shared state" between threads
-- The shared state can transfer data from one thread to another
-  - No shared data variables
-  - No explicit locking
+- If the parent thread completes its execution it will call destructor of the child thread
+- But that can happen while the child is still running and that is a problem
+- By default the destructor calls std::terminate() which will terminate all threads 
+- We can avoid this by joining the threads
 
-- **Producer-Consumer Model**
-  - Futures and Promises use a producer-consumer model
-  - A producer thread will generate result
-  - A consumer thread waits for the result
-  - The producer thread stores the generated result in the shared state
-  - The consumer thread reads the result from the shared state
-  - 
-- **std::promise** object is associated with the producer
-  - The promise object stores the result in the shared state
-- **std::future** object is associated with the consumer
-  - The consumer calls a member function of the future object
-  - The function blocks until the result becomes available
-  - The member function reads the result from the shared state
-  - The member function returns the result
+- **Join a thread**
 
-  ![](Images/futurePromise.png)
-
-
-- **Exception Handling**
-  - Futures and Promises also work with exceptions
-    - The promises stores the exception in the shared state
-  - This exception will be rethrown in the consumer thread
-  - The producer throws the exception to the consumer
-  
-  ![](Images/futurePromiseException.png)
-
-  - **std::make_exception_ptr()**
-    - To throw an exception ourselves we could:
-      - Throw the exception inside a try block
-      - Write catch block that calls set_exception()
-    - C++11 has **std::make_exception_ptr()**
-      - Takes the exception object we want to throw
-      - Returns a pointer to its argument
-      - Pass this pointer to set_exception()
-      - Avoid "boilerplate" code
-      - Better code generation
-
-  ![](Images/exceptionPointer.png)
-
-
-
-- **std::future and std::promise**
-  - An promise object is associated with a future object
-  - Together they create a **shared state**
-    - The promise object stores a result in the shared state
-    - The future object gets the result from the shared state
-
-  - **std::future**
-    - Template class defined in \<future\>
-    - The parameter is the type of the data that will be returned
-    - Represents a result that is not yet available
-    - One of the most important classes in C++ concurrency
-      - Works with many different asynchronous objects and operations, not just std::promise
-    - An **std::future** object is not usually created directly
-      - Obtained from an std::promise object
-      - Or returned by an asynchronous operation
-    - **get()** member function
-      - Obtains the result when ready
-      - Blocks until the operation is complete
-      - Fetches the result and returns it
-    - **wait()** and friends
-      - Block but do not return a result
-      - wait() blocks until the operation is complete
-      - wait_for() and wait_until() block with a timeout
-
-  - **std::promise**
-    - Template class defined in \<future\>
-    - The parameter is the type of the result
-    - Constructor creates an associated std::future object
-    - Sets up the shared state with it
-    - **get_future()** member function
-      - returns the associated future
-      - std::promise\<int\> prom;
-      - std::future fut = prom.get_future();
-    - **set_value()** 
-      - Sets result to its argument
-    - **set_exception()**
-      - Indicates that an exception has occurred
-      - This can be stored in the shared state
-
-- **Multiple Threads**
-  
-  - **Example**:
-    - Single producer thread
-    - Multiple consumer threads
-
-  - **std::future** is designed for use with a single consumer thread
-    - Can not be safely shared between threads
-    - Can not be copied -> Move-only class
-
-  - The code in the example below can work properly sometimes but sometimes it will not so it is unsafe code
-
-    ![](Images/mutipleConsumers.png)
-
-  - **std::shared_future**
-    - Each thread has its own object
-    - They all share the same state with the **std::promise**
-    - Calling **get()** or **wait()** from different copies is safe
-
-    ![](Images/sharedFutureExample.png)
-
-  
-
-## Deadlock
-
-- Thread is deadlocked when it can not run
-- Often used to refer to **mutual deadlock**
-  - Two or more threads are waiting for each other
-  - Thread A waits for thread B to do something
-  - Thread B is waiting for A to do something
-  - The classic example involves waiting for mutexes
-
-  - Thread A locks mutex 1
-  - Thread B lock mutex 2
-  - Thread A wait to lock mutex 2
-  - Thread B wait to lock mutex 1
-
-  ![](Images/threadsDeadlock.png)
-
-  - Can also occur when waiting for:
-    - The result of computation performed by another thread
-    - A message sent by another thread
-    - A GUI event produced by another thread
-  - The second most common problem in multi-threading code 
-
-- **Avoidance**
-  - Both threads try to acquire locks in the same order
-    - The successful thread then tries to lock mutex2
-  - Lock multiple mutexes in a single operation
-  - C++ provides library for this
-    - **std::scoped_lock  (C++17)**
-      - Very similar to std::lock_guard except it can lock more than one mutex at the same time: std::scoped_lock scope_lck(mut1,mut2,...);
-      - The mutexes are locked in the order given in the constructor call
-    - **std::try_lock**
-      - Also locks multiple mutexes in single operation: std::try_lock(uniq_lk1, uniq_lk2);
-      - Returns Immediately if it cannot obtain all the locks
-        - On failure it returns index of the object that failed to lock
-        - On success it returns -1
-
-
-## Livelock
-
-- A program can not make progress
-  - In Deadlock the thread are inactive
-  - In Livelock the threads are still active
-- Livelock can result from badly done deadlock avoidance
-  - A thread cannot get lock
-  - Instead of blocking indefinitely it backs off and tries again
-
-
-
-## Thread Pool
-
-- A design pattern used in concurrent programming to manage a collection of reusable threads
-- These threads can be used to perform a variety of tasks providing an efficient way of managing resources, especially in high-load scenarios
-- Using thread pool helps minimize the overhead associated with thread creation and destruction, especially in applications that require the execution of large number of short lived tasks
+  - std::thread has a join() member function
+  - This is a "blocking" call
+    - Does not return until the thread has completed execution
+    - The parent has to stop and wait for the thread to complete
+  - Prevents std::thread's destructor calling std::terminate()
+  - The program can continue after the std::thread object is destroyed
+    
+  ![](Images/joinThread.png)
 
 
 
@@ -1153,22 +1696,6 @@ could be fast (since the condition in while loop appears to be true always).
 
 
 
-
-
-## Lazy Initialization
-
-- It means that we declare variable but we initialize later just before we need it
-- Common Pattern in functional programming
-- A variable is only initialized when it is first used
-- This is useful when the variable is expensive to construct
-- Can be used in multi-threaded code
-  - But we need to avoid data races
-
-![](Images/lazyInitiation.png)
-
-- but the code above is not thread safe
-
-![](Images/lazyInitiationThreadSafe.png)
 
 
 
