@@ -69,7 +69,8 @@
         "iomanip": "cpp",
         "span": "cpp",
         "variant": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "shared_mutex": "cpp"
     },
     "cSpell.words": [
         "bptr",

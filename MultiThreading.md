@@ -326,6 +326,19 @@
       - Test *ptr = ptest;
       - ptr->func();
 
+    - Another solution is **std::call_once**
+      - Given function is only called once
+      - It is done in one thread
+      - The thread can not be interrupted until the function call completes
+      - We us it with a global instance of **std::once_flag**
+      - We pass the instance and the function to **std::call_once()**
+
+        ![](Images/stdCallOnce.png)
+
+      - Thread safe and less overhead than a mutex
+    - Or C++17 defines the order of initialization so double checked locking no longer causes data race
+      - The order: Allocate enough memory to store a Test object -> Construct Test object in memory -> Store the address in ptest
+
   - **Atomic Pointer**
 
     - If we are initializing some potentially big class we want to do it only once
@@ -557,7 +570,48 @@
     - Can be used with single threading
     - If code does not modify shared state
 
+## Data Structures for Concurrent Programming
 
+- Data structures have multiple elements and multiple threads may access these elements
+- Locks o atomic operations may be needed
+
+- **Modifying Operations**
+  - May affect other parts of the object
+  - Linked List
+    - Data stored in a chain of nodes
+    - Adding or Removing an element modifis the suroundings nodes
+  - Vector/String/Dynamic Array
+    - Data stored in memory block
+    - Adding or Removing elements moves the folowing elements in memory
+    - Adding elements may cause the block to be reallocated
+    - If other threads are accessing those elements
+      - Pointers and References may dangle
+      - Iteratos may become invalidated
+
+  - STL containers are "memory objects"
+    - Concurrent reads of the same object are safe
+    - A single write of an object is safe
+      - One thread can write to object provided no other threads access it concurrently
+    - Concurrent reads and writes of the same object are not safe
+      - One thread writes to object X
+      - Other threads must not access X during this operation
+
+- **Coarse-grained Locking**
+  - Locks the entire object
+    - Easy to do
+    - Requires no change to the data structure
+  - Sometimes the only option
+    - A variable of built in type
+    - Types in the C++ standard library
+    - etc..
+  - In effect, all code that accesses the object will be single threaded
+
+- **Fine-grained Locking**
+  - We can choose which parts of the object to lock (We only lock some of the elements)
+  - Allows concurrent access
+  - Requires writing extra code
+  - Requires careful design
+  - Increases cost of creating an object (mutex initialization)
 
 ## Deadlock
 
@@ -1023,6 +1077,47 @@
     - 
 
 
+- **Shared Data Initialization**
+  - **Global Variable** 
+    - Accessible to all code in the program
+    - Initialized when the program starts
+    
+  - **Static Variable at namespace scope** 
+    - Accessible to all code in the translation unit
+    - Initialized when the program starts
+  
+  - **Class membe which is declared static** 
+    - Potentially accessible to code which calls its member functions
+    - If public, accessible to all code
+    - Initialized when the program starts
+
+  - **Local Variable which is declared static**
+    - Accessible to al code which calls that function
+    - Initialized after the program start, when the declaration is reached
+    - Two ore more threads may call the constructor concurrently
+    - Since C++11 this behavior is now well defined
+    - Only one thread can initialize the variable
+    - Any other thread that reaches the declaration is blocked
+    - Must wait until the first thread has finished intializing the variable
+    - The threads are synchronized by implementation -> no data race
+
+- **Thread Local Variables**
+  - C++ supports thread local variables
+  - Same as static and global variables
+  - However, there is separat object for each thread
+  - With a static variable, there is a single object which is shared by all threads
+  - We use the **thread_local** keyword to declare them
+  - **Global and namespace scope**
+    - Always constructed at or before the first use in a translation unit
+    - It is safe to use them in dynamic libraries
+  - **Local Variables**
+    - Initialized in the same way as static local variables
+  - In all cases they are destroyed when the thread completes its execution
+
+    ![](Images/threadLocal.png)
+
+  
+
 - **Mutexes**
   
   - **MUT**ual **EX**clusion Object
@@ -1228,15 +1323,58 @@
 
 
 
+  - **std::shared_mutex (C++17)**
 
+    - Defined in \<[shared_mutex](https://en.cppreference.com/w/cpp/thread/shared_mutex)\>
 
+    - **The Problem to Solve - Multiple Readers**
 
+      - Concurrent Accesses:
+        - High probability of a reader and another reader (no locking required)
+        - Low probability of a writer and a reader (locking required)
+        - Low probability of a writer and another writer (locking required)
 
+      - With **std::mutex** all threads are synchronized
+      - They must execute their critical sections sequentially, even when it is not necessary
+      - Loss of concurrency reduces performance
+      - In the code below the read threads will be executed sequentially so it will take 4 seconds for them (40*0.1): 
 
+        ![](Images/multipleReaders.png)
+      
+    - **Read-Write Lock**
+      - It will be useful to have "selective" locking
+        - Lock when there is a thread which is writing
+        - Do not lock when there are only reading threads
 
+    - **std::shared_mutex** can be locked in two different ways:
+      - **Exclusive Lock**
+        - No other thread may acquire a lock
+        - No other thread can enter a critical section
+        - Thread can only acquire an exclusive lock when the mutex is unlocked
+        - **std::lock_guard\<std::shared_mutex\>**
+        - **std::unique_lock\<std::shared_mutex\>**
+      - **Shared Lock**
+        - Other threads may acquire a shared lock
+        - They can execute critical sections concurrently
+        - Thread which has a shared lock can enter the critical section
+        - **std::shared_lock\<std::shared_mutex\>**
 
+      ![](Images/multipleReadersSharedMutex.png)
 
+    - **Member Functions**
+      - **lock()**
+      - **try_lock()**
+      - **unlock()**
+      - **lock_shared()**
+      - **try_lock_shared()**
+      - **unlock_shared()**
 
+    - **Pros and Cons**
+      - Uses more memory than **std::mutex**
+      - Slower than **std::mutex**
+      - Best suited for situations where:
+        - Reader threads greatly outnumber writer threads
+        - Read operations take a long time
 
 - **Internal Synchronization**
 
