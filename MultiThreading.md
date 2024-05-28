@@ -613,6 +613,28 @@
   - Requires careful design
   - Increases cost of creating an object (mutex initialization)
 
+
+- **Monitor Class**
+
+  - Internally synchronized class
+  - We can do it by simple adding mutex as a private member and locking this mutex before accessing critical sections inside of that class functions
+  - But this solution has some drawbacks:
+    - Member functions may need to call other member functions (risks of deadlock)
+    - Results in many locking and unlocing operations
+    - Existing classes need to be modified
+  - Anoter solution is to write a **wrapper class**
+    - Our object is a data member of this wrapper class
+    - The member functions locks a mutex and forward to the object
+
+      ![](Images/monitorClassWrapper.png)
+
+    - Works with any type
+    - However we still have problems with unnecessary locking, possible deadlock and allowed interruptions by other threads
+
+  - Improved Monitor wrapper class 
+
+
+
 ## Deadlock
 
 - Thread is deadlocked when it can not run
@@ -634,21 +656,54 @@
     - A message sent by another thread
     - A GUI event produced by another thread
   - The second most common problem in multi-threading code 
+  - Often caused by threads trying to lock mutexes in different order
 
 - **Avoidance**
-  - Both threads try to acquire locks in the same order
+  - Make threads acquire locks in the same order 
     - The successful thread then tries to lock mutex2
+    - Relies of programmer
   - Lock multiple mutexes in a single operation
-  - C++ provides library for this
+    - Thread A locks mutex1 and mutex2
+    - Thread B can not lock mutex2 or mutex1 during this operation
+    - A much better solution
+    - C++ provides library features for this
+    - **std::lock()**
+      - Before C++17
+      - It can lock multiple mutexes in single operation
+      - **std::lock(mutex1,mutex2);**
+      - But then we have to unlock those mutexes ourselves
+      - Or we can combine it with **std::unique_lock**:
+        
+        ![](Images/deadlockAvoidanceStdLock.png)
+      
     - **std::scoped_lock  (C++17)**
-      - Very similar to std::lock_guard except it can lock more than one mutex at the same time: std::scoped_lock scope_lck(mut1,mut2,...);
-      - The mutexes are locked in the order given in the constructor call
+      - Very similar to **std::lock_guard** except it can lock more than one mutex at the same time: **std::scoped_lock scope_lck(mutex1,mutex2,...);**
+      - The mutexes are locked in the order given in the Constructor call
+      - In Destructor the mutexes are unlocked in the reverse order
+      
+        ![](Images/stdScopedLock.png)
+
     - **std::try_lock**
-      - Also locks multiple mutexes in single operation: std::try_lock(uniq_lk1, uniq_lk2);
+      - Also locks multiple mutexes in single operation: **std::try_lock(uniq_lk1, uniq_lk2);**
       - Returns Immediately if it cannot obtain all the locks
         - On failure it returns index of the object that failed to lock
         - On success it returns -1
+  
+        ![](Images/stdTryLock.png)
 
+    - Sometimes it is not feasible to acquire multiple locks simultaneously
+    - A common technique is to impose an ordering
+    - A thread can not lock a mutex unless it as already locked a mutex with a lower status (id number,Aplhabetical name, ...)
+
+  - **Avoidance Guidelines**
+
+    - Avoid waiting for a thread while holding a lock
+    - Try to avoid waiting for other threads
+    - Try to avoid nested locks
+      - If our thread already holds a lock, do not acquire anothero one
+      - If we need multiple locks, acquire them in a single operation
+    - Avoid calling functions within a critical section
+      - Unless we are certain the function does not try to lock
 
 ## Exceptions
 
@@ -749,6 +804,38 @@
 - Livelock can result from badly done deadlock avoidance
   - A thread cannot get lock
   - Instead of blocking indefinitely it backs off and tries again
+
+- **Example:**
+
+  ![](Images/liveLockExample.png)
+
+- **Livelock Avoidance**
+  - Make the deadlock avoidance the correct way
+  - Use **std::scoped_lock** or **std::lock**
+  - Add randomness
+  - Provide Central aritrator to coordinate threads
+  - Use a shared lock
+  - Introducing hierarchy
+  - **Thread Priority**
+    - We could assign different priorities to threads 
+    - Not directly supported by C++
+    - Most thread implementations allow it
+      - Accessible via **std::thread's native_handle()**
+      - A high priority thread will run more often
+      - A low priority thread will be suspended or be interrupted more often
+    - The high priority thread will lock the mutex first
+    
+- **Resource Starvation**
+  - A thread can not get the resources it needs to run
+    - In deadlock and livelock, the thread can not acquire a lock
+  - Lack of system resources can prevent a thread from starting
+    - System memory exhausted
+    - Maximum supported number of threads is already running
+  - Low priority threads may get starved of processor time
+    - Higher priority threads are given preference by the scheduler
+    - Good schedulers try to avoid this
+
+
 
 ## Lock-Free Programming
 
@@ -1375,6 +1462,27 @@
       - Best suited for situations where:
         - Reader threads greatly outnumber writer threads
         - Read operations take a long time
+
+
+  - **Mutex Conclusion**
+    - **Recommendations** 
+      - If reading shared data we can lock make copy of it unlock and then use the copy
+      - When writing into the shared data try to use lock for the minimum of time... processing the result out of the lock
+      - Do not lock more elements than necessary
+      - Do not make locking too fine grained
+        - Do not lock individual elements when inserting and deleting
+        - Another threa may need to access a neighbouring element -> data race
+        
+    - **Pros and Cons**
+      - Fairly straightforward way to protect shared data
+      - Locking and unlocking are slow operations
+      - Low-Level
+      - Most real-wold programs use higher level structures
+        - Mutex Wrappers
+        - Different Classes
+
+
+
 
 - **Internal Synchronization**
 

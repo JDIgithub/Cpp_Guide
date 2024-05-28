@@ -3,7 +3,7 @@
 - For raw pointers we have to manually release memory ourself through the 'delete' operator
 - Smart pointers are a solution offered by modern C++ to release the memory automatically when the pointer managing the memory 
   goes out of scope
-- We need to include \<memory\> header
+- We need to include \<[memory](https://en.cppreference.com/w/cpp/header/memory)\> header
 
 ## Unique Pointers (unique_ptr)
 
@@ -33,12 +33,19 @@
   the unique_ptr. 
 - unique_ptr are much more flexible to work with in this case
 
-## Shared pointer (shared_ptr)
+## Shared pointer (std::shared_ptr)
 
 - By using shared_ptr more than one pointer can point to this one object at a time and it will maintain a reference counter
   using use_count() method.
+- Different instances can share the same memory allocation
 - If there are more pointers and any of them will go out of scope, the reference counter will decrement
 - If there is only one pointer and it will go out of scope, the data that it points to will be deleted and memory released
+- When a **std::shared_ptr** is copied or assigned there are no memory operations, instead the reference counter is incremented
+- When copy is destroyed the reference counter is decremented
+- It has two private data members
+  - Pointer to the allocated memory
+  - Pointer to its control block (where the reference counter is)
+- Pointer arithmetic is not supported
 - make_shared syntax is not supported yet for raw arrays
 - If we want to use shared_ptr with arrays, then we have to use 'new' operator
 - Or we can use some more useful collections
@@ -53,6 +60,31 @@
 - **We also should not return shared pointers from functions by reference because it will brake the reference counter!!**
 
 ![](Images/shrdToUniq.png)
+
+- Only use shared pointer when necessary because it has more overhead than unique_ptr which has the same overhead as raw pointer
+
+- **Shared Pointer with Threads**
+  - Two potential issues
+  - The reference counter
+    - Modified by every copy, assignment, move  operation or destructor call
+    - Conflicting accesses by concurrent threads
+  - The pointer-to data
+    - Threads could dereference **std::shared_ptr** concurrently
+    - Conflicting accesses
+  - The reference counter is an atomic type
+    - This makes it safe to use in threaded programs
+    - Internal Synchronization
+    - But add extra overhead in single threaded programs
+
+      ![](Images/sharedPtrThreads.png)
+
+  - The pointer to data is the responsibilit of the programmer
+    - Must be protected against data races
+    - Concurrent accesses to the data must be synchronized
+    - C++20 has **std::atomic\<std::shared_ptr\>
+    - External Synchronization
+
+      ![](Images/sharedPtrThreads2.png)
 
 ## Weak pointer (weak_ptr)
 
