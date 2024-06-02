@@ -620,9 +620,9 @@
   - We can do it by simple adding mutex as a private member and locking this mutex before accessing critical sections inside of that class functions
   - But this solution has some drawbacks:
     - Member functions may need to call other member functions (risks of deadlock)
-    - Results in many locking and unlocing operations
+    - Results in many locking and unlocking operations
     - Existing classes need to be modified
-  - Anoter solution is to write a **wrapper class**
+  - Another solution is to write a **wrapper class**
     - Our object is a data member of this wrapper class
     - The member functions locks a mutex and forward to the object
 
@@ -630,10 +630,70 @@
 
     - Works with any type
     - However we still have problems with unnecessary locking, possible deadlock and allowed interruptions by other threads
+    
+    - We make it generic -  The wrapped class type is the template parameter
+    - Functor class with overloaded **operator()**
+      - The argument is a callable object
+      - This contains the sequence of member function calls for the transaction
+      - We lock the mutex, then invoke the callable object
+    - This will be a template member function
+      - The type parameter is the type of the callable
 
-  - Improved Monitor wrapper class 
+        ![](Images/monitorClassWrapperGeneric.png)
+        
+      - With **std::async()**:
+      
+        ![](Images/monitorClassWrapperGenericStringAsync.png)
+
+      - **Advantages:**
+        - Works with any type (Including classes that were not designed for threaded code)
+        - No modifications needed to the class
+        - Allows callers to perform transactions efficiently and safely
+          - Avoids unnecessary locking
+          - Avoids multiple locking
+          - Prevents interruptions by other threads
+        - Gives callers complete freedom
+
+- **Semaphore**
+
+  - Has a counter
+  - **acquire()** decrements the counter
+  - **release()** increments the counter
+  - The counter can be zero -> **acquire()** will be block until the counter becomes positive again
+
+    ![](Images/semaphore.png)
 
 
+  - Semaphore are higher level abstraction than mutexes or conditional variables
+  - More flexible - Can notify any given number of waiting threads
+  - Simpler code - Avoids working with mutexes and condition variables
+  - Performance - Can often be faster
+  - More versatile - Can be used to create more complex synchronization objects
+  - "Little Book of Semaphores"
+  - [GreenTeaPress](https://greenteapress.com/wp/semaphores)
+
+  - **Binary Semaphore as Mutex**
+
+    - The counter can only have two values (0 or 1 -> max_count = 1;) 
+    - Used for mutual exclusion
+    - To "lock" it, call **acquire()**
+      - The counter is decremented to 0
+      - Other threads that call **acquire()** will be blocked
+    - To unlock it, call **release()** in the same thread
+      - The counter is incremented to 1
+      - One of the other threads that called acquire can now continue
+
+
+  - **Binary Semaphore as Conditional Variable**
+
+    - Also used for signalling -> Can be used as a replacement for condition variables
+    - To wait for a signal, a thread calls **acquire()**
+      - The counter is decremented to 0
+      - The thread waits for another thread to increment it
+    - To notify a waiting thread, call **release()**
+      - The counter is incremented to 1
+      - The waiting thread can now continue
+    - To notify multiple thread, use a suitable value for max_count
 
 ## Deadlock
 
