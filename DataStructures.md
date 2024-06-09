@@ -307,6 +307,21 @@
 
 - A tree where each node represents a character of a string
 - Tries are particularly used for efficient text searches and auto-complete functionalities
+- Used to efficiently store and retrieve keys in a dataset of strings
+- Particularly useful for tasks that involve prefix searching
+- **Characteristics**
+  - **Nodes and Edges**
+    - Each node represents a character of the key
+    - The root node is usually empty
+    - Each edge represents a connection to the next character in the key
+  - **Keys**
+    - Each path from the root to a leaf node represents a key
+  - **Prefix Searching**
+    - Tries allow for efficient prefix based searching
+  - 
+
+
+
 
 ### B-Trees and B+ Trees
 

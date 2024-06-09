@@ -586,3 +586,32 @@ With LinkedList:
 
 - We can se more in [STL chapter](STL.MD)
   
+
+
+
+
+## Backtracking
+
+- General algorithmic technique used for solving problems recursively by building a solution incrementally
+- It is often used to solve combinatorial problems, where we need to find combination of permutation of elements that satisfy certain constraints
+- **Concept**
+  1.  **Choose** - Choose an option from the available choices
+  2.  **Explore** - Recursively explore this choice
+  3.  **Un-Choose** - If the choice does not lead to a solution, undo the choice and try another option
+
+- **Key Points**
+  - **Recursive Nature**: Backtracking is inherently recursive since it involves exploring all possible choices at each step
+  - **State Space Tree**: The problem is often represented as a tree where each node represents a state and each edge represents a decision or choice
+  - **Pruning**: IF at any point it is determined that the current path will not lead to a valid solution, the algorithm abandons that path and backtrack to the previous step
+
+- **Example Problems**
+  - **N-Queens** - Placing N queens on an NxN chessboard so that no two queens threaten each other
+  - **Sudoku Solver** - Filling 9x9 grid so that each row column and 3x3 sub-grid contains the digits 1-9
+  - **Permutations and Combinations** - Generating all permutations or combinations of a given set of numbers
+
+
+
+## Dynamic Programming
+
+
+## Dijkstra Algorithm

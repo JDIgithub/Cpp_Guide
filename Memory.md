@@ -163,3 +163,52 @@
     - Or when we escape the scope without calling delete
 
 ![](Images/memoryLeak3.png)
+
+
+
+
+## Memory Management To Do
+
+- **Static Memory Allocation**
+
+  - Memory is allocated at compile-time
+  - global variables, static variables, arrays
+  - **Global Variables**
+    
+    - Declared outside any function
+  
+  - **Static Variables**
+  
+    - Can be inside or outside functions
+  
+- **Automatic Memory Allocation**
+
+  - Memory is allocated on the stack at runtime
+  - Local variables within functions
+  - The memory is allocated when the function is called and de-allocated when the function goes out of scope
+  
+
+- **Dynamic Memory Allocation**
+
+  - Memory is allocated on the heap at runtime
+  - Requires manual allocation and deallocation using **new** and **delete**
+
+
+## Best Practices
+
+- **Prefer Automatic Variables**
+  - Use automatic stack variables whenever possible, as they are managed automatically and have minimal overhead
+- **Use Smart Pointer**
+  - Avoid using raw pointers for managing dynamically allocated memroy
+
+- **Use RAII**
+  - Resource Acquisition Is Initialization 
+  - To manage resources
+
+- **Avoid Dangling Pointer**
+  - Ensure that pointers are set to **nullptr** after deleting the memory they point to
+  - Be cautious with pointers that might outlive the memory they point to
+
+- **Minimize Use of Global Variables**
+  - Global variables can lead to unexpected side effects and make the program harder to understand and maintain
+

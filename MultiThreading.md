@@ -1,5 +1,20 @@
 # MultiThreading
 
+- **Info**
+
+- Book: C++ Concurrency in Action
+- Multithreading Libraries:
+
+  - Microsoft's Parallel Patterns Library is provided with Visual C++ as part of the "Concurrency Runtime", documented here: 
+    - https://docs.microsoft.com/en-us/cpp/parallel/concrt/concurrency-runtime
+
+  - Intel's Thread Building Blocks Library is part of their oneAPI: 
+    - https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit/download.html
+
+  - And finally, the "Awesome C++" github includes a number of multithreading libraries and frameworks: 
+    - https://github.com/fffaraz/awesome-cpp
+  
+
 - **Introduction**
 
   - Some classes here are move-only to support RAII (Resource Acquisition Is Initialization) idiom
@@ -694,6 +709,89 @@
       - The counter is incremented to 1
       - The waiting thread can now continue
     - To notify multiple thread, use a suitable value for max_count
+
+
+- **Concurrent Data Queue**
+
+  - **std::queue** 
+    - FIFO data structure
+    - Removing an elements involves two operations
+      - **front()** returns a reference to the element at the front
+      - **pop()** removes the element at the front without returning anything
+      - if **pop()** is called on an empty container, the behavior is undefined
+  
+  - **Concurrent Queue**
+    - **std::queue** is not suitable for use as concurrent queue
+      - Data race if the same instance is accessed from multiple threads
+      - Race condition between **front()** and **pop()**
+      - Undefined behaviour if we **pop()** an empty queue
+    - The simplest way to implement concurrent queue is to write a wrapper class
+      - **std::queue** instance is class member
+      - **std::mutex** is class member
+      - Each member function locks the mutex, then calls the corresponding member function in **std::queue**
+    - **Concurrent Queue Member Functions**
+      - **Rule of Five**
+        - Nothing special required. The defaults are sufficient
+      - **push()**
+        - Locks the mutex, calls the **std::queue's push()** with its argument, then unlocks the mutex
+      - **pop()**
+        - Locks the mutex, calls the **std::queue's front()** and copies the returned value into its argument
+        - The calls **std::queue's pop()** and unlocks the mutex
+        - Does something sensible if called on an empty queue
+
+      ![](Images/concurrentQueueWrapper.png)
+
+    - **Concurrent Queue with Condition Variable**
+      - Instead of throwing an exception in **pop()** when the queue is empty, we can wait for another thread to add an element
+      - We can do this with a condition variable
+        - The thread that calls **pop()** calls **wait()** on the condition variable
+        - The thread that calls **push** notifies the condition variable
+      - To avoid spurious and lost wake ups, we add a predicate to the **wait()** call
+        - If the queue is empty, we continue waiting
+        - If it is not empty then it is safe to continue and pop from the queue
+
+      ![](Images/concurrentQueueWrapperCV.png)
+
+    - **Conclusion**
+      - It employs "coarse-grained" locking
+      - In effect the program becomes single threaded when accessing the queue
+      - A more sufficient solution can be written using **lock-free** programming but it is much more complex
+
+
+- **Thread Pools**
+
+  - **Motivation Thread Creation Overhead**
+    - Create an execution stack for the thread
+    - Call a system API
+    - The operating system must create the internal data to manage the thread
+    - The scheduler must execute the thread
+    - A context switch occurs to run the thread
+    - Creating a new thread can take 10,000 times as long as calling a function directly
+    - Is there any way we can reduce or avoid this overhead?
+
+  - **Thread Pool** is a fixed size container of thread objects
+    - Usually equal to the number of cores on the machine
+    - This can be found by calling **std::thread::hardware_concurrency()**
+  - A queue of task function objects
+    - A thread object takes a task off the queue
+    - It calls the task function
+    - When finished, it takes the next task from the queue
+
+  - **Advantages**
+    - Easy scaling - The thread pool will automatically use all available cores
+    - Makes efficient use of resources
+      - Threads are never idle (unless there is no work for them to do)
+      - As soon as a task finishes executing, the thread will take the next one from the queue
+    - Works best for short simple "one shot" tasks where
+      - The overhead of creating a thread object is comparable to the task execution
+      - The task does not block
+
+  - **Disadvantages**
+    - Overhead - Adding and removing task function from the queue must be done in a thread safe way
+
+
+  ![](Images/threadPoolClass.png)
+  ![](Images/threadPoolUsage.png)
 
 ## Deadlock
 
