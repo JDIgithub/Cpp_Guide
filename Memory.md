@@ -212,3 +212,82 @@
 - **Minimize Use of Global Variables**
   - Global variables can lead to unexpected side effects and make the program harder to understand and maintain
 
+
+
+
+## Caches
+
+- Cache is a small fast memory component that stores copies of frequently accessed data from main memory (RAM)
+- Caches are used to reduce the time it takes to access data and improve overall system performance
+- They are curcial in bridging the speed gap between the CPU and the slower main memory
+  
+- **Types**
+  
+  - **CPU caches**
+    - Small, fast memroy locations within the CPU that store copies of frequently accesse memory data
+    - **L1 Cache**
+      - Smallest and fastest, located inside the CPU core
+    - **L2 Cache**
+      - Larget than L1 but slower, but still faster than RAM
+    - **L3 Cache**
+      - Even Larger and shared across multiple CPU cores
+
+
+- **Cache Operations**
+  - **Cache Hit**
+    - When the data requested by the CPU is found in the cache
+  - **Cache Miss**
+    - When the data requested is not in the cache, requiring it to be fetched from RAM
+  - **Eviction**
+    - When the cache is full, old data is removed to make room for new data
+
+- **Cache Coherency**
+
+  - In multi-core systems, maintaining consistency of data in all caches is crucial. 
+  - This is handled by cache coherency protocols, ensuring that all caches have the most recent data.
+
+
+- **Caches in C++ programming**
+
+  - **Data Locality**
+    - **Temporal Locality** - Accessing the same memory location repeatedly within a short period
+    - **Spatial Locality** - Accessing memory locations that are physically close to each other
+
+  - C++ programmers can optimize for cache performance by organizing data and code to maximize locality
+  
+  - **Data Structures**
+    - Arrays vs Linked Lists:
+      - Arrays have better spatial locality since elements are stored contiguously in memory
+      - Lined Lists have poor locality due to scattered memory location
+    - Structures of Arrays vs Arrays of Structures:
+      - SoA can improve spatial locality by grouping similar data types together
+      - AoS can cause scattered memory access
+
+  - **Loop Optimalizations**
+    - **Loop Unrolling**
+      - What is it? ToDo
+      - Reduces the overhead of loop control and increases the amount of work done per iteration
+      - Improving cache performance
+    - **Blocking**
+      - Divides loops into smaller blocks to improve cache hit rates by working on subsets of data that fits into the cache
+      - Example ToDo
+  
+  - **Cache Aware Algorithms**
+    - Algorithms can be designed to minimmize cache misses
+    - **Matrix Multiplication**
+      - Using blocking techniques to ensure that sub-matrices fit into the cache 
+    - **Searching and Sorting Algorithms**
+      - Choosing algorithms that access memory sequentially rather than randomly
+  
+  - **Compiler Optimizations**
+    - Modern C++ perform various optimizations to improve cache utilization
+    - **Inlining** - Reduces function call overhead and improves instruction cache utilization
+    - **Prefetching** - Instructs the CPU to load data into the cache before it is actually needed
+    - **Cache Blocking** - Reorganizes loops to improve data locality
+
+
+  - **Tips**
+    - Use profiling tools to indentify cache performance bottlenecks
+    - Choose data structures that promote good locality
+    - Use alignment directives to ensure data is aligned to cache line boundaries
+    - Avoid excessive context switching and large woring sets that excced cache capacity

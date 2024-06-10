@@ -1,6 +1,1 @@
-﻿  Compiling CUDA source file properties.cu...
-  
-  D:\Repositories\MSprojects\FirstCuda\FirstCuda>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\bin\HostX64\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include"  -G   --keep-dir x64\Debug  -maxrregcount=0   --machine 64 --compile -cudart static  -g  -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /FS /Zi /RTC1 /MDd " -Xcompiler "/Fdx64\Debug\vc143.pdb" -o D:\Repositories\MSprojects\FirstCuda\FirstCuda\x64\Debug\properties.cu.obj "D:\Repositories\MSprojects\FirstCuda\FirstCuda\properties.cu" 
-  properties.cu
-  tmpxft_00006774_00000000-7_properties.cudafe1.cpp
-  FirstCuda.vcxproj -> D:\Repositories\MSprojects\FirstCuda\x64\Debug\FirstCuda.exe
+﻿C:\Repositories\Cpp_Guide\FirstCuda\FirstCuda\FirstCuda.vcxproj(33,5): error MSB4019: The imported project "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VC\v170\BuildCustomizations\CUDA 12.5.props" was not found. Confirm that the expression in the Import declaration "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VC\v170\\BuildCustomizations\CUDA 12.5.props" is correct, and that the file exists on disk.

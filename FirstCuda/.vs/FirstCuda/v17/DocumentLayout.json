@@ -1,0 +1,134 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\properties.cu||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:FirstCuda\\properties.cu||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\Timing.cu||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:FirstCuda\\Timing.cu||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\memoryTransfer.cu||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:FirstCuda\\memoryTransfer.cu||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include\\utility||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\arrayIndices.cu||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:FirstCuda\\arrayIndices.cu||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\kernel.cu||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:FirstCuda\\kernel.cu||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "properties.cu",
+              "DocumentMoniker": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\properties.cu",
+              "RelativeDocumentMoniker": "FirstCuda\\properties.cu",
+              "ToolTip": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\properties.cu",
+              "RelativeToolTip": "FirstCuda\\properties.cu",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Timing.cu",
+              "DocumentMoniker": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\Timing.cu",
+              "RelativeDocumentMoniker": "FirstCuda\\Timing.cu",
+              "ToolTip": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\Timing.cu",
+              "RelativeToolTip": "FirstCuda\\Timing.cu",
+              "ViewState": "AQIAAEUAAAAAAAAAAAAAAGIAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.508Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "memoryTransfer.cu",
+              "DocumentMoniker": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\memoryTransfer.cu",
+              "RelativeDocumentMoniker": "FirstCuda\\memoryTransfer.cu",
+              "ToolTip": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\memoryTransfer.cu",
+              "RelativeToolTip": "FirstCuda\\memoryTransfer.cu",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAB8AAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.514Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "utility",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include\\utility",
+              "RelativeDocumentMoniker": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include\\utility",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include\\utility",
+              "RelativeToolTip": "..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include\\utility",
+              "ViewState": "AQIAAIACAAAAAAAAAAAQwI0CAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.518Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "arrayIndices.cu",
+              "DocumentMoniker": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\arrayIndices.cu",
+              "RelativeDocumentMoniker": "FirstCuda\\arrayIndices.cu",
+              "ToolTip": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\arrayIndices.cu",
+              "RelativeToolTip": "FirstCuda\\arrayIndices.cu",
+              "ViewState": "AQIAABsAAAAAAAAAAAAAAC4AAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.523Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "kernel.cu",
+              "DocumentMoniker": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\kernel.cu",
+              "RelativeDocumentMoniker": "FirstCuda\\kernel.cu",
+              "ToolTip": "C:\\Repositories\\Cpp_Guide\\FirstCuda\\FirstCuda\\kernel.cu",
+              "RelativeToolTip": "FirstCuda\\kernel.cu",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-06-10T07:06:43.526Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
