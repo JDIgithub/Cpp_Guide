@@ -70,7 +70,8 @@
         "span": "cpp",
         "variant": "cpp",
         "format": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "csignal": "cpp"
     },
     "cSpell.words": [
         "bptr",

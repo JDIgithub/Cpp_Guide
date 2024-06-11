@@ -457,7 +457,7 @@
 
   - **Shared Memory**
     
-    - Shared memory is on chip memory which is partioned among thread blocks
+    - Shared memory is on chip memory which is partitioned among thread blocks
     - \_\_shared\_\_
     - The L1 cache and shared memory for an SM use the same on-chip memory
   
@@ -471,6 +471,63 @@
 
   - **GPU Caches**
 
+
+- We are working with at least two devices (CPU host and GPU device) so we need to manage two memories
+- We need to explicitly transfer the memories back and forth
+- Transfer speed between GPU and its memory is much higher (around 484 GB/s) than between GPU and CPU (for PCIe 3 its 15.75 GB/s)
+- Therefore we should always try to minimize the Host to Device or Device to Host transfers
+
+- **Pinned Memory**
+  
+  - Allocated host memory is by default non-fixed 
+  - The GPU can not safely access data in non-fixed host memory
+  - So when transferring the data from non-fixed host memory to device memory, the CUDA drivers first allocate temporarily fixed **Pinned Memory**
+  - Then transfer the data from this host **Pinned Memory** into the device memory
+  - So there is additional workload to copy from non-fixed memory to pinned memory
+  - But CUDA runtime allows us to directly allocate this pinner memory using **cudaMallocHost(void ** devPtr, size_t count)** function and deallocate with **cudaFreeHost(void * ptr)**
+  - And since this pinned memory can be accessed directly by device, it can be read and write with much higher bandwidth
+
+    ![](Images/pinnedMemory.png)
+
+  - But keep in mind that pinned memory is not available to host's operating system virtual memory
+  - Also allocation and de-allocation of pinned memory is more expensive
+  - For performance-critical applications, especially those involving frequent or large data transfers between the host and the GPU, pinned memory is preferred. 
+  - For applications where memory efficiency and simplicity are more important, page-able memory is typically sufficient.
+
+  - **Pageable Host Memory:** Default, flexible, efficient memory usage, slower transfers.
+  - **Pinned Host Memory:** Faster transfers, necessary for asynchronous operations, more resource-intensive, limited availability.
+  
+
+- **AOS vs SOA**
+
+  - **AoS**
+
+    - Array of Structures
+
+      ![](Images/aos.png)
+
+
+  - **SoA**
+
+    - Structure of Arrays
+
+      ![](Images/soa.png)
+
+    - SoA Makes full use of GPU memory bandwith because there is no interleaving as we can see below
+  
+    ![](Images/memoryStoringDifference.png)
+
+
+
+
+### Examples
+
+
+- **Matrix Transpose**
+
+  - The transpose of a matrix is an operator which flips a matrix over its diagonal
+  - It switches the row and column indices of the matrix by producing another matrix denoted as A^T
+  - 
 
 
 

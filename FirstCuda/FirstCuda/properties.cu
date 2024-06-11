@@ -41,7 +41,7 @@ void query_device() {
 }
 
 
-int main() {
+int mainProp() {
 
 	query_device();
 

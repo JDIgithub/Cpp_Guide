@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Repositories\MSprojects\FirstCuda\x64\Debug\FirstCuda.exe</FullPath>
+      <FullPath>D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
