@@ -24,131 +24,123 @@
 
 using namespace std;
 
-template <typename T>
-class CircularBuffer{
 
-private:
+/* 138. Copy List with Random Pointer
 
-  std::vector<T> m_buffer;
-  int m_head,m_tail;
-  std::mutex mtx;
-  std::condition_variable cv;
-  bool m_isFull;
+A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
 
+Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+
+For example, if there are two nodes X and Y in the original list, where X.random --> Y, then for the corresponding two nodes x and y in the copied list, x.random --> y.
+
+Return the head of the copied linked list.
+
+The linked list is represented in the input/output as a list of n nodes. Each node is represented as a pair of [val, random_index] where:
+
+val: an integer representing Node.val
+random_index: the index of the node (range from 0 to n-1) that the random pointer points to, or null if it does not point to any node.
+Your code will only be given the head of the original linked list.
+
+ 
+
+Example 1:
+
+
+Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Example 2:
+
+
+Input: head = [[1,1],[2,1]]
+Output: [[1,1],[2,1]]
+Example 3:
+
+
+
+Input: head = [[3,null],[3,0],[3,null]]
+Output: [[3,null],[3,0],[3,null]]
+ 
+
+Constraints:
+
+0 <= n <= 1000
+-104 <= Node.val <= 104
+Node.random is null or is pointing to some node in the linked list.
+
+*/
+
+class Node {
 public:
-
-  CircularBuffer(int size): m_buffer(size), m_head(0), m_tail(0), m_isFull(false) {
-
-  }
-  
-  void insert(T newElement){
-
-    std::unique_lock<std::mutex> lock(mtx);
-    cv.wait(lock, [this]() { return !m_isFull; });
-
-    m_buffer[m_tail] = newElement;
-    m_tail = (m_tail + 1) % m_buffer.size();
-    if(m_isFull){
-      m_head = (m_head + 1) % m_buffer.size();
-    }
-    if(m_tail == m_head){
-      m_isFull = true;
-    }
+    int val;
+    Node* next;
+    Node* random;
     
-    cv.notify_one();
-  }
-
-  std::optional<T> getFront(){
-
-    std::unique_lock<std::mutex> lock(mtx); // Unique lock must be used with CV because it supports unlock while waiting
-    cv.wait(lock, [this]() { return !isEmpty(); });  
-
-    /*    If we need time out so the producer wont wait indefinitely for the consumer 
-
-        if (!cv.wait_for(lock, timeout, [this]() { return !m_isFull; })) {
-            return false; // Timeout occurred
-        }
-    */
-
-    if(isEmpty()) return std::nullopt;  // This wont ever happened with the cv wait above so this does not need to be std::optional but whatever
-
-    T result = m_buffer[m_head];
-    m_head = (m_head + 1) % m_buffer.size();
-    m_isFull = false;
-
-    cv.notify_one();
-    return result;
-  }
-
-  bool isEmpty() const { return (!m_isFull && m_tail == m_head); }
-  bool isFull() const { return m_isFull; }
-
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
 };
 
 
-std::mutex coutMTX;
+Node* copyRandomList(Node* head) {
+        
+
+  Node* temp = head;
+
+  // Interleave the original list with new Nodes
+  while(temp != nullptr){
+
+    Node * newNode = new Node(temp->val);
+    newNode->next = temp->next;
+    temp->next = newNode;
+    temp = newNode->next; 
+  }
+
+  // Copy the random pointer
+  
 
 
-const int N = 1000;
-struct soa{
-  float x[N];
-  float y[N];
-};
 
-struct soa SoA;
+ return head;
 
-
+}
 
 
 
 int main() {
 
+  Node * head = new Node(7);
 
-  CircularBuffer<int> cb(5);
+  //
+  head->next = new Node(13);
+  head->next->random = head;
+  //
+  head->next->next = new Node(11);
 
-
-/*
-  cb.insert(1);
-  cb.insert(2);
-  cb.insert(3);
-  cb.insert(4);
-  cb.insert(5);
-  cb.insert(6);
-  cb.insert(7);
-  std::optional<int> result = cb.getFront();
-*/
-
-  std::thread producer([&cb](){
-
-    for(int i = 0; i < 10; i++){
-      cb.insert(i);
-      std::lock_guard<std::mutex> lock(coutMTX);
-      std::cout<< "Produced: " << i << '\n';
-    }
+  //  
+  head->next->next->next = new Node(10);
+  head->next->next->next->random = head->next->next;
+  //
+  head->next->next->next->next = new Node(1);
+  head->next->next->next->next->random = head;
 
 
-  });
+  head->next->next->random = head->next->next->next->next;
 
-  std::thread consumer([&cb](){
-    
-    for(int i = 0; i < 10; i++){
-      std::optional<int> item = cb.getFront();
-      std::lock_guard<std::mutex> lock(coutMTX);
-      if(item){
-        std::cout << "Consumed: " << *item << '\n';
-      } else {
-        std::cout << "Nothing to be consumed \n";
-      }
-    }
 
-  }); 
 
-  producer.join();
-  consumer.join();
+
+  auto xx = copyRandomList(head);
+
+  //std::cout << xx;
+
+
 
   return 0;
-}
 
+
+}
 
 
 
