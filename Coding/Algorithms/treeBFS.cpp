@@ -49,9 +49,6 @@ void printLevelOrder (Node * node){
 
 }
 
-
-
-
 int main() {
 
   Node *root = new Node(1);                     //               1        

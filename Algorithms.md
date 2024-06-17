@@ -138,6 +138,9 @@
 5. Repeat the entire process for the remaining elements (excluding the last element which is already on the correct position)
 6. The algorithm stops when a pass through the array results in no swaps, indicating that the array is sorted
 
+  ![](Images/bubbleSort.png)
+
+
 **Complexity**
 
 - **Time Complexity:** 
@@ -161,6 +164,7 @@
   - Simple to understand and implement
   - Efficient for small data sets and it is more efficient than other simple quadratic algorithms such as selection sort or bubble sort
   - It is a stable sort
+  - It is a good choice when we know that the data set is almost sorted (We can get to O(n))
   
 **Steps**
 
@@ -169,6 +173,7 @@
 3. Shift all the elements in the sorted sub-list that are greater than the current element to the right by one position and insert the current element at its correct position
 4. Move to the next element and repeat the process until the entire list is sorted
 
+  ![](Images/insertionSort.png)
 
 **Complexity**
 
@@ -293,6 +298,9 @@
 3. This process of dividing and merging continues recursively witch each level of recursion merging two sub-arrays at a time
 4. The final step is when all sub-arrays are merged back int a single sorted array
   
+  ![](Images/mergeSort.png)
+
+
 **Complexity**
 
 - **Time Complexity:**
@@ -314,16 +322,17 @@
 
 **Examples**
 
-MergeSort() function;
-
+- MergeSort() function;
+  - There is wrong if condition to end recursion... ToDo
+  
 ![](Images/algorithmSortingMerge.png)
 
-Merge() function:
+- Merge() function:
 
 ![](Images/algorithmSortingMerge2.png)
 
 
-With LinkedList:
+- With LinkedList:
 
 ![](Images/algorithmSortingMergeLinkedList.png)
 ![](Images/algorithmSortingMergeLinkedList2.png)
@@ -401,6 +410,9 @@ With LinkedList:
     - If the target vallue is greater than the middle element, repeat the search for the right half
 3.  If the target is not found and the array can not be split further, the item is not in the array
   
+  ![](Images/binarySearchConcept.png)
+
+
 **Complexity**
 
 - **Time Complexity:**
@@ -428,12 +440,15 @@ With LinkedList:
 
 ### Tree Traversal
 
-**Breadth First Search (BFS)**
+#### Breadth First Search (BFS)
 
 ![](Images/algorithmsBFS.png)
 
+  - It uses additional memory because it is necessary to track the child nodes of all the nodes on a given level while searching that level
 
-**Depth First Search**
+  ![](Images/bfsIterativelyExample.png)
+
+#### Depth First Search
 
 - **Pre-Order**
 
@@ -455,8 +470,60 @@ With LinkedList:
 
 
 
+#### DFS vs BFS
+
+- **BFS**
+  - **Pros**
+    - Shortest Path for Closer Nodes
+  - **Cons**
+    - More Memory
+
+  - If we have info that the desired node is not too deep that DFS is better
+  - Good to find shortest path
+
+- **DFS**
+  - **Pros**
+    - Less Memory
+  - **Cons**
+    - Can get Slow
+  - Good to check if something exists
+
+- If we know a solution is not far from the root -> **BFS**
+- If the tree is very deep and solutions are rare -> **BFS** because DFS would take really long time
+  - Early Stopping in BFS: BFS, by its nature, stops as soon as it finds the first solution, which is guaranteed to be the shortest path. This can be much earlier than DFS, which might only find the solution after exploring many deep paths.
+
+- If the tree is very wide -> **DFS** because BFS would need too much memory
+
+- If solutions are frequent but located deep in the tree -> **DFS**
+- Determining whether path exists between two nodes -> **DFS** because in BFS we have sequence of nodes that are not connected to each other
+- Finding shortest path -> **BFS**
 
 
+
+
+
+### Graph Traversal
+
+- **BFS** 
+  - To find shortest path
+- **DFS**
+  - Find if path exist
+
+### Graph Shortest Path
+
+- We can use BFS for that if we have unweighted graph
+- But if some edge has different weight than other we need special algorithms because BFS ignores the edges weights
+
+#### Dijkstra Algorithm
+
+- Can be faster than Bellman-Ford
+
+
+
+#### Bellman-Ford
+
+- Can work even with negative weights unlike the Dijkstra
+- Worst case O(n^2)
 
 ## Algorithm Design Techniques
 
@@ -471,32 +538,41 @@ With LinkedList:
 
 ### Dynamic Programming
 
-**Requirements**
-
-- **Overlapping Sub-problems**
-
-  - If we have some problems that repeat
-
-    ![](Images/overlappingSubproblems.png)
-
-  - We can than store the result for the first unique sub-problem into the array and then if the same sub-problem happens again just get the result from the array
-  - This is called Memoization
-
-    ![](Images/dynamicProgrammingMemoization.png)
+- Optimization technique using "caching"
 
 
-- **Optimized Sub-structure**
+- **Requirements**
 
-  - The sub-problems also have to have optimized sub-structure
+  - **Overlapping Sub-problems**
 
-    ![](Images/dynamicProgrammingOpti.png)
+    - If we have some problems that repeat
 
-  - Here the optimal way from A to C is edge A,C and optimal way from C to D is edge C,D but A-C-D is not optimal solved problem... optimal is A-B-D so the criteria here is not met
+      ![](Images/overlappingSubproblems.png)
+
+    - We can than store the result for the first unique sub-problem into the array and then if the same sub-problem happens again just get the result from the array
+    - This is called Memoization
+
+      ![](Images/dynamicProgrammingMemoization.png)
 
 
-- **Memoization**
+  - **Optimized Sub-structure**
+
+    - The sub-problems also have to have optimized sub-structure
+
+      ![](Images/dynamicProgrammingOpti.png)
+
+    - Here the optimal way from A to C is edge A,C and optimal way from C to D is edge C,D but A-C-D is not optimal solved problem... optimal is A-B-D so the criteria here is not met
+
+
+- **Memoization (Caching)**
+  - Use to hold some piece of data in simple accessible variable
+  - Memoization is a specific form of caching
   - Downside of memoization is that it makes code more complex
   - Also vector that we use to memoize needs to stay permanently in memory
+
+    ![](Images/memoization.png)
+
+- Dynamic programming is **Divide and Conquer** + **Memoization**
 
 
 
@@ -532,28 +608,60 @@ With LinkedList:
 
 - Function that calls itself until it does not
 
-**Rules**
+- **Rules**
 
-- The process is the same each recursion step
-- Each time recursion step runs the problem gets smaller
-
-
-**Call Stack**
-
-![](Images/callStack.png)
+  - The process is the same each recursion step
+  - Each time recursion step runs the problem gets smaller
 
 
 
-**Application**
-
-- **Factorial**
-  - The most famous problem that is solved by recursion is factorial
-    
-    ![](Images/recursionFactorial.png)
-    ![](Images/recursionFactorialCallstack.png)
+  ![](Images/callStack.png)
 
 
 
+- **Application**
+
+  - **Factorial**
+    - The most famous problem that is solved by recursion is factorial
+      
+      ![](Images/recursionFactorial.png)
+      ![](Images/recursionFactorialCallstack.png)
+
+
+- **Recursive vs Iterative**
+
+  - Anything that can be implemented recursively can be implemented iteratively 
+  - But for some problem it is actual easier to write recursive solution
+  - Recursion can lead to stack overflow when too many function calls are loaded to the stack
+
+
+
+
+
+- Every time we are using a tree or converting something into a tree, consider recursion
+- Divided into a number of sub-problems that are smaller instances of the same problem
+- Each instance of the sup-problem is identical in nature
+- The solutions of each sub-problem can be combined to solve the problem at hand
+- Divide and Conquer using Recursion
+
+### Backtracking
+
+- General algorithmic technique used for solving problems recursively by building a solution incrementally
+- It is often used to solve combinatorial problems, where we need to find combination of permutation of elements that satisfy certain constraints
+- **Concept**
+  1.  **Choose** - Choose an option from the available choices
+  2.  **Explore** - Recursively explore this choice
+  3.  **Un-Choose** - If the choice does not lead to a solution, undo the choice and try another option
+
+- **Key Points**
+  - **Recursive Nature**: Backtracking is inherently recursive since it involves exploring all possible choices at each step
+  - **State Space Tree**: The problem is often represented as a tree where each node represents a state and each edge represents a decision or choice
+  - **Pruning**: IF at any point it is determined that the current path will not lead to a valid solution, the algorithm abandons that path and backtrack to the previous step
+
+- **Example Problems**
+  - **N-Queens** - Placing N queens on an NxN chessboard so that no two queens threaten each other
+  - **Sudoku Solver** - Filling 9x9 grid so that each row column and 3x3 sub-grid contains the digits 1-9
+  - **Permutations and Combinations** - Generating all permutations or combinations of a given set of numbers
 
 
 
@@ -590,28 +698,3 @@ With LinkedList:
 
 
 
-## Backtracking
-
-- General algorithmic technique used for solving problems recursively by building a solution incrementally
-- It is often used to solve combinatorial problems, where we need to find combination of permutation of elements that satisfy certain constraints
-- **Concept**
-  1.  **Choose** - Choose an option from the available choices
-  2.  **Explore** - Recursively explore this choice
-  3.  **Un-Choose** - If the choice does not lead to a solution, undo the choice and try another option
-
-- **Key Points**
-  - **Recursive Nature**: Backtracking is inherently recursive since it involves exploring all possible choices at each step
-  - **State Space Tree**: The problem is often represented as a tree where each node represents a state and each edge represents a decision or choice
-  - **Pruning**: IF at any point it is determined that the current path will not lead to a valid solution, the algorithm abandons that path and backtrack to the previous step
-
-- **Example Problems**
-  - **N-Queens** - Placing N queens on an NxN chessboard so that no two queens threaten each other
-  - **Sudoku Solver** - Filling 9x9 grid so that each row column and 3x3 sub-grid contains the digits 1-9
-  - **Permutations and Combinations** - Generating all permutations or combinations of a given set of numbers
-
-
-
-## Dynamic Programming
-
-
-## Dijkstra Algorithm

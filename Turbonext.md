@@ -132,6 +132,28 @@ Udacity: Advanced C++
   - **Code Example**
 
 
+- **Interfacing an FPGA with a CPU**
+
+  - **Memory-Mapped I/O**
+    - The FPGA is mapped into the CPU's address space.
+    - The CPU can read from and write to the FPGA as if it were accessing memory.
+    - Commonly done through buses like AXI (Advanced eXtensible Interface) in ARM-based systems.
+  
+  - **Peripheral Component Interconnect (PCI) or PCI Express (PCIe)**
+    - FPGAs can be interfaced with the CPU via PCI or PCIe slots.
+    - This method is typically used in high-performance computing applications.
+
+  - **GPIO (General-Purpose Input/Output)**
+
+    - Simple interfacing using GPIO pins for basic control and data transfer.
+    - Limited bandwidth compared to other methods.
+
+  - **High-Speed Serial Interfaces**
+
+    - Interfaces like USB, Ethernet, or custom high-speed serial protocols.
+    - Used for applications requiring high data throughput.
+
+
 
 
 ### GPU
@@ -251,11 +273,18 @@ Udacity: Advanced C++
 
 
 
+## Computer Architecture 
+
+- Explain the difference between Harvard and von Neumann architectures. Describe the PCIe bus and its advantages.
 
 
-## Technical Questions
 
-### C/C++
+
+
+
+
+
+## C/C++
 
 - Explain memory management techniques in C/C++. Write a program to demonstrate multi-threading.
   
@@ -265,9 +294,7 @@ Udacity: Advanced C++
   - global variables, static variables, arrays
   - **Global Variables**
     - Declared outside any function
-  
-  * 
-  
+    
 - **Automatic Memory Allocation**
 
   - Memory is allocated on the stack at runtime
@@ -280,22 +307,91 @@ Udacity: Advanced C++
 
 
 
-### FPGAs/GPUs 
+## FPGAs/GPUs 
+
 
 - Describe an FPGA and its applications. How would you interface an FPGA with a CPU? Explain how GPUs are utilized for parallel processing.
 
-### Computer Architecture 
+### FPGA
 
-- Explain the difference between Harvard and von Neumann architectures. Describe the PCIe bus and its advantages.
 
-### System-Level Programming 
+
+
+## System-Level Programming 
+
+- **Synchronous I/O** - The request waits until the operation completes.
+- **Asynchronous I/O** - The request returns immediately, and the operation completes in the background.
+
+
+- **Using Semaphores for Concurrency**
+  - std::sem_t sem;
+    sem_init(&sem, 0, 1);
+    sem_wait(&sem);  // Decrement the semaphore
+    // Critical section
+    sem_post(&sem);  // Increment the semaphore
+
+
+
 
 - How do you handle hardware interrupts in Linux? Describe a DMA and its benefits.
 
+
+- **Handling Hardware Interrupts in Linux**
+  - Handling hardware interrupts in Linux involves writing an interrupt handler, also known as an interrupt service routine (ISR). 
+  - This is a function that the kernel calls when a specific hardware interrupt occurs. 
+  - Here is a step-by-step guide on how to handle hardware interrupts:
+
+  - **Registering an Interrupt Handler:**
+
+    - Use the **request_irq** function to register an interrupt handler.
+    - The request_irq function takes several parameters, including the interrupt line number, the handler function, flags, the device name, and a device-specific data pointer.
+
+  - **Writing the Interrupt Handler:**
+
+    - The interrupt handler function should perform minimal work and execute quickly.
+    - Typically, the handler acknowledges the interrupt and then schedules any further processing to be done later, often in a bottom half handler (e.g., a tasklet or workqueue).
+
+  - **Freeing the Interrupt:**
+
+    - Use the **free_irq** function to release the interrupt when it is no longer needed, such as during module cleanup.
+
+    ![](Images/linuxInterrupt.png)
+
+
+
+
 ## CUDA/OpenCL
 
-- Write a simple CUDA program to add two vectors. Explain how you optimize GPU code.
+- **CUDA vs OpenCL**
   
+  - CUDA is specific to NVIDIA GPUs and offers a more straight forward programming model
+  - OpenCl is an open standard that supports multiple types of devices including GPUs from different vendors
+  - 
+
+
+### CUDA
+
+- Write a simple CUDA program to add two vectors. Explain how you optimize GPU code.
+- CUDA is parallel computing platform and programming model developed bz NVIDIA for general computing on GPUs
+- It allows developers to use the GPU for parallel processing tasks
+
+- **Optimizing with CUDA**
+  - Identify parallelizable parts of the task
+  - Minimize memory transfer between CPU and GPU
+  - Use shared memory effectively
+  - Optimize kernel launch configurations (dimensions etc...)
+  
+- **Memory Management in CUDA:** 
+  - CUDA uses different types of memory such as global, shared, constant, and local memory. 
+  - Global memory is the largest and slowest, while shared memory is faster and limited to threads within the same block.
+
+- **Kernel and Warp:** 
+  - A kernel is a function that runs on the GPU
+  - Warp is a group of 32 threads that execute instructions in lockstep.
+
+
+
+
 ## Linux Driver Development
 
 - How do you write a Linux device driver? Explain the process of handling I/O operations in a driver.
@@ -303,6 +399,90 @@ Udacity: Advanced C++
 
 
 
+## Memories
+
+### Virtual Memory
+
+- Virtual memory is a memory management technique that provides an abstraction of physical memory
+- It allows programs to use more memory than what is physically available by using disk space to extend RAM
+- Virtual memory enables processes to use a continuous address space, simplifies memory management, and provides isolation between processes
+- It allows the operating system to move data between physical memory (RAM) and disk storage (swap space) as needed.
+
+- **Paging:**
+
+  - Virtual memory relies on paging, where data is moved between physical memory and disk storage. 
+  - Paging can introduce performance overhead, especially if there is frequent swapping (thrashing).
+
+- **Page Faults:** 
+
+  - A page fault occurs when a program accesses a part of memory that is not currently mapped to physical memory. 
+  - The OS handles it by loading the required page from disk into RAM.
+
+
+### Direct Memory Access DMA
+
+  - DMA allows peripheral devices to access the main memory directly, bypassing the CPU
+  - That improves data transfer speed and frees up the CPU
+  - It is a feature that allows certain hardware subsystems to access main system memory (RAM) independently of the CPU. 
+  - This means that data can be transferred between memory and a device without burdening the CPU with the data transfer tasks.
+  - By offloading data transfer tasks to DMA controllers, the CPU is free to perform other tasks, improving overall system efficiency.
+  - DMA can transfer data at higher speeds compared to CPU-driven data transfers because it avoids CPU overhead.
+  - Using DMA reduces the number of CPU cycles required for data transfers, which is particularly beneficial in high-throughput systems or real-time applications.
+  - Allows concurrent data transfers and CPU operations, leading to better system performance and responsiveness.
+
+
+
+
+
+
+## Device Drivers
+
+- **Types**
+  - **Character Driver**
+    - 
+  - **Block Driver**
+  - **Network Driver**
+
+
+- When you compile a Linux device driver, you will get a kernel module, which is a binary file with a .ko (kernel object) extension. 
+- This kernel module can be loaded into the Linux kernel to add new functionality, such as supporting a new hardware device.
+
+
+- **Purpose of Device Driver**
+  - Intermediary between OS and the device
+  - Enabling OS to communicate with hardware without needing to know its details
+- **Kernel Communication with HW**
+  - Via device drivers, which handle the specific protocols and commands requires by the hardware
+
+- **Data transfer between CPU and FPGA**
+  - Can be achieved using interfaces like PCIe where the CPU sends data to an FPGA memory buffer for processing and retrieves the results
+
+- **Writing and loading a simple character device driver**
+  - Write the code to handle open, read, write and release operations
+  - Compile the driver and load it using **insmod**
+  - Create
+
+  ![](Images/driverCode.png)
+  ![](Images/driverCode2.png)
+  ![](Images/driverCode3.png)
+  ![](Images/driverCode4.png)
+
+  - The static keyword in C indicates that the function or variable has internal linkage, meaning it is only visible within the file where it is declared. This is particularly important in kernel module programming for the following reasons:
+
+    - Encapsulation: By making functions static, you ensure that they cannot be accessed or called from other files. This helps in encapsulating the functionality within the module and prevents naming conflicts with other parts of the kernel or other modules.
+    - Namespace Management: The Linux kernel is a large and complex system with many contributors. Using static reduces the risk of name collisions with symbols (functions or variables) from other modules or parts of the kernel. 
+    - Memory Management: The kernel has limited memory, and unnecessary exposure of symbols can lead to inefficient use of memory. By marking functions and variables as static, you ensure they are not added to the global symbol table, thus saving memory.
+
+- **Debugging a Kernel Module**
+  - We can use **printk** or **dmesg** or tools like **gdb**
+
+- **Steps to write and Load Linux Kernel Module**
+  - Write the module in C
+  - Create **makefile** to compile the module
+  - Compile the module using **make**
+  - Load the module using **insmod**
+  - Verify the module is loaded using **lsmod**
+  - Unload the module using **rmmod**
 
 
 
@@ -312,18 +492,9 @@ Udacity: Advanced C++
 
 
 
+## PCIe
 
-
-
-
-
-
-
-
-
-
-
-
+- 
 
 
 

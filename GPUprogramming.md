@@ -391,34 +391,54 @@
       ![](Images/simtSWvsHW.png)
 
 
-  - **Warps**
+- **Warps**
 
-    - Thread Blocks are divided into smaller units called Warps, each having 32 consecutive threads
-    - Warps can be defined as the basic unit of execution in a SM
-    - Once a thread block is scheduled to an SM, threads in the thread block are grouped into waprs
-    - All the warps within one thread block will be executed in single SM
-    - But usually only few of these warps can be executed at the same time on the hardware level
+  - Thread Blocks are divided into smaller units called Warps, each having 32 consecutive threads
+  - Warps can be defined as the basic unit of execution in a SM
+  - Once a thread block is scheduled to an SM, threads in the thread block are grouped into waprs
+  - All the warps within one thread block will be executed in single SM
+  - But usually only few of these warps can be executed at the same time on the hardware level
 
-    - Even though we can have threads in 3 dimension, on the hardware level the threads are in 1 dimension only
-    - So if we have 40 threads in X dimension but 2 blocks in Y dimension, on the hardware level it is 80 threads in X dimension 
-    - That would mean 3 Warps **BUT** there can not be threads from different blocks in single Warp so in fact there will be 4 Warps
-    - And there will be only 8 active and 24 in-active threads in 2nd and 4th Warp -> That is not efficient at all
-    - Even if we run thread block with single thread, still CUDA runtime will assign Warp which means 32 threads -> 1 active, 31 in-active
-    - **Problem**:
-      - Even though they are in-active threads, still resource allocations are considering them
-      - Having In-active threads in Warp is great waste of resources in SM
-    - Therefore we should have number of threads in a block that is dividible by 32
+  - Even though we can have threads in 3 dimension, on the hardware level the threads are in 1 dimension only
+  - So if we have 40 threads in X dimension but 2 blocks in Y dimension, on the hardware level it is 80 threads in X dimension 
+  - That would mean 3 Warps **BUT** there can not be threads from different blocks in single Warp so in fact there will be 4 Warps
+  - And there will be only 8 active and 24 in-active threads in 2nd and 4th Warp -> That is not efficient at all
+  - Even if we run thread block with single thread, still CUDA runtime will assign Warp which means 32 threads -> 1 active, 31 in-active
+  - **Problem**:
+    - Even though they are in-active threads, still resource allocations are considering them
+    - Having In-active threads in Warp is great waste of resources in SM
+  - Therefore we should have number of threads in a block that is dividible by 32
     
-    - There are no in-build variables to indicate Warp index but we can easily calculate it by dividing threadIdx.x by 32
+  - There are no in-build variables to indicate Warp index but we can easily calculate it by dividing threadIdx.x by 32
     
-    - **Warp Divergence**
+  - **Warp Divergence**
   
-      - If threads in the same warp execute different instructions then we say there is a warp divergence and that creates significant performance penalty
-      - Because when we are for example executing if clause the threads, that are not matching that condition, will stall
-      - Control flow statements like if/else statements, switch statements are giving us a hint of divergent code
-      - But that does not mean that it is always that way
-      - If the condition check has the same result for all the threads inside single Warp, then there is no Warp Divergence
-      - 
+    - If threads in the same warp execute different instructions then we say there is a warp divergence and that creates significant performance penalty
+    - Because when we are for example executing if clause the threads, that are not matching that condition, will stall
+    - Control flow statements like if/else statements, switch statements are giving us a hint of divergent code
+    - But that does not mean that it is always that way
+    - If the condition check has the same result for all the threads inside single Warp, then there is no Warp Divergence
+  
+- **Occupancy**
+
+  - The ratio of active warps to maximum number of warps per SM
+  - If our kernel use 48 registers per thread and 4096 bytes of Smem per block and block size is 128:
+    - Reg per warp = 48*32 = 1536
+    - 65536 regs per SM
+    - Allowed warps = 65536/1536 = 42.67
+    - There is also warp allocation granulity value
+    - If this value is 4 then Warps allocation happens in group of 4 warps -> 42.67 -> 40
+  - With shared memory usage:
+    - 98304 regs per SM
+    - Active blocks = 98304 / 4096 = 24
+    - Active warp = 24 * 4 = 96
+    - Active warp count is not limited by shared memory usage
+
+
+  - **Occupancy Calculator**
+    - The CUDA toolkit inclused a spreadsheet called the CUDA Occupancy Calculator 
+    - Which assists you in selecting grid and block dimension to maximize occupancy for kernel
+
 
 ### Memory Model
 
@@ -513,21 +533,159 @@
 
       ![](Images/soa.png)
 
-    - SoA Makes full use of GPU memory bandwith because there is no interleaving as we can see below
+    - SoA Makes full use of GPU memory bandwidth because there is no interleaving as we can see below
   
     ![](Images/memoryStoringDifference.png)
 
 
+- **Partition Camping**
 
+  - In partition camping, memory requests are queued at some partitions while other partitions remain unused
+  - **Solution:**
+    - Calculate the index values ix and iy using diagonal coordinate system which will make sure consecutive thread blocks to access nonconsecutive memory blocks
+    - But within a single thread block we need threads with that thread block to access consecutive memory address to adhere the coalesced memory access
+  
+  - **Thread Block and Data Block mapping using Diagonal Coordinate System:**
 
-### Examples
+      ![](Images/transposeDiagonal.png)
+
+#### Examples
 
 
 - **Matrix Transpose**
 
   - The transpose of a matrix is an operator which flips a matrix over its diagonal
   - It switches the row and column indices of the matrix by producing another matrix denoted as A^T
-  - 
+
+    ![](Images/matrixTransponse.png)
+
+  - To transpose matrix in C++ we basically just need to move the elements in 1d array in memory to the right spot as we can see above
+
+    ![](Images/matrixTranspose2.png)
+
+  - **Code:**
+
+    ![](Images/matrixTransposeDevice.png)
+    ![](Images/matrixTransposeHost.png)
+
+
+#### Summary
+
+- **Pinned Memory**
+  - Memory which is not subjected to page fault operation
+- **Zero Copy Memory**
+  - Pinned memory that is mapped in to device address space
+- **Unified Memory**
+  - Pool of managed memory which can be access by both Host and Device
+
+- **Global Memory Access Pattern**
+  - **Align Memory Access**
+  - **Coalesced Memory Access**
+
+  - Global memory writes use only L2 cache
+
+
+### CUDA Streams and Events
+
+- **Grid Level Concurrency**
+  - Concurrency achieved by launching multiple kernels to same device simultaneously and overlapping memory transfers with kernel execution
+
+    ![](Images/gridLevelConcurrencyMemoryTransfers.png)
+
+  - We need to transfer memory asynchronously
+
+- **CUDA Stream**
+
+  - A stream is a sequence of commands that execute in order
+  - Different streams may execute their commands out of order with respect to one another or concurrently
+
+- Functions with synchronous behaviour relative to the host block the host thread until they complete
+- Functions with asynchronous behaviour relative to the host return control to the host immediately after being called
+
+- **Launching Kernel Functions with different streams:**
+
+  ![](Images/differentStreamsCUDA.png)
+
+- From host point of view all these kernel functions are called asynchronously
+- But from device point of view it may not be the case depending on the relationship between stream1, stream2 and default stream
+
+
+- **NULL Stream**
+  - The NULL stream is the default stream that kernel launches and data transfers use if we do not explicitly specify a stream
+  - Implicitly declared stream
+  - Has synchronization relation ship with other asynchronous streams so NULL stream is commonly used as synchronization mechanism between multiple streams
+
+  - **Blocking Behaviors of NULL stream**
+    - Even though non-NULL streams are non-blocking with respect to the host, operations within a non-NULL stream can be blocked by operations in the NULL stream
+    - Non-NULL streams are divided into:
+      - **blocking** - NULL stream can block operations in this non-null stream
+      - **non-blocking** - NULL stream will not block operations in this non-null stream
+
+  - The NULL stream is an implicit stream which synchronizes with all other blocking streams in the same CUDA context
+  - In general when an operations is issued to the NULL stream, the CUDA context waits on all operations previously issued to all blocking streams
+
+- Streams created using **cudaStreamCreate()** are blocking streams
+- Non blocking streams can be created with **cudaStreamCreateWithFlags(cudaStream_t *pStream, unsigned int flags)**
+- Flags:
+  - **cudaStreamDefault** - Default stream creation flag -> blocking
+  - **cudaStreamNonBlocking** - Asynchronous stream creation flag
+
+  ![](Images/nonBlockingStream.png)
+
+
+
+
+- **Tasks that can operate concurrently**
+
+  - Computation on the host
+  - Computation on the device
+  - Memory transfers from the host to the device
+  - Memory transfers from the device to the host
+  - Memory transfers within the memory of a given device
+  - Memory transfers among devices
+
+
+
+
+
+- **Asynchronous Functions**
+
+  - **cudaMemcpyAsync(destination pointer, source pointer, size, memory copy direction, stream);**
+
+    - Host pointers should be Pinned Memory otherwise these memory transfers will be synchronous one
+
+    ![](Images/streamsAsyncCpy.png)
+
+
+
+
+- **NVidia Visual Profiler (NVVP)**
+  - Can be used to visualize how our program executes and it will also measure performance metrics as well
+  - Our goal is to overlap kernel executions with memory transferring to reduce the overall execution time
+
+- **Multiple Kernels**
+
+  ![](Images/multipleKernelsCode.png)
+
+
+
+- **Explicit and Implicit Synchronization**
+  - **Explicit Synchronization** 
+    - Synchronizing the device using **cudaDeviceSynchronize()** or **cudaStreamSynchronize()**
+    - Synchronizing an event in a stream using **cudaEventSynchronize()** 
+    - Synchronizing across streams using an event with **cudaStreamWaitEvent()**
+    - 
+    - 
+
+  - **Implicit Synchronization**
+    - page-locked host memory allocation
+      - Pinned memory allocation using **cudaMallocHost()** or zero copy memory allocation using **cudaHostAlloc()** will blocked all the operations execution in the device until memory allocation in the host will finish
+    - device memory allocation
+    - device memory set
+    - memory copy between two addresses to the same device memory
+    - any CUDA command to the NULL stream
+    - switch between L1/shared memory configurations
+
 
 
 
@@ -553,7 +711,7 @@
 - **Execution Model**
   - The host(CPU) defines the context and command queues
   - Kernels are enqueued for execution on devices
-  - Work items are grouped into workgroups
+  - Work items are grouped into work groups
 
 
 

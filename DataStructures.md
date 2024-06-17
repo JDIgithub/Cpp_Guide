@@ -298,10 +298,51 @@
    - **Right Rotation:** Pivot the node down to its left child position making the left child the parent
    - Rotations are used during insertions and deletions to maintain balance
 
+
+#### AVL Tree
+
+
+
+
+
 ### Heap
 
 - Special tree-based data structure that satisfies the heap property
 - For example in a max heap, for any given node the value is greater than its children
+- Key characteristic of the heap is that the tree will always be complete (Fills from left to the right without any gaps)
+- Also in the Heap we can have duplicates
+- We can have several versions of the heap with the same elements but different placing of them
+- Only rule is that each parent must be greater that both of its children
+
+  ![](Images/heap.png)
+
+- We can implement heap with a vector
+
+  ![](Images/heapVector.png)
+
+- We can transfer from tree to vector like this:
+  - leftChildIndex = parentIndex * 2
+  - rightChildIndex = parentIndex * 2 + 1
+
+- **Insertion**
+
+  ![](Images/heapInsertion.png)
+
+  ![](Images/heapInsertionCode.png)
+
+- **Remove**
+
+  ![](Images/heapRemove.png)
+  ![](Images/heapRemoveCode.png)
+
+
+
+#### Priority Queue
+
+- Implemented by Heap under the hood
+- So the insertion is O(log n) because the new element must bubble to the top
+- Remove is O(log n) because we need to sink down the switched element that replaced the top one that was removed
+
 
 ### Trie (Prefix Tree)
 
@@ -309,6 +350,8 @@
 - Tries are particularly used for efficient text searches and auto-complete functionalities
 - Used to efficiently store and retrieve keys in a dataset of strings
 - Particularly useful for tasks that involve prefix searching
+- Outperforming binary search, hash tables and most other data structure
+
 - **Characteristics**
   - **Nodes and Edges**
     - Each node represents a character of the key
@@ -321,7 +364,12 @@
   - 
 
 
+- It is not binary tree, nodes have many children
 
+  ![](Images/trieScheme.png)
+
+- Time complexity to find a word in trie is: O(length of the word)
+- We also save lot of space because of the prefixes... like in the picture above, we have only 1 letter N stored for 2 words
 
 ### B-Trees and B+ Trees
 

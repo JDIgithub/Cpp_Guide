@@ -21,134 +21,187 @@
 #include <atomic>
 #include <csignal>
 #include <optional>
+#include <fstream>
 
 using namespace std;
 
-template <typename T>
-class CircularBuffer{
 
-private:
-
-  std::vector<T> m_buffer;
-  int m_head,m_tail;
-  std::mutex mtx;
-  std::condition_variable cv;
-  bool m_isFull;
+class Point{
 
 public:
+  int x;
+  int * y;
 
-  CircularBuffer(int size): m_buffer(size), m_head(0), m_tail(0), m_isFull(false) {
-
+  Point(): x(0){
+    y = new int(0);
+  };
+  Point(int x, int y){
+    this->x = x;
+    this->y = new int(y);
+  };
+  Point(const Point& copied_Point){
+    x = copied_Point.x;
+    y = new int(*copied_Point.y);
   }
-  
-  void insert(T newElement){
+  // Point(const Point& copied_Point) = delete; -> non-copyable object  or make it private
+  /* We can also use delegation
+  Point(const Point& copied_Point): Point(copied_Point.x,*copied_Point.y){
+  }
+  */
 
-    std::unique_lock<std::mutex> lock(mtx);
-    cv.wait(lock, [this]() { return !m_isFull; });
-
-    m_buffer[m_tail] = newElement;
-    m_tail = (m_tail + 1) % m_buffer.size();
-    if(m_isFull){
-      m_head = (m_head + 1) % m_buffer.size();
-    }
-    if(m_tail == m_head){
-      m_isFull = true;
-    }
-    
-    cv.notify_one();
+  Point(Point&& moved_Point){
+    x = moved_Point.x;
+    y = moved_Point.y;  
+    moved_Point.y = nullptr;
   }
 
-  std::optional<T> getFront(){
+  Point& operator=(const Point& copied_Point){
+    if(this == &copied_Point){ return *this;}
+    if(y == nullptr){ y = new int; }
+    *y = *copied_Point.y;
+    x = copied_Point.x;
+    return *this;
+  }
 
-    std::unique_lock<std::mutex> lock(mtx); // Unique lock must be used with CV because it supports unlock while waiting
-    cv.wait(lock, [this]() { return !isEmpty(); });  
+  Point& operator=(Point&& moved_Point){
+    if(this == &moved_Point){ return *this;}
+    delete y;  // Free existing resource
+    x = moved_Point.x;
+    y = moved_Point.y;
+    moved_Point.y = nullptr;
+    return *this;
+  }
 
-    /*    If we need time out so the producer wont wait indefinitely for the consumer 
 
-        if (!cv.wait_for(lock, timeout, [this]() { return !m_isFull; })) {
-            return false; // Timeout occurred
+  ~Point(){
+    delete y;
+  }
+
+
+};
+
+
+
+class FileManager {
+public:
+    static void writeTextFile(const std::string& filename, const std::string& content) {
+        std::ofstream outfile(filename);
+        if (outfile.is_open()) {
+            outfile << content;
+            outfile.close();
+        } else {
+            std::cerr << "Unable to open file for writing" << std::endl;
         }
-    */
+    }
 
-    if(isEmpty()) return std::nullopt;  // This wont ever happened with the cv wait above so this does not need to be std::optional but whatever
+    static void readTextFile(const std::string& filename) {
+        std::ifstream infile(filename);
+        std::string line;
+        if (infile.is_open()) {
+            while (getline(infile, line)) {
+                std::cout << line << std::endl;
+            }
+            infile.close();
+        } else {
+            std::cerr << "Unable to open file for reading" << std::endl;
+        }
+    }
 
-    T result = m_buffer[m_head];
-    m_head = (m_head + 1) % m_buffer.size();
-    m_isFull = false;
+    static void writeBinaryFile(const std::string& filename, const std::vector<int>& data) {
+        std::ofstream outfile(filename, std::ios::binary);
+        if (outfile.is_open()) {
+            outfile.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(int));
+            outfile.close();
+        } else {
+            std::cerr << "Unable to open file for writing" << std::endl;
+        }
+    }
 
-    cv.notify_one();
-    return result;
-  }
-
-  bool isEmpty() const { return (!m_isFull && m_tail == m_head); }
-  bool isFull() const { return m_isFull; }
-
+    static void readBinaryFile(const std::string& filename) {
+        std::ifstream infile(filename, std::ios::binary);
+        if (infile.is_open()) {
+            std::vector<int> data(5);
+            infile.read(reinterpret_cast<char*>(data.data()), data.size() * sizeof(int));
+            infile.close();
+            for (int num : data) {
+                std::cout << num << " ";
+            }
+            std::cout << std::endl;
+        } else {
+            std::cerr << "Unable to open file for reading" << std::endl;
+        }
+    }
 };
 
+int main() {
+    FileManager::writeTextFile("example.txt", "Hello, World!\nThis is a simple text file.");
+    FileManager::readTextFile("example.txt");
 
-std::mutex coutMTX;
+    std::vector<int> data = {10, 20, 30, 40, 50};
+    FileManager::writeBinaryFile("example.bin", data);
+    FileManager::readBinaryFile("example.bin");
 
-
-const int N = 1000;
-struct soa{
-  float x[N];
-  float y[N];
-};
-
-struct soa SoA;
-
-
+    return 0;
+}
 
 
 
 int main() {
 
+  // Writing into file
+  std::ofstream outfile("example.txt");
 
-  CircularBuffer<int> cb(5);
+  if (outfile.is_open()) {
+    outfile << "Hello, World!" << std::endl;
+    outfile << "This is a simple text file." << std::endl;
+    outfile.close();
+  } else {
+    std::cerr << "Unable to open file for writing" << std::endl;
+  }
 
 
-/*
-  cb.insert(1);
-  cb.insert(2);
-  cb.insert(3);
-  cb.insert(4);
-  cb.insert(5);
-  cb.insert(6);
-  cb.insert(7);
-  std::optional<int> result = cb.getFront();
-*/
+  // Reading file
+  std::ifstream infile("example.txt");
+  std::string line;
 
-  std::thread producer([&cb](){
-
-    for(int i = 0; i < 10; i++){
-      cb.insert(i);
-      std::lock_guard<std::mutex> lock(coutMTX);
-      std::cout<< "Produced: " << i << '\n';
+  if (infile.is_open()) {
+    while (getline(infile, line)) {
+      std::cout << line << std::endl;
     }
+    infile.close();
+  } else {
+    std::cerr << "Unable to open file for reading" << std::endl;
+  }
 
 
-  });
+  // Writing into Binary File
+  std::ofstream outfileBin("example.bin", std::ios::binary);
 
-  std::thread consumer([&cb](){
-    
-    for(int i = 0; i < 10; i++){
-      std::optional<int> item = cb.getFront();
-      std::lock_guard<std::mutex> lock(coutMTX);
-      if(item){
-        std::cout << "Consumed: " << *item << '\n';
-      } else {
-        std::cout << "Nothing to be consumed \n";
-      }
-    }
+  if (outfileBin.is_open()) {
+    int number = 12345;
+    outfileBin.write(reinterpret_cast<const char*>(&number), sizeof(number));
+    outfileBin.close();
+  } else {
+    std::cerr << "Unable to open file for writing" << std::endl;
+  }
 
-  }); 
 
-  producer.join();
-  consumer.join();
+  // Reading the Binary File
+  std::ifstream infileBin("example.bin", std::ios::binary);
+
+  if (infileBin.is_open()) {
+    int number;
+    infileBin.read(reinterpret_cast<char*>(&number), sizeof(number));
+    infileBin.close();
+
+    std::cout << number << std::endl;
+  } else {
+    std::cerr << "Unable to open file for reading" << std::endl;
+  }
+
 
   return 0;
 }
-
 
 
 

@@ -27,3 +27,17 @@
 
 - Involves interacting directly with hardware such as setting up and controlling hardware registers
 - Direct interaction with hardware registers
+
+
+
+
+## Virtual Memory
+
+- Memory management technique that provides and idealized abstraction of the storage resources that are actually available on a given machine
+- It allows large programs to be run on systems with less physical memory
+- It allows programs to use more memory than what is physically available by using disk space to extend RAM
+- Virtual memory enables processes to use a continuous address space, simplifies memory management, and provides isolation between processes. 
+- It allows the operating system to move data between physical memory (RAM) and disk storage (swap space) as needed.
+- It relies on **paging**:
+  - Data is moved between physical memory and disk storage
+  - Paging can introduce performance overhead especially if there is frequent swapping

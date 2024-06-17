@@ -9,7 +9,7 @@
 
 
 
-int main() {
+int mainMem() {
 
 	// Memory Size 128 MBs
 	int isize = 1 << 25;

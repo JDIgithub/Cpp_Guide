@@ -85,6 +85,7 @@
     <CudaCompile Include="Timing.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MatrixTranspose.cu" />
     <ClCompile Include="PinnedMemory.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

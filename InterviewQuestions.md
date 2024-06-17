@@ -431,3 +431,16 @@
 ## WinAPI
 
 - What is the primary use of the WinAPI? **Providing low-level access to system resources**
+
+
+
+
+## Udemy Course
+
+- **2 Arrays with Common Item**
+  - Given 2 arrays create a function that lets user know true or false whether these two arrays contain any common items
+  
+    ![](Images/commonItemArray.png)
+    
+
+  - If space complexity is more important then we can go with brute force but time complexity will worsen from O(a+b) to O(a*b)

@@ -1,3 +1,13 @@
-﻿     Vytváří se knihovna D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.lib a objekt D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.exp.
+﻿  Compiling CUDA source file properties.cu...
+  
+  D:\Repositories\Cpp_Guide\FirstCuda\FirstCuda>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\bin\HostX64\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include"  -G   --keep-dir x64\Debug  -maxrregcount=0   --machine 64 --compile -cudart static  -g  -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /FS /Zi /RTC1 /MDd " -Xcompiler "/Fdx64\Debug\vc143.pdb" -o D:\Repositories\Cpp_Guide\FirstCuda\FirstCuda\x64\Debug\properties.cu.obj "D:\Repositories\Cpp_Guide\FirstCuda\FirstCuda\properties.cu" 
+  properties.cu
+  tmpxft_000059c8_00000000-7_properties.cudafe1.cpp
+  MatrixTranspose.cu
+PinnedMemory.obj : error LNK2005: "int __cdecl mainMem(void)" (?mainMem@@YAHXZ) už je definované v memoryTransfer.cu.obj.
+     Vytváří se knihovna D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.lib a objekt D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.exp.
 LINK : warning LNK4098: Výchozí knihovna LIBCMT je v konfliktu s použitím jiných knihoven. Použijte /NODEFAULTLIB:library.
-  FirstCuda.vcxproj -> D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.exe
+MatrixTranspose.obj : error LNK2001: Nerozpoznaný externí symbol threadIdx
+MatrixTranspose.obj : error LNK2001: Nerozpoznaný externí symbol blockIdx
+MatrixTranspose.obj : error LNK2001: Nerozpoznaný externí symbol blockDim
+D:\Repositories\Cpp_Guide\FirstCuda\x64\Debug\FirstCuda.exe : fatal error LNK1120: Počet nerozpoznaných externích typů: 3
