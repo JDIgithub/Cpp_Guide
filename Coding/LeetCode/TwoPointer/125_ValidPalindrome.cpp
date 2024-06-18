@@ -44,33 +44,31 @@ Since an empty string reads the same forward and backward, it is a palindrome.
 bool isPalindrome(std::string s) {
 
   if (s.empty()) return true;
-  int pointerA = 0;
-  int pointerB = s.length()-1;
+  int left = 0;
+  int right = s.length()-1;
 
-  while(pointerA <= pointerB){
+  while(left <= right){
 
-    if(isalnum(s[pointerA])){                 // If character is aplhanumerical, lower it and send it to compare
-      s[pointerA] = tolower(s[pointerA]);
+    if(isalnum(s[left])){                 // If character is aplhanumerical, lower it and send it to compare
+      s[left] = tolower(s[left]);
     }else{                                    // else try another character
-      pointerA++;
+      left++;
       continue;
     }
 
-    if(isalnum(s[pointerB])){                 // If character is aplhanumerical, lower it and send it to compare
-      s[pointerB] = tolower(s[pointerB]);
+    if(isalnum(s[right])){                 // If character is aplhanumerical, lower it and send it to compare
+      s[right] = tolower(s[right]);
     }else{                                    // else try anoter character
-      pointerB--;
+      right--;
       continue;
     }
-
-    char a= s[pointerA];
-    char b = s[pointerB];
-    if(s[pointerA] != s[pointerB]){
+    
+    if(s[left] != s[right]){
       return false;
     }
 
-    pointerA++;
-    pointerB--;
+    left++;
+    right--;
 
   }
 

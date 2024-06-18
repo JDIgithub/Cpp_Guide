@@ -98,18 +98,16 @@ bool windowfind(int length, std::vector<int>&nums, int target) {
   int sum = 0;
   int beginWindow = 0;
   int endWindow = 0;
-  int maxSum=INT_MIN;
 
   while( endWindow < nums.size() ){
     sum+=nums[endWindow];
     if( endWindow - beginWindow + 1 == length){
-      maxSum=std::max(sum,maxSum);
+      if(sum >= target) return true;
       sum-=nums[beginWindow];
       beginWindow++;
     }
     endWindow++;
   }
-  if(maxSum >= target) return true;
   
   return false;
 }

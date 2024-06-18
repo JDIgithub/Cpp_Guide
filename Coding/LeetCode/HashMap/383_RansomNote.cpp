@@ -48,34 +48,21 @@ bool canConstruct(string ransomNote, string magazine) {
   for(char c: magazine){
       map[c]++;           // hash map will init integer to 0 for the first entry so this works fine
   }
-
-  for(char c: ransomNote){
-    
+  for(char c: ransomNote){  
     if(map.find(c) != map.end()){
       map[c]--;
     } else {
       return false;
     }
-    
-
   }
-
-
   return true;
 }
-
 // with array
-
 bool canConstruct(string ransomNote, string magazine) {
         
  // std::vector<int> letters(256,0);
   int letters[256]{0};  // Less memory and faster than vector
-
-
-  for (char c : magazine) {
-    letters[c]++;
-  }
-
+  for (char c : magazine) { letters[c]++; }
   for (char c : ransomNote) {
     if(letters[c] > 0){
       letters[c]--;
@@ -86,22 +73,6 @@ bool canConstruct(string ransomNote, string magazine) {
   return true;
 }
 
-// The fastest way
-bool canConstruct(string ransomNote, string magazine) {
-  int letters[256] = {0};
-  for(int i = 0; i < magazine.size(); i++) {
-    letters[magazine[i]]++;
-  }
-  for(int i = 0; i < ransomNote.size(); i++) {
-    letters[ransomNote[i]]--;
-  }
-  for(int i = 0; i < 256; i++) {
-    if(letters[i] < 0) {
-      return false; 
-    }
-  }
-  return true;
-}
 
 int main(){
 

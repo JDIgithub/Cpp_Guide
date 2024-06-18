@@ -41,3 +41,31 @@
 - It relies on **paging**:
   - Data is moved between physical memory and disk storage
   - Paging can introduce performance overhead especially if there is frequent swapping
+
+
+## Endianness
+
+- Refers to byte order in memory
+- **Little Endian** 
+  - stores the least significant byte first
+  - Number **0x12345678** will be stored as **78 56 34 12** in memory
+
+- **Big Endian** 
+  - stores the most signiicant byte first
+  - Number **0x12345678** will be stored as **12 34 56 78** in memory
+- C++ does not abstract endianness, it is determined by the underlying hardware architecture
+- But provides mechanisms to check and handle it
+- We can use unions or bitwise operations to handle endianness
+- **Endianness Check**
+
+    ![](Images/checkEndianness.png)
+
+- **Reading and Writing with Specific Endianness**
+  - When dealing with binary data (e.g., files or network streams), you often need to read and write data in a specific endianness
+  - Here’s an example using **std::ifstream** and **std::ofstream** for reading and writing little-endian integers:
+
+    ![](Images/writingReadinLittleEndian.png)
+
+
+
+- We should explicitly manage endianness when dealing with binary data formats and network communications to ensure our program can handle data correctly across different systems and architectures
