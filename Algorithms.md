@@ -698,3 +698,7 @@
 
 
 
+## Kadane Algorithm
+
+- Popular algorithm used for finding the maximum sum of a contiguous sub-array within a one-dimensional numeric array. 
+- It operates in linear time, making it very efficient for this purpose.

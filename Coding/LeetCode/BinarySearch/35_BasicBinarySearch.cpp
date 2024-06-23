@@ -57,21 +57,21 @@ nums contains distinct values sorted in ascending order.
 
 int searchInsert(vector<int>& nums, int target) {
 
-  int i = 0;
+  int mid = 0;
   int left = 0;
-  int right = nums.size();
+  int right = nums.size() - 1;
 
-  if(target>nums[right-1]) return right;
+  if(target>nums[right]) return ++right;
 
   while(left <= right){
 
-    i = (right + left)/2;
-    if(target < nums[i]){
-      right = i - 1;
-    } else if(target > nums[i]) {
-      left = i + 1;
+    mid = left + (right - left)/2;
+    if(target < nums[mid]){
+      right = mid - 1;
+    } else if(target > nums[mid]) {
+      left = mid + 1;
     } else {
-        return i;
+      return mid;
     }
   }
   return left;

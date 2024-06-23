@@ -35,7 +35,7 @@ bool isSameTree(TreeNode* p, TreeNode* q) {
 
   if(p == nullptr || q ==nullptr){ return p==q; }
 
-  if(p->val != q->val || isSameTree(p->left,q->left) == false || isSameTree(p->right,q->right) == false){
+  if(p->val != q->val || !isSameTree(p->left,q->left) || !isSameTree(p->right,q->right)){
     return false;
   }
   return true;    
