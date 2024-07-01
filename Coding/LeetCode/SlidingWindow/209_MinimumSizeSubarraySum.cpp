@@ -108,7 +108,6 @@ bool windowfind(int length, std::vector<int>&nums, int target) {
     }
     endWindow++;
   }
-  
   return false;
 }
 
@@ -119,15 +118,15 @@ bool windowfind(int length, std::vector<int>&nums, int target) {
 // If true goes into the lower half with shorter length
 // else try the higher half
 int minSubArrayLen(int target, std::vector<int>& nums) {
-  int low = 1, high = nums.size(), mn = 0;
-  while (low <= high) {
-    int mid = (low + high) / 2;
+  int lowLength = 1, highLength = nums.size(), minLength = 0;
+  while (lowLength <= highLength) {
+    int mid = (lowLength + highLength) / 2;
     if (windowfind(mid, nums, target)) {
-      high = mid-1;
-      mn = mid;
-    } else low = mid + 1;
+      highLength = mid-1;
+      minLength = mid;
+    } else lowLength = mid + 1;
   }
-  return mn;
+  return minLength;
 }
 
 
