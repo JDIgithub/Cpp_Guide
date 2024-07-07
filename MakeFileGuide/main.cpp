@@ -1,4 +1,5 @@
 #include <iostream>
+#include "myLib.h"
 
 int main()
 {
