@@ -62,18 +62,14 @@ bool isPalindrome(std::string s) {
       right--;
       continue;
     }
-    
+
     if(s[left] != s[right]){
       return false;
     }
-
     left++;
     right--;
-
   }
-
   return true;
-
 }
 
 

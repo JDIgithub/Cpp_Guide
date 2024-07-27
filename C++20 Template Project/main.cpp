@@ -25,6 +25,7 @@
 
 using namespace std;
 
+
 int main() {
   // Seed with a real random value, if available
   std::random_device rd;
@@ -61,8 +62,6 @@ int main() {
   for(auto num:winningNumbers2){
     std::cout << num << " ";
   }
-
-
 
   return 0;
 }
